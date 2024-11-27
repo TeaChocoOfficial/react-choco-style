@@ -1,15 +1,8 @@
-//-Path: "react-choco-style/src/components/hook/CBox.tsx"
-import React from "react";
-import { ChocoStyleType } from "../../types/ChocoStyle";
+//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/hook/CBox.tsx"
+import styled, { ChocoStyledProps } from "../custom/Styled";
 
-type CBoxProps = {
-    cs: ChocoStyleType;
-    children: React.ReactNode;
-};
+const Box = styled("div")();
 
-export default function CBox(
-    props: CBoxProps & React.HTMLAttributes<HTMLDivElement>,
-) {
-    const { children } = props;
-    return <div {...props}>{children}</div>;
+export default function CBox(props: ChocoStyledProps<"div">) {
+    return <Box {...props} />;
 }
