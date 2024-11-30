@@ -1,7 +1,11 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/hook/CSkeleton.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/hook/CSkeleton.tsx"
 import Styled, { ChocoStyledProps } from "../custom/Styled";
 
-const Skeleton = Styled("div")();
+const Skeleton = Styled("div")({
+    of: "h",
+    pos: "r",
+    bgColor: "#ffffff22",
+});
 
 export type CSkeletonProps = ChocoStyledProps<"div"> & {
     circle?: boolean;
@@ -27,13 +31,6 @@ export default function CSkeleton(prop: CSkeletonProps) {
     } else {
         props.cs = { ...props.cs, ...textSc };
     }
-
-    props.cs = {
-        of: "h",
-        pos: "r",
-        bgColor: "#ffffff22",
-        ...props.cs,
-    };
 
     const keyframes = `
     @keyframes CSkeleton {

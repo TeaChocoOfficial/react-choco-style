@@ -6,10 +6,14 @@ export type ModesKeyType = "dark" | "light";
 
 export type ThemeFontsType = {
     family: string;
-    weight: number;
+    weight: {
+        regular: number;
+        medium: number;
+        bold: number;
+    };
 };
 
-export type ColorsType = {
+export type ColorsTypes = {
     text?: ColorHexType;
     main: ColorHexType;
     dark?: ColorHexType;
@@ -19,14 +23,14 @@ export type ColorsType = {
 };
 
 export type PaletteType = {
-    common: Record<string, ColorsType>;
-    primary: ColorsType;
-    secondary: ColorsType;
-    error: ColorsType;
-    warning: ColorsType;
-    info: ColorsType;
-    success: ColorsType;
-    shadow: ColorsType;
+    common: Record<string, ColorsTypes>;
+    primary: ColorsTypes;
+    secondary: ColorsTypes;
+    error: ColorsTypes;
+    warning: ColorsTypes;
+    info: ColorsTypes;
+    success: ColorsTypes;
+    shadow: ColorsTypes;
     background: {
         body: ColorHexType;
         paper: ColorHexType;

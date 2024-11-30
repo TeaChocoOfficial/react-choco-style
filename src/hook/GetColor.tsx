@@ -1,11 +1,11 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/GetColor.tsx"
 import { useTheme } from "../theme/useTheme";
-import { ColorDefaultType, ColorType } from "../types/color";
+import { ColorDefaultType, ColorsType } from "../types/color";
 
-export default function GetColor(): (color?: ColorType) => string | undefined {
+export default function GetColor(): (color?: ColorsType) => string | undefined {
     const { palette } = useTheme();
 
-    return (color?: ColorType): string | undefined => {
+    return (color?: ColorsType): string | undefined => {
         let Color: undefined | string;
 
         switch (color) {

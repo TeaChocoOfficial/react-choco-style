@@ -1,8 +1,13 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/hook/CPaper.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/hook/CPaper.tsx"
 import { useTheme } from "../../theme/useTheme";
 import styled, { ChocoStyledProps } from "../custom/Styled";
 
-const Paper = styled("div")();
+const Paper = styled("div")(({ theme }) => ({
+    borR: 1,
+    color: theme.palette.text.primary,
+    bgColor: theme.palette.background.paper,
+    boxShadow: `0px 2px 1px -1px ${theme.palette.shadow.main}`,
+}));
 
 export type CPaperProps = ChocoStyledProps<"div"> & { elevation?: number };
 
@@ -32,16 +37,9 @@ export default function CPaper(prop: CPaperProps) {
     const props = { ...prop };
     delete props.elevation;
     const opacity = getElevation(elevation ?? 0);
-    props.style = {
-        boxShadow: `0px 2px 1px -1px ${palette.shadow.main}`,
-        ...props.style,
-    };
     const bg = `${palette.text.primary}${opacity}`;
     props.cs = {
         bgImage: `linear-gradient(${bg}, ${bg})`,
-        bgColor: `${palette.background.paper}`,
-        color: palette.text.primary,
-        borR: 1,
         ...props.cs,
     };
     return <Paper {...props} />;

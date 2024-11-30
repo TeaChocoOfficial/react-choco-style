@@ -1,19 +1,38 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/types/ChocoStyle.ts"
 import { Sizes } from "./Size";
-import { ColorType } from "./color";
+import { ColorsType } from "./color";
 
-export type ChocoStyleTypes = { [key in keyof ChocoStyleType]?: Sizes };
+export type ChocoStyleTypes = {
+    [key in keyof ChocoStyleType]?: Sizes | BorderStyleType;
+};
 
 export type ChocoStylePropsTypes = {
-    [key in keyof ChocoStylePropsType]?: Sizes;
+    [key in keyof ChocoStylePropsType]?: Sizes | BorderStyleType;
+};
+
+export type BorderStyleType = {
+    size?: number;
+    width?: Sizes;
+    color?: ColorsType;
+    style?:
+        | "dotted"
+        | "dashed"
+        | "solid"
+        | "double"
+        | "groove"
+        | "ridge"
+        | "inset"
+        | "outset"
+        | "none"
+        | "hidden";
 };
 
 export type ChocoStyleDefType = {
     //* Style
     //? background color background-color
     bg?: string;
-    color?: ColorType;
-    bgColor?: ColorType;
+    color?: ColorsType;
+    bgColor?: ColorsType;
     bgImage?: string;
 
     //* Opacity
@@ -76,6 +95,7 @@ export type ChocoStyleDefType = {
 
     //* Border
     borR?: Sizes;
+    border?: BorderStyleType | string;
 
     //* transition
     animation?: number | string;

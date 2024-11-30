@@ -33,7 +33,9 @@ export type ColorCommonType = (typeof ColorCommon)[keyof typeof ColorCommon];
 
 export type ColorHexType = `#${string}`;
 
-export type ColorType =
+export type ColorType = ColorDefaultType | ColorTextType | ColorCommonType;
+
+export type ColorsType =
     | ColorDefaultType
     | ColorTextType
     | ColorCommonType

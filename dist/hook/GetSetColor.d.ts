@@ -1,8 +1,8 @@
-import { ColorType } from "../types/color";
+import { ColorType, ColorsType } from "../types/color";
 export type SetColorType = {
-    color?: ColorType;
-    action?: ColorType;
-    bgColor?: ColorType;
-    bgHover?: ColorType;
+    color?: ColorsType;
+    action?: ColorsType;
+    bgColor?: ColorsType;
+    bgHover?: ColorsType;
 };
 export default function GetSetColor(): (color?: ColorType) => SetColorType | undefined;

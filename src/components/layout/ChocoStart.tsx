@@ -1,5 +1,6 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/layout/ChocoStart.tsx"
+//-Path: "react-choco-style/src/components/layout/ChocoStart.tsx"
 import { useEffect } from "react";
+import { getThemeMode } from "../../theme/theme";
 import { atom, useSetRecoilState } from "recoil";
 
 export type InnerType = { width: number; height: number };
@@ -7,8 +8,8 @@ export type InnerType = { width: number; height: number };
 export const innerAtom = atom<InnerType>({
     key: "window inner",
     default: {
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window ? window.innerWidth : 0,
+        height: window ? window.innerHeight : 0,
     },
 });
 
@@ -20,6 +21,7 @@ export default function ChocoStart({
     const setInner = useSetRecoilState(innerAtom);
 
     useEffect(() => {
+        getThemeMode();
         const handleResize = () => {
             setInner({
                 width: window.innerWidth,

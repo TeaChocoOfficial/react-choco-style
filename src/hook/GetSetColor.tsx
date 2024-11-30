@@ -1,12 +1,12 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/GetSetColor.tsx"
 import { useTheme } from "../theme/useTheme";
-import { ColorType, ColorDefaultType } from "../types/color";
+import { ColorType, ColorsType, ColorDefaultType } from "../types/color";
 
 export type SetColorType = {
-    color?: ColorType;
-    action?: ColorType;
-    bgColor?: ColorType;
-    bgHover?: ColorType;
+    color?: ColorsType;
+    action?: ColorsType;
+    bgColor?: ColorsType;
+    bgHover?: ColorsType;
 };
 
 export default function GetSetColor(): (
@@ -25,25 +25,47 @@ export default function GetSetColor(): (
             //*common
             case "paper":
                 Color = {
-                    bgColor: palette.background.paper,
                     color: palette.text.primary,
+                    bgColor: palette.background.paper,
+                    bgHover: palette.background.default,
+                    action: palette.text.disabled,
                 };
                 break;
             case "inherit":
-                Color = { bgColor: palette.background.default };
+                Color = {
+                    color: palette.background.default,
+                    bgColor: null,
+                    bgHover: palette.text.disabled,
+                    action: palette.text.primary,
+                };
                 break;
 
             //*text
             case "disabled":
-                Color = { bgColor: palette.text.disabled };
+                Color = {
+                    color: palette.text.disabled,
+                    bgColor: palette.shadow.main,
+                    bgHover: palette.shadow.dark,
+                    action: palette.shadow.light,
+                };
                 break;
             case "text":
-                Color = { bgColor: palette.text.primary };
+                Color = {
+                    color: palette.text.primary,
+                    bgColor: null,
+                    bgHover: palette.text.disabled,
+                    action: palette.primary.textDisabled,
+                };
                 break;
 
             //*primary
             case "primary":
-                Color = { bgColor: palette.primary.main };
+                Color = {
+                    color: palette.primary.text,
+                    bgColor: palette.primary.main,
+                    bgHover: palette.primary.dark,
+                    action: palette.primary.textDisabled,
+                };
                 break;
 
             //*secondary

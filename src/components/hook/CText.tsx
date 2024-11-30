@@ -1,9 +1,9 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/hook/CText.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/hook/CText.tsx"
 import CSkeleton from "./CSkeleton";
 import { getFont } from "../custom/font";
 import Styled, { ChocoStyledProps } from "../custom/Styled";
 
-const Text = Styled("span")();
+const Text = Styled("span")({ size: 16 });
 
 export type CTextProps = ChocoStyledProps<"span"> & { skeleton?: boolean };
 

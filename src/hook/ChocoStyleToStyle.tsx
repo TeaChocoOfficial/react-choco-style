@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/ChocoStyleToStyle.tsx"
+//-Path: "react-choco-style/src/hook/ChocoStyleToStyle.tsx"
 import GetColor from "./GetColor";
 import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
@@ -45,12 +45,13 @@ export default function ChocoStyleToStyle(
                 return size;
             } else if (typeof size === "number") {
                 return `${size * (time ?? 1)}${unit ?? "px"}`;
-            } else {
+            } else if (size && typeof size === "object") {
                 const keys = Object.keys(theme.breakpoint) as SizeKey[];
                 let currentSize: Value | undefined;
                 const sizes = keys.reduce<Size<Value>>((acc, key) => {
-                    if (size[key]) {
-                        currentSize = size[key];
+                    const s = size as Size<Value>;
+                    if (key in s) {
+                        currentSize = s[key];
                     }
                     acc[key] = currentSize;
                     return acc;
@@ -241,6 +242,25 @@ export default function ChocoStyleToStyle(
         }
 
         //* Border
+        if (chocostyle.border !== undefined) {
+            if (typeof chocostyle.border === "string") {
+                newCss.border = chocostyle.border;
+            } else {
+                const { size, width, style, color } = chocostyle.border;
+                const border: string[] = [];
+                if (size !== undefined) {
+                    const borderWidth = width ? width : formatSize(size);
+                    border.push(sizeToCss(borderWidth) ?? "");
+                }
+                if (style !== undefined) {
+                    border.push(style);
+                }
+                if (color !== undefined) {
+                    border.push(getColor(color) ?? "");
+                }
+                newCss.border = border.join(" ");
+            }
+        }
         if (chocostyle.borR !== undefined) {
             newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
         }
@@ -523,7 +543,7 @@ export default function ChocoStyleToStyle(
         if (newBreakpoint !== breakpoint) {
             setBreakpoint(newBreakpoint);
         }
-    }, [inner.width, theme.breakpoint]);
+    }, [inner, theme]);
 
     useEffect(() => {
         const newChocoStyle = getChocoStyle(cs);

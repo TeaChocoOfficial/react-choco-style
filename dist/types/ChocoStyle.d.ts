@@ -1,15 +1,21 @@
 import { Sizes } from "./Size";
-import { ColorType } from "./color";
+import { ColorsType } from "./color";
 export type ChocoStyleTypes = {
-    [key in keyof ChocoStyleType]?: Sizes;
+    [key in keyof ChocoStyleType]?: Sizes | BorderStyleType;
 };
 export type ChocoStylePropsTypes = {
-    [key in keyof ChocoStylePropsType]?: Sizes;
+    [key in keyof ChocoStylePropsType]?: Sizes | BorderStyleType;
+};
+export type BorderStyleType = {
+    size?: number;
+    width?: Sizes;
+    color?: ColorsType;
+    style?: "dotted" | "dashed" | "solid" | "double" | "groove" | "ridge" | "inset" | "outset" | "none" | "hidden";
 };
 export type ChocoStyleDefType = {
     bg?: string;
-    color?: ColorType;
-    bgColor?: ColorType;
+    color?: ColorsType;
+    bgColor?: ColorsType;
     bgImage?: string;
     op?: number;
     z?: number;
@@ -50,6 +56,7 @@ export type ChocoStyleDefType = {
     size?: number;
     fontS?: Sizes;
     borR?: Sizes;
+    border?: BorderStyleType | string;
     animation?: number | string;
     transform?: React.CSSProperties["transform"];
     transformCenter?: "all" | "x" | "y";

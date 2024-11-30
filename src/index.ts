@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/index.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/index.ts"
 export {
     type CustomTheme,
     removeReservedProps,
@@ -39,19 +39,20 @@ import ChocoStyleToStyle from "./hook/ChocoStyleToStyle";
 import chocoPropsToChocoStyle from "./hook/chocoPropsToChocoStyle";
 
 export { useTheme } from "./theme/useTheme";
-export { ChocoTheme, themeModeAtom } from "./theme/theme";
+export { getThemeMode, ChocoTheme, themeModeAtom } from "./theme/theme";
 
 export {
     ColorText,
     ColorCommon,
     ColorDefault,
     type ColorType,
+    type ColorsType,
     type ColorTextType,
     type ColorCommonType,
     type ColorDefaultType,
 } from "./types/color";
 export type {
-    ColorsType,
+    ColorsTypes,
     PaletteType,
     ModesKeyType,
     ThemeFontsType,
@@ -62,6 +63,7 @@ export type {
 export type {
     ChocoStyleType,
     ChocoStyleTypes,
+    BorderStyleType,
     ChocoStyleDefType,
     ChocoStylePropsType,
     ChocoStylePropsTypes,

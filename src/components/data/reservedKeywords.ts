@@ -43,6 +43,7 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "size",
     "fontS",
     "borR",
+    "border",
     "animation",
     "transform",
     "transformCenter",
