@@ -1,5 +1,6 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/types/ChocoStyle.ts"
 import { Sizes } from "./Size";
+import { ColorType } from "./color";
 
 export type ChocoStyleTypes = { [key in keyof ChocoStyleType]?: Sizes };
 
@@ -11,15 +12,23 @@ export type ChocoStyleDefType = {
     //* Style
     //? background color background-color
     bg?: string;
-    color?: string;
-    bgColor?: string | null;
+    color?: ColorType;
+    bgColor?: ColorType;
+    bgImage?: string;
 
     //* Opacity
     op?: number;
 
+    //* Z-index
+    z?: number;
+
     //* Width and Height
     w?: Sizes;
     h?: Sizes;
+    minW?: Sizes;
+    minH?: Sizes;
+    maxW?: Sizes;
+    maxH?: Sizes;
 
     //* inset
     //? all top bottom left right left&right top&bottom
@@ -51,45 +60,70 @@ export type ChocoStyleDefType = {
     mx?: Sizes;
     my?: Sizes;
 
+    //* Gap
+    //? all top bottom left right left&right top&bottom
+    gap?: Sizes;
+    gapT?: Sizes;
+    gapB?: Sizes;
+    gapL?: Sizes;
+    gapR?: Sizes;
+    gapX?: Sizes;
+    gapY?: Sizes;
+
     //* FontSize
     size?: number;
     fontS?: Sizes;
 
     //* Border
     borR?: Sizes;
+
+    //* transition
+    animation?: number | string;
+
+    //* Transform
+    transform?: React.CSSProperties["transform"];
+    transformCenter?: "all" | "x" | "y";
 };
 
 export type ChocoStyleType = ChocoStyleDefType & {
     //* Display
     //? none flex block inline inline-flex inline-block grid inline-grid table inline-table
-    dp?: null | "n" | "f" | "b" | "i" | "if" | "ib" | "g" | "ig" | "t" | "it";
+    dp?: Sizes<null | "f" | "b" | "i" | "if" | "ib" | "g" | "ig" | "t" | "it">;
 
     //* Flex direction
-    //? unset row reverse-row column reverse-column
-    fd?: null | "r" | "rr" | "c" | "cr";
+    //? unset row reverse-row column reverse-column inherit
+    fd?: Sizes<null | "r" | "rr" | "c" | "cr" | "i">;
 
     //* Flex wrap
-    fw?: boolean;
+    fw?: Sizes<boolean>;
 
     //* Align items
     //? unset flex-end flex-start center space-around space-between stretch
-    ac?: null | "e" | "s" | "c" | "a" | "b" | "st";
+    ac?: Sizes<null | "e" | "s" | "c" | "a" | "b" | "st">;
 
     //* Align items
     //? unset flex-end flex-start center space-around space-between stretch
-    a?: null | "e" | "s" | "c" | "a" | "b" | "st";
+    a?: Sizes<null | "e" | "s" | "c" | "a" | "b" | "st">;
 
     //* Justify content
     //? flex-end flex-start center space-around space-between space-evenly
-    j?: null | "e" | "s" | "c" | "a" | "b" | "ev";
+    j?: Sizes<null | "e" | "s" | "c" | "a" | "b" | "ev">;
 
     //* Text align
     //? unset end left start right center justify
-    text?: null | "e" | "l" | "s" | "r" | "c" | "j";
+    text?: Sizes<null | "e" | "l" | "s" | "r" | "c" | "j">;
 
     //* Position
     //? unset relative absolute fixed sticky
-    pos?: null | "r" | "a" | "f" | "s";
+    pos?: Sizes<null | "r" | "a" | "f" | "s">;
+
+    //* Overflow
+    //? visible hidden scroll auto
+    of?: Sizes<null | "v" | "h" | "s" | "a">;
+
+    //* Cursor
+    //? default pointer move not-allowed wait text crosshair alias copy  col-resize
+    cur?: Sizes<null | "d" | "p" | "m" | "n" | "w" | "t" | "c" | "cr">;
 };
 
 export type ChocoStylePropsType = ChocoStyleDefType & {

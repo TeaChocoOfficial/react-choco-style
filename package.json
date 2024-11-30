@@ -1,6 +1,6 @@
 {
   "name": "@teachocoofficial/react-choco-style",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "private": false,
   "type": "module",
   "main": "dist/index.js",
@@ -18,7 +18,8 @@
     "build": "rollup -c",
     "prepare": "npm run build",
     "storybook": "start-storybook -p 6006",
-    "public": "npm publish --scope=@teachoco-official --access=public"
+    "public": "npm publish --scope=@teachoco-official --access=public",
+    "publicforce": "npm publish --scope=@teachoco-official --access=public --force"
   },
   "peerDependencies": {
     "react": "^18.2.0",

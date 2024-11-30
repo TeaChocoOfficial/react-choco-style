@@ -1,2 +1,5 @@
 import { ChocoStyledProps } from "../custom/Styled";
-export default function CSkeleton(props: ChocoStyledProps<"div">): import("react/jsx-runtime").JSX.Element;
+export type CSkeletonProps = ChocoStyledProps<"div"> & {
+    circle?: boolean;
+};
+export default function CSkeleton(prop: CSkeletonProps): import("react/jsx-runtime").JSX.Element;

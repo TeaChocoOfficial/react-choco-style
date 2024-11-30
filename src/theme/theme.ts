@@ -2,6 +2,20 @@
 import { atom } from "recoil";
 import { ChocoThemeType, ModesKeyType } from "../types/theme";
 
+export const getThemeMode = () => {
+    if (localStorage && window) {
+        let themeMode = localStorage.getItem("theme mode");
+        if (themeMode === null) {
+            const { matches } = window.matchMedia(
+                "(prefers-color-scheme: dark)",
+            );
+            themeMode = matches ? "dark" : "light";
+            localStorage.setItem("theme mode", themeMode);
+        }
+        return themeMode as ModesKeyType;
+    }
+};
+
 export const ChocoTheme: ChocoThemeType = {
     fonts: {
         family: [
@@ -24,9 +38,15 @@ export const ChocoTheme: ChocoThemeType = {
         l: 1024,
         d: 1248,
     },
-    mode: "dark",
+    mode: getThemeMode() ?? "dark",
     modes: {
         default: {
+            common: {
+                black: { main: "#000000" },
+                white: { main: "#ffffff" },
+                purple: { main: "#bb66ff" },
+                orange: { main: "#ff7700" },
+            },
             secondary: {
                 main: "#0077FF",
                 dark: "#004CB3",
@@ -34,6 +54,42 @@ export const ChocoTheme: ChocoThemeType = {
                 text: "#FFFFFF",
                 disabled: "#002A91",
                 textDisabled: "#BDBDBD",
+            },
+            error: {
+                main: "#ff0000",
+                dark: "#cc0000",
+                light: "#ff8888",
+                text: "#ffffff",
+                disabled: "#990000",
+                textDisabled: "#ffcccc",
+            },
+            warning: {
+                main: "#ffcc00",
+                dark: "#cc9900",
+                light: "#ffff88",
+                text: "#000000",
+                disabled: "#996600",
+                textDisabled: "#ffffcc",
+            },
+            info: {
+                main: "#0099ff",
+                dark: "#0066cc",
+                light: "#88ccff",
+                text: "#000000",
+                disabled: "#004c99",
+                textDisabled: "#ccccff",
+            },
+            success: {
+                main: "#00cc00",
+                dark: "#009900",
+                light: "#88ff88",
+                text: "#000000",
+                disabled: "#006600",
+                textDisabled: "#cccccc",
+            },
+            shadow: {
+                main: "#0000001a",
+                light: "#ffffff99",
             },
         },
         light: {
@@ -46,8 +102,13 @@ export const ChocoTheme: ChocoThemeType = {
             },
             background: {
                 body: "#ffffff",
-                paper: "#eeeeee",
-                default: "#ffffff",
+                paper: "#dddddd",
+                default: "#ededed",
+            },
+            text: {
+                primary: "#000000",
+                secondary: "#222222",
+                disabled: "#00000099",
             },
         },
         dark: {
@@ -63,6 +124,11 @@ export const ChocoTheme: ChocoThemeType = {
                 body: "#000000",
                 paper: "#222222",
                 default: "#121212",
+            },
+            text: {
+                primary: "#ffffff",
+                secondary: "#dddddd",
+                disabled: "#ffffff99",
             },
         },
     },

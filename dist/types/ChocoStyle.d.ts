@@ -1,4 +1,5 @@
 import { Sizes } from "./Size";
+import { ColorType } from "./color";
 export type ChocoStyleTypes = {
     [key in keyof ChocoStyleType]?: Sizes;
 };
@@ -7,11 +8,17 @@ export type ChocoStylePropsTypes = {
 };
 export type ChocoStyleDefType = {
     bg?: string;
-    color?: string;
-    bgColor?: string | null;
+    color?: ColorType;
+    bgColor?: ColorType;
+    bgImage?: string;
     op?: number;
+    z?: number;
     w?: Sizes;
     h?: Sizes;
+    minW?: Sizes;
+    minH?: Sizes;
+    maxW?: Sizes;
+    maxH?: Sizes;
     i?: Sizes;
     t?: Sizes;
     b?: Sizes;
@@ -33,19 +40,31 @@ export type ChocoStyleDefType = {
     mr?: Sizes;
     mx?: Sizes;
     my?: Sizes;
+    gap?: Sizes;
+    gapT?: Sizes;
+    gapB?: Sizes;
+    gapL?: Sizes;
+    gapR?: Sizes;
+    gapX?: Sizes;
+    gapY?: Sizes;
     size?: number;
     fontS?: Sizes;
     borR?: Sizes;
+    animation?: number | string;
+    transform?: React.CSSProperties["transform"];
+    transformCenter?: "all" | "x" | "y";
 };
 export type ChocoStyleType = ChocoStyleDefType & {
-    dp?: null | "n" | "f" | "b" | "i" | "if" | "ib" | "g" | "ig" | "t" | "it";
-    fd?: null | "r" | "rr" | "c" | "cr";
-    fw?: boolean;
-    ac?: null | "e" | "s" | "c" | "a" | "b" | "st";
-    a?: null | "e" | "s" | "c" | "a" | "b" | "st";
-    j?: null | "e" | "s" | "c" | "a" | "b" | "ev";
-    text?: null | "e" | "l" | "s" | "r" | "c" | "j";
-    pos?: null | "r" | "a" | "f" | "s";
+    dp?: Sizes<null | "f" | "b" | "i" | "if" | "ib" | "g" | "ig" | "t" | "it">;
+    fd?: Sizes<null | "r" | "rr" | "c" | "cr" | "i">;
+    fw?: Sizes<boolean>;
+    ac?: Sizes<null | "e" | "s" | "c" | "a" | "b" | "st">;
+    a?: Sizes<null | "e" | "s" | "c" | "a" | "b" | "st">;
+    j?: Sizes<null | "e" | "s" | "c" | "a" | "b" | "ev">;
+    text?: Sizes<null | "e" | "l" | "s" | "r" | "c" | "j">;
+    pos?: Sizes<null | "r" | "a" | "f" | "s">;
+    of?: Sizes<null | "v" | "h" | "s" | "a">;
+    cur?: Sizes<null | "d" | "p" | "m" | "n" | "w" | "t" | "c" | "cr">;
 };
 export type ChocoStylePropsType = ChocoStyleDefType & {
     cs?: ChocoStyleType;

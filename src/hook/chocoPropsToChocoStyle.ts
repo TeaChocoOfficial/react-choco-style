@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/hook/chocoPropsToChocoStyle.ts"
+//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/chocoPropsToChocoStyle.ts"
 import {
     ChocoStyleType,
     ChocoStyleTypes,
@@ -10,6 +10,7 @@ import {
     KeywordsChocoStyleDef,
     KeywordsChocoStyleProps,
 } from "../components/data/reservedKeywords";
+import { Sizes } from "../types/Size";
 
 export default function chocoPropsToChocoStyle(
     csp: ChocoStylePropsType,
@@ -61,6 +62,9 @@ export default function chocoPropsToChocoStyle(
             case "dFlex":
                 acc.dp = "f";
                 break;
+            case "dInline":
+                acc.dp = "i";
+                break;
             case "dInlineF":
                 acc.dp = "if";
                 break;
@@ -100,7 +104,7 @@ export default function chocoPropsToChocoStyle(
 
             //* Flex wrap
             case "fWrap":
-                acc.fw = style as ChocoStylePropsType["fWrap"];
+                acc.fw = style as Sizes<boolean>;
                 break;
 
             //* Align content
@@ -161,6 +165,9 @@ export default function chocoPropsToChocoStyle(
                 break;
             case "jBetween":
                 acc.j = "b";
+                break;
+            case "jEvenly":
+                acc.j = "ev";
                 break;
 
             //* Text align

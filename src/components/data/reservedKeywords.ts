@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/components/data/reservedKeywords.ts"
+//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/data/reservedKeywords.ts"
 import {
     ChocoStyleType,
     ChocoStyleDefType,
@@ -33,8 +33,19 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "mr",
     "mx",
     "my",
+    "gap",
+    "gapT",
+    "gapB",
+    "gapL",
+    "gapR",
+    "gapX",
+    "gapY",
     "size",
+    "fontS",
     "borR",
+    "animation",
+    "transform",
+    "transformCenter",
 ];
 
 export const KeywordsChocoStyle: (keyof ChocoStyleType)[] = [

@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/ChocoStyleToStyle.tsx"
+import GetColor from "./GetColor";
 import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
 import {
@@ -7,18 +8,19 @@ import {
 } from "../components/data/reservedKeywords";
 import { useTheme } from "../theme/useTheme";
 import { ChocoStyleType } from "../types/ChocoStyle";
+import { Size, SizeKey, Sizes } from "../types/Size";
 import { formatSize } from "../components/custom/size";
 import { innerAtom } from "../components/layout/ChocoStart";
-import { Size, SizeKey, Sizes, SizeValue } from "../types/Size";
 import { removeReservedProps } from "../components/custom/Styled";
 
 export default function ChocoStyleToStyle(
     cs: ChocoStyleType,
 ): React.CSSProperties {
     const theme = useTheme();
+    const getColor = GetColor();
     const inner = useRecoilValue(innerAtom);
-    const [css, setCss] = useState<React.CSSProperties>({});
     const [breakpoint, setBreakpoint] = useState<number>(getBreakpoint());
+    const [css, setCss] = useState<React.CSSProperties>(getChocoStyle(cs));
 
     function getBreakpoint(): number {
         const keys = Object.keys(theme.breakpoint) as SizeKey[];
@@ -33,8 +35,8 @@ export default function ChocoStyleToStyle(
         return breakpoint;
     }
 
-    function sizeToCss(
-        size: Sizes,
+    function sizeToCss<Value>(
+        size: Sizes<Value>,
         time?: number,
         unit?: string,
     ): string | undefined {
@@ -45,8 +47,8 @@ export default function ChocoStyleToStyle(
                 return `${size * (time ?? 1)}${unit ?? "px"}`;
             } else {
                 const keys = Object.keys(theme.breakpoint) as SizeKey[];
-                let currentSize: SizeValue | undefined;
-                const sizes = keys.reduce<Size>((acc, key) => {
+                let currentSize: Value | undefined;
+                const sizes = keys.reduce<Size<Value>>((acc, key) => {
                     if (size[key]) {
                         currentSize = size[key];
                     }
@@ -73,26 +75,27 @@ export default function ChocoStyleToStyle(
 
         //* Style
         //? background color background-color
-        if (chocostyle.color !== undefined) {
-            newCss.color = chocostyle.color;
-        }
         if (chocostyle.bg !== undefined) {
             newCss.background = chocostyle.bg;
         }
+        if (chocostyle.color !== undefined) {
+            newCss.color = getColor(chocostyle.color);
+        }
+        if (chocostyle.bgImage !== undefined) {
+            newCss.backgroundImage = chocostyle.bgImage;
+        }
         if (chocostyle.bgColor !== undefined) {
-            switch (chocostyle.bgColor) {
-                case null:
-                    newCss.backgroundColor = "transparent";
-                    break;
-                default:
-                    newCss.backgroundColor = chocostyle.bgColor;
-                    break;
-            }
+            newCss.backgroundColor = getColor(chocostyle.bgColor);
         }
 
         //* Opacity
         if (chocostyle.op !== undefined) {
             newCss.opacity = chocostyle.op * 0.01;
+        }
+
+        //* z-index
+        if (chocostyle.z !== undefined) {
+            newCss.zIndex = chocostyle.z;
         }
 
         //* Width and Height
@@ -102,32 +105,44 @@ export default function ChocoStyleToStyle(
         if (chocostyle.h !== undefined) {
             newCss.height = sizeToCss(chocostyle.h);
         }
+        if (chocostyle.minW !== undefined) {
+            newCss.minWidth = sizeToCss(chocostyle.minW);
+        }
+        if (chocostyle.minH !== undefined) {
+            newCss.minHeight = sizeToCss(chocostyle.minH);
+        }
+        if (chocostyle.maxW !== undefined) {
+            newCss.maxWidth = sizeToCss(chocostyle.maxW);
+        }
+        if (chocostyle.maxH !== undefined) {
+            newCss.maxHeight = sizeToCss(chocostyle.maxH);
+        }
 
         //* inset
         //? all top bottom left right left&right top&bottom
         if (chocostyle.i !== undefined) {
-            newCss.inset = sizeToCss(chocostyle.i, timeBox);
+            newCss.inset = sizeToCss(chocostyle.i);
         } else {
             if (chocostyle.x !== undefined) {
-                newCss.left = sizeToCss(chocostyle.x, timeBox);
-                newCss.right = sizeToCss(chocostyle.x, timeBox);
+                newCss.left = sizeToCss(chocostyle.x);
+                newCss.right = sizeToCss(chocostyle.x);
             } else {
                 if (chocostyle.l !== undefined) {
-                    newCss.left = sizeToCss(chocostyle.l, timeBox);
+                    newCss.left = sizeToCss(chocostyle.l);
                 }
                 if (chocostyle.r !== undefined) {
-                    newCss.right = sizeToCss(chocostyle.r, timeBox);
+                    newCss.right = sizeToCss(chocostyle.r);
                 }
             }
             if (chocostyle.y !== undefined) {
-                newCss.top = sizeToCss(chocostyle.y, timeBox);
-                newCss.bottom = sizeToCss(chocostyle.y, timeBox);
+                newCss.top = sizeToCss(chocostyle.y);
+                newCss.bottom = sizeToCss(chocostyle.y);
             } else {
                 if (chocostyle.t !== undefined) {
-                    newCss.top = sizeToCss(chocostyle.t, timeBox);
+                    newCss.top = sizeToCss(chocostyle.t);
                 }
                 if (chocostyle.b !== undefined) {
-                    newCss.bottom = sizeToCss(chocostyle.b, timeBox);
+                    newCss.bottom = sizeToCss(chocostyle.b);
                 }
             }
         }
@@ -190,10 +205,39 @@ export default function ChocoStyleToStyle(
             }
         }
 
+        //* Gap
+        //? all top bottom left right left&right top&bottom
+        if (chocostyle.gap !== undefined) {
+            newCss.gap = sizeToCss(chocostyle.gap, timeBox);
+        } else {
+            if (chocostyle.gapX !== undefined) {
+                newCss.columnGap = sizeToCss(chocostyle.gapX, timeBox);
+                newCss.rowGap = sizeToCss(chocostyle.gapX, timeBox);
+            } else {
+                if (chocostyle.gapL !== undefined) {
+                    newCss.columnGap = sizeToCss(chocostyle.gapL, timeBox);
+                }
+                if (chocostyle.gapR !== undefined) {
+                    newCss.rowGap = sizeToCss(chocostyle.gapR, timeBox);
+                }
+            }
+            if (chocostyle.gapY !== undefined) {
+                newCss.columnGap = sizeToCss(chocostyle.gapY, timeBox);
+                newCss.rowGap = sizeToCss(chocostyle.gapY, timeBox);
+            } else {
+                if (chocostyle.gapT !== undefined) {
+                    newCss.columnGap = sizeToCss(chocostyle.gapT, timeBox);
+                }
+                if (chocostyle.gapB !== undefined) {
+                    newCss.rowGap = sizeToCss(chocostyle.gapB, timeBox);
+                }
+            }
+        }
+
         //* FontSize
         if (chocostyle.size !== undefined) {
             const fontSize = formatSize(chocostyle.size);
-            newCss.fontSize = sizeToCss(fontSize, timeText, "rem");
+            newCss.fontSize = sizeToCss(fontSize, timeText, "em");
         }
 
         //* Border
@@ -201,14 +245,42 @@ export default function ChocoStyleToStyle(
             newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
         }
         if (chocostyle.fontS !== undefined) {
-            newCss.fontSize = sizeToCss(chocostyle.fontS, timeText, "rem");
+            newCss.fontSize = sizeToCss(chocostyle.fontS, timeText, "em");
+        }
+
+        //* transition
+        if (chocostyle.animation !== undefined) {
+            newCss.transition =
+                typeof chocostyle.animation === "string"
+                    ? chocostyle.animation
+                    : `${chocostyle.animation}s`;
+        }
+
+        //* Transform
+        if (chocostyle.transform !== undefined) {
+            newCss.transform = chocostyle.transform;
+        }
+
+        switch (chocostyle.transformCenter) {
+            case "all":
+                newCss.top = "50%";
+                newCss.left = "50%";
+                newCss.transform = "translate(-50%, -50%)";
+                break;
+            case "x":
+                newCss.top = "50%";
+                newCss.transform = "translateX(-50%)";
+                break;
+            case "y":
+                newCss.left = "50%";
+                newCss.transform = "translateY(-50%)";
+                break;
         }
 
         //* Display
         //? none flex block inline inline-flex inline-block grid inline-grid table inline-table
-        switch (chocostyle.dp) {
+        switch (sizeToCss(chocostyle.dp)) {
             case null:
-            case "n":
                 newCss.display = "none";
                 break;
             case "f":
@@ -226,11 +298,23 @@ export default function ChocoStyleToStyle(
             case "ib":
                 newCss.display = "inline-block";
                 break;
+            case "g":
+                newCss.display = "grid";
+                break;
+            case "ig":
+                newCss.display = "inline-grid";
+                break;
+            case "t":
+                newCss.display = "table";
+                break;
+            case "it":
+                newCss.display = "inline-table";
+                break;
         }
 
         //* Flex direction
         //? unset row reverse-row column reverse-column
-        switch (chocostyle.fd) {
+        switch (sizeToCss(chocostyle.fd)) {
             case null:
                 newCss.flexDirection = "unset";
                 break;
@@ -246,16 +330,19 @@ export default function ChocoStyleToStyle(
             case "cr":
                 newCss.flexDirection = "column-reverse";
                 break;
+            case "i":
+                newCss.flexDirection = "initial";
+                break;
         }
 
         //* Flex wrap
         if (chocostyle.fw !== undefined) {
-            newCss.flexWrap = chocostyle.fw ? "wrap" : "nowrap";
+            newCss.flexWrap = sizeToCss(chocostyle.fw) ? "wrap" : "nowrap";
         }
 
         //* Align content
         //? unset flex-end flex-start center space-around space-between stretch
-        switch (chocostyle.ac) {
+        switch (sizeToCss(chocostyle.ac)) {
             case null:
                 newCss.alignContent = "unset";
                 break;
@@ -281,7 +368,7 @@ export default function ChocoStyleToStyle(
 
         //* Align items
         //? unset flex-end flex-start center space-around space-between stretch
-        switch (chocostyle.a) {
+        switch (sizeToCss(chocostyle.a)) {
             case null:
                 newCss.alignItems = "unset";
                 break;
@@ -307,7 +394,7 @@ export default function ChocoStyleToStyle(
 
         //* Justify content
         //? flex-end flex-start center space-around space-between space-evenly
-        switch (chocostyle.j) {
+        switch (sizeToCss(chocostyle.j)) {
             case null:
                 newCss.justifyContent = "unset";
                 break;
@@ -333,7 +420,7 @@ export default function ChocoStyleToStyle(
 
         //* Text align
         //? unset end left start right center justify
-        switch (chocostyle.text) {
+        switch (sizeToCss(chocostyle.text)) {
             case null:
                 newCss.textAlign = "unset";
                 break;
@@ -359,7 +446,7 @@ export default function ChocoStyleToStyle(
 
         //* Position
         //? unset relative absolute fixed sticky
-        switch (chocostyle.pos) {
+        switch (sizeToCss(chocostyle.pos)) {
             case null:
                 newCss.position = "unset";
                 break;
@@ -374,6 +461,58 @@ export default function ChocoStyleToStyle(
                 break;
             case "s":
                 newCss.position = "static";
+                break;
+        }
+
+        //* Overflow
+        //? visible hidden scroll auto
+        switch (sizeToCss(chocostyle.of)) {
+            case null:
+                newCss.overflow = "unset";
+                break;
+            case "v":
+                newCss.overflow = "visible";
+                break;
+            case "h":
+                newCss.overflow = "hidden";
+                break;
+            case "s":
+                newCss.overflow = "scroll";
+                break;
+            case "a":
+                newCss.overflow = "auto";
+                break;
+        }
+
+        //* Cursor
+        //? default pointer move not-allowed wait text crosshair alias copy col-resize
+        switch (sizeToCss(chocostyle.cur)) {
+            case null:
+                newCss.cursor = "unset";
+                break;
+            case "d":
+                newCss.cursor = "default";
+                break;
+            case "p":
+                newCss.cursor = "pointer";
+                break;
+            case "m":
+                newCss.cursor = "move";
+                break;
+            case "n":
+                newCss.cursor = "not-allowed";
+                break;
+            case "w":
+                newCss.cursor = "wait";
+                break;
+            case "t":
+                newCss.cursor = "text";
+                break;
+            case "c":
+                newCss.cursor = "crosshair";
+                break;
+            case "cr":
+                newCss.cursor = "col-resize";
                 break;
         }
         return newCss;

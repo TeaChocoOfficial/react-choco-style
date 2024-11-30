@@ -14,7 +14,7 @@ export type ChocoStyledProps<
     Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any>,
 > = ChocoStylePropsType & React.ComponentPropsWithoutRef<Tag>;
 
-type CustomTheme = ChocoStyleType | React.CSSProperties;
+export type CustomTheme = ChocoStyleType | React.CSSProperties;
 
 export function removeReservedProps(reservedKeywords: string[], props?: any) {
     return reservedKeywords.reduce((acc, keyword) => {
@@ -37,12 +37,11 @@ export default function Styled<
     ) => {
         return (props: Props) => {
             const theme = useTheme();
-
             const customStyleProps =
                 (customStyles && typeof customStyles === "function"
                     ? customStyles({ theme })
                     : customStyles) ?? {};
-            const customStyle: React.CSSProperties = { ...customStyleProps };
+            const customStyle = { ...customStyleProps } as React.CSSProperties;
             const customChocoStyle = keysChocoStyle.reduce<ChocoStyleTypes>(
                 (acc, key) => {
                     if (
@@ -57,6 +56,7 @@ export default function Styled<
             ) as ChocoStyleType;
 
             const { cs } = props;
+
             const chocoStyle = chocoPropsToChocoStyle(props);
             const css = ChocoStyleToStyle({
                 ...customChocoStyle,
@@ -69,11 +69,10 @@ export default function Styled<
                 ...props.style,
                 ...css,
             };
-            console.log(css, customChocoStyle);
 
             const prop: Prop = { ...props, style };
-
             const newProps = removeReservedProps(keysChocoStyleProps, prop);
+
             const Tag = tag as React.ElementType;
             return <Tag {...newProps} />;
         };

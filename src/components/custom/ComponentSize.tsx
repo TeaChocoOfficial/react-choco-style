@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/components/custom/ComponentSize.tsx"
+//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/custom/ComponentSize.tsx"
 import { formatSize } from "./size";
 import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import { innerAtom } from "../layout/ChocoStart";
 import { Size, Sizes, SizeValue } from "../../types/Size";
 
 export function ComponentSize<S = SizeValue>({
-    size = 20,
+    size = 20 as S,
     children,
 }: {
     size?: Sizes<S>;

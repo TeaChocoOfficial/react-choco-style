@@ -1,5 +1,6 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/types/theme.ts"
 import { SizeKey } from "./Size";
+import { ColorHexType } from "./color";
 
 export type ModesKeyType = "dark" | "light";
 
@@ -9,21 +10,32 @@ export type ThemeFontsType = {
 };
 
 export type ColorsType = {
-    text?: string;
-    main: string;
-    dark?: string;
-    light?: string;
-    disabled?: string;
-    textDisabled?: string;
+    text?: ColorHexType;
+    main: ColorHexType;
+    dark?: ColorHexType;
+    light?: ColorHexType;
+    disabled?: ColorHexType;
+    textDisabled?: ColorHexType;
 };
 
 export type PaletteType = {
+    common: Record<string, ColorsType>;
     primary: ColorsType;
     secondary: ColorsType;
+    error: ColorsType;
+    warning: ColorsType;
+    info: ColorsType;
+    success: ColorsType;
+    shadow: ColorsType;
     background: {
-        body: string;
-        paper: string;
-        default: string;
+        body: ColorHexType;
+        paper: ColorHexType;
+        default: ColorHexType;
+    };
+    text: {
+        primary: ColorHexType;
+        secondary: ColorHexType;
+        disabled: ColorHexType;
     };
 };
 

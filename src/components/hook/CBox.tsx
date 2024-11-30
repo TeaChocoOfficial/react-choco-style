@@ -3,6 +3,8 @@ import styled, { ChocoStyledProps } from "../custom/Styled";
 
 const Box = styled("div")();
 
-export default function CBox(props: ChocoStyledProps<"div">) {
+export type CBoxProps = ChocoStyledProps<"div">;
+
+export default function CBox(props: CBoxProps) {
     return <Box {...props} />;
 }
