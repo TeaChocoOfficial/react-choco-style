@@ -12,6 +12,8 @@ export type BorderStyleType = {
     color?: ColorsType;
     style?: "dotted" | "dashed" | "solid" | "double" | "groove" | "ridge" | "inset" | "outset" | "none" | "hidden";
 };
+export type GridTemplateType = [(string | number)[]] | [(string | number)[], (string | number)[]];
+export type GridAreaType = number[][];
 export type ChocoStyleDefType = {
     bg?: string;
     color?: ColorsType;
@@ -55,6 +57,8 @@ export type ChocoStyleDefType = {
     gapY?: Sizes;
     size?: number;
     fontS?: Sizes;
+    gridT?: Sizes<GridTemplateType>;
+    gridA?: Sizes<GridAreaType>;
     borR?: Sizes;
     border?: BorderStyleType | string;
     animation?: number | string;

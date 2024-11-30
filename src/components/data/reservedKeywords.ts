@@ -42,6 +42,8 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "gapY",
     "size",
     "fontS",
+    "gridT",
+    "gridA",
     "borR",
     "border",
     "animation",

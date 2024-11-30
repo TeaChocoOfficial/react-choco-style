@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/chocoPropsToChocoStyle.ts"
+//-Path: "react-choco-style/src/hook/chocoPropsToChocoStyle.ts"
 import {
     ChocoStyleType,
     ChocoStyleTypes,
@@ -20,7 +20,7 @@ export default function chocoPropsToChocoStyle(
     const chocoProps = keys.reduce<ChocoStyleTypes>((acc, key) => {
         const prop = csp[key];
         if (KeywordsChocoStyleDef.includes(key)) {
-            acc[key] = prop;
+            acc[key] = prop as Sizes;
         }
         return acc;
     }, {});
@@ -28,7 +28,7 @@ export default function chocoPropsToChocoStyle(
     const chocoStyleProps = keys.reduce<ChocoStylePropsTypes>((acc, key) => {
         const prop = csp[key];
         if (KeywordsChocoStyleProps.includes(key)) {
-            acc[key] = prop;
+            acc[key] = prop as Sizes;
         }
         return acc;
     }, {});

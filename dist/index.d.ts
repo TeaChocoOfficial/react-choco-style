@@ -26,6 +26,6 @@ export { useTheme } from "./theme/useTheme";
 export { getThemeMode, ChocoTheme, themeModeAtom } from "./theme/theme";
 export { ColorText, ColorCommon, ColorDefault, type ColorType, type ColorsType, type ColorTextType, type ColorCommonType, type ColorDefaultType, } from "./types/color";
 export type { ColorsTypes, PaletteType, ModesKeyType, ThemeFontsType, ChocoThemeType, DefChocoThemeType, UseChocoThemeType, } from "./types/theme";
-export type { ChocoStyleType, ChocoStyleTypes, BorderStyleType, ChocoStyleDefType, ChocoStylePropsType, ChocoStylePropsTypes, } from "./types/ChocoStyle";
+export type { GridAreaType, ChocoStyleType, ChocoStyleTypes, BorderStyleType, GridTemplateType, ChocoStyleDefType, ChocoStylePropsType, ChocoStylePropsTypes, } from "./types/ChocoStyle";
 export type { SizeKey, SizeValue, Sizes, Size } from "./types/Size";
 export { Styled, CBox, CText, CPaper, CButton, CSkeleton, InitChoco, ChocoStart, GetColor, GetSetColor, ChocoStyleToStyle, chocoPropsToChocoStyle, };

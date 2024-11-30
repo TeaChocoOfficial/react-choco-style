@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/GetSetColor.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/GetSetColor.tsx"
 import { useTheme } from "../theme/useTheme";
 import { ColorType, ColorsType, ColorDefaultType } from "../types/color";
 
@@ -17,11 +17,7 @@ export default function GetSetColor(): (
     return (color?: ColorType): SetColorType | undefined => {
         let Color: SetColorType = {};
 
-        switch (color) {
-            case undefined:
-                Color = {};
-                break;
-
+        switch (color ?? "secondary") {
             //*common
             case "paper":
                 Color = {

@@ -35,7 +35,29 @@ export default function ChocoStyleToStyle(
         return breakpoint;
     }
 
-    function sizeToCss<Value>(
+    function getSizes<Value = string | undefined>(
+        size?: Sizes<Value>,
+    ): Value | undefined {
+        const keys = Object.keys(theme.breakpoint) as SizeKey[];
+        if (size) {
+            const sizeKeys = Object.keys(size) as (keyof Size<Value>)[];
+            if (sizeKeys.find((key) => keys.includes(key))) {
+                const sizes = keys.reduce<Size<Value>>((acc, key) => {
+                    const s = size as Size<Value>;
+                    if (key in s) {
+                        acc[key] = s[key];
+                    }
+                    return acc;
+                }, {});
+                const value = sizes[keys[breakpoint]];
+                return value as Value;
+            } else {
+                return size as Value;
+            }
+        }
+    }
+
+    function sizeToCss<Value = string | undefined>(
         size: Sizes<Value>,
         time?: number,
         unit?: string,
@@ -240,6 +262,41 @@ export default function ChocoStyleToStyle(
             const fontSize = formatSize(chocostyle.size);
             newCss.fontSize = sizeToCss(fontSize, timeText, "em");
         }
+        if (chocostyle.fontS !== undefined) {
+            newCss.fontSize = sizeToCss(chocostyle.fontS, timeText, "em");
+        }
+
+        //* Grids
+        //? grid-template grid-area
+        if (chocostyle.gridT !== undefined) {
+            const getGritTemplate = (
+                template?: (string | number | null)[][],
+            ) => {
+                return template
+                    ?.map((row) =>
+                        row
+                            .map((col) =>
+                                typeof col === "number" ? `${col}fr` : col,
+                            )
+                            .join(" "),
+                    )
+                    .join(" / ");
+            };
+
+            const gridTemplateSize = getSizes(chocostyle.gridT);
+            newCss.gridTemplate = getGritTemplate(gridTemplateSize);
+        }
+        if (chocostyle.gridA !== undefined) {
+            const gridAreaSize = getSizes(chocostyle.gridA);
+            const gridArea = gridAreaSize
+                ?.map((area, index) =>
+                    (index > 0 ? area.map((a) => `span ${a}`) : area).join(
+                        " / ",
+                    ),
+                )
+                ?.join(" / ");
+            newCss.gridArea = gridArea;
+        }
 
         //* Border
         if (chocostyle.border !== undefined) {
@@ -263,9 +320,6 @@ export default function ChocoStyleToStyle(
         }
         if (chocostyle.borR !== undefined) {
             newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
-        }
-        if (chocostyle.fontS !== undefined) {
-            newCss.fontSize = sizeToCss(chocostyle.fontS, timeText, "em");
         }
 
         //* transition

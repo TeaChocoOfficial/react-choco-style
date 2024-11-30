@@ -3,6 +3,7 @@
 var jsxRuntime = require('react/jsx-runtime');
 var recoil = require('recoil');
 var react = require('react');
+var reactRouterDom = require('react-router-dom');
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -320,6 +321,8 @@ var KeywordsChocoStyleDef = [
     "gapY",
     "size",
     "fontS",
+    "gridT",
+    "gridA",
     "borR",
     "border",
     "animation",
@@ -423,14 +426,15 @@ function callbackSize(size, callback) {
 var innerAtom = recoil.atom({
     key: "window inner",
     default: {
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window ? window.innerWidth : 0,
+        height: window ? window.innerHeight : 0,
     },
 });
 function ChocoStart(_a) {
     var children = _a.children;
     var setInner = recoil.useSetRecoilState(innerAtom);
     react.useEffect(function () {
+        getThemeMode();
         var handleResize = function () {
             setInner({
                 width: window.innerWidth,
@@ -460,6 +464,26 @@ function ChocoStyleToStyle(cs) {
             }
         });
         return breakpoint;
+    }
+    function getSizes(size) {
+        var keys = Object.keys(theme.breakpoint);
+        if (size) {
+            var sizeKeys = Object.keys(size);
+            if (sizeKeys.find(function (key) { return keys.includes(key); })) {
+                var sizes = keys.reduce(function (acc, key) {
+                    var s = size;
+                    if (key in s) {
+                        acc[key] = s[key];
+                    }
+                    return acc;
+                }, {});
+                var value = sizes[keys[breakpoint]];
+                return value;
+            }
+            else {
+                return size;
+            }
+        }
     }
     function sizeToCss(size, time, unit) {
         if (size) {
@@ -491,7 +515,7 @@ function ChocoStyleToStyle(cs) {
         }
     }
     function getChocoStyle(chocostyle) {
-        var _a, _b;
+        var _a, _b, _c;
         var timeBox = 4;
         var timeText = 1 / 16;
         var newCss = removeReservedProps(__spreadArray(__spreadArray([], KeywordsChocoStyleDef, true), KeywordsChocoStyle, true), __assign({}, chocostyle));
@@ -665,32 +689,54 @@ function ChocoStyleToStyle(cs) {
             var fontSize = formatSize(chocostyle.size);
             newCss.fontSize = sizeToCss(fontSize, timeText, "em");
         }
+        if (chocostyle.fontS !== undefined) {
+            newCss.fontSize = sizeToCss(chocostyle.fontS, timeText, "em");
+        }
+        //* Grids
+        //? grid-template grid-area
+        if (chocostyle.gridT !== undefined) {
+            var getGritTemplate = function (template) {
+                return template === null || template === void 0 ? void 0 : template.map(function (row) {
+                    return row
+                        .map(function (col) {
+                        return typeof col === "number" ? "".concat(col, "fr") : col;
+                    })
+                        .join(" ");
+                }).join(" / ");
+            };
+            var gridTemplateSize = getSizes(chocostyle.gridT);
+            newCss.gridTemplate = getGritTemplate(gridTemplateSize);
+        }
+        if (chocostyle.gridA !== undefined) {
+            var gridAreaSize = getSizes(chocostyle.gridA);
+            var gridArea = (_a = gridAreaSize === null || gridAreaSize === void 0 ? void 0 : gridAreaSize.map(function (area, index) {
+                return (index > 0 ? area.map(function (a) { return "span ".concat(a); }) : area).join(" / ");
+            })) === null || _a === void 0 ? void 0 : _a.join(" / ");
+            newCss.gridArea = gridArea;
+        }
         //* Border
         if (chocostyle.border !== undefined) {
             if (typeof chocostyle.border === "string") {
                 newCss.border = chocostyle.border;
             }
             else {
-                var _c = chocostyle.border, size = _c.size, width = _c.width, style = _c.style, color = _c.color;
+                var _d = chocostyle.border, size = _d.size, width = _d.width, style = _d.style, color = _d.color;
                 var border = [];
                 if (size !== undefined) {
                     var borderWidth = width ? width : formatSize(size);
-                    border.push((_a = sizeToCss(borderWidth)) !== null && _a !== void 0 ? _a : "");
+                    border.push((_b = sizeToCss(borderWidth)) !== null && _b !== void 0 ? _b : "");
                 }
                 if (style !== undefined) {
                     border.push(style);
                 }
                 if (color !== undefined) {
-                    border.push((_b = getColor(color)) !== null && _b !== void 0 ? _b : "");
+                    border.push((_c = getColor(color)) !== null && _c !== void 0 ? _c : "");
                 }
                 newCss.border = border.join(" ");
             }
         }
         if (chocostyle.borR !== undefined) {
             newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
-        }
-        if (chocostyle.fontS !== undefined) {
-            newCss.fontSize = sizeToCss(chocostyle.fontS, timeText, "em");
         }
         //* transition
         if (chocostyle.animation !== undefined) {
@@ -1230,7 +1276,11 @@ function CBox(props) {
     return jsxRuntime.jsx(Box, __assign({}, props));
 }
 
-var Skeleton = Styled("div")();
+var Skeleton = Styled("div")({
+    of: "h",
+    pos: "r",
+    bgColor: "#ffffff22",
+});
 function CSkeleton(prop) {
     var _a, _b, _c, _d;
     var props = __assign({}, prop);
@@ -1251,7 +1301,6 @@ function CSkeleton(prop) {
     else {
         props.cs = __assign(__assign({}, props.cs), textSc);
     }
-    props.cs = __assign({ of: "h", pos: "r", bgColor: "#ffffff22" }, props.cs);
     var keyframes = "\n    @keyframes CSkeleton {\n        from {\n            transform: translate(-200%);\n        }\n        to {\n            transform: translate(200%);\n        }\n    }\n    ";
     var styleSheet = document.styleSheets[0];
     styleSheet.insertRule(keyframes);
@@ -1262,11 +1311,10 @@ function CSkeleton(prop) {
     return jsxRuntime.jsx(Skeleton, __assign({}, props));
 }
 
-var Text = Styled("span")();
+var Text = Styled("span")({ size: 16 });
 function CText(prop) {
-    var _a;
     var style = getFont();
-    var props = __assign(__assign({}, prop), { size: (_a = prop.size) !== null && _a !== void 0 ? _a : 16 });
+    var props = __assign({}, prop);
     var skeleton = prop.skeleton;
     delete props.skeleton;
     if (skeleton) {
@@ -1277,7 +1325,15 @@ function CText(prop) {
     return jsxRuntime.jsx(Text, __assign({}, props));
 }
 
-var Paper = Styled("div")();
+var Paper = Styled("div")(function (_a) {
+    var theme = _a.theme;
+    return ({
+        borR: 1,
+        color: theme.palette.text.primary,
+        bgColor: theme.palette.background.paper,
+        boxShadow: "0px 2px 1px -1px ".concat(theme.palette.shadow.main),
+    });
+});
 function getElevation(elevation) {
     if (elevation !== undefined && elevation < 10) {
         return "".concat(elevation).concat(elevation);
@@ -1303,22 +1359,18 @@ function CPaper(prop) {
     var props = __assign({}, prop);
     delete props.elevation;
     var opacity = getElevation(elevation !== null && elevation !== void 0 ? elevation : 0);
-    props.style = __assign({ boxShadow: "0px 2px 1px -1px ".concat(palette.shadow.main) }, props.style);
     var bg = "".concat(palette.text.primary).concat(opacity);
-    props.cs = __assign({ bgImage: "linear-gradient(".concat(bg, ", ").concat(bg, ")"), bgColor: "".concat(palette.background.paper), color: palette.text.primary, borR: 1 }, props.cs);
+    props.cs = __assign({ bgImage: "linear-gradient(".concat(bg, ", ").concat(bg, ")") }, props.cs);
     return jsxRuntime.jsx(Paper, __assign({}, props));
 }
 
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/GetSetColor.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/GetSetColor.tsx"
 function GetSetColor() {
     var palette = useTheme().palette;
     return function (color) {
         var _a, _b, _c, _d, _e;
         var Color = {};
-        switch (color) {
-            case undefined:
-                Color = {};
-                break;
+        switch (color !== null && color !== void 0 ? color : "secondary") {
             //*common
             case "paper":
                 Color = {
@@ -1349,8 +1401,8 @@ function GetSetColor() {
                 Color = {
                     color: palette.text.primary,
                     bgColor: null,
-                    bgHover: palette.primary.textDisabled,
-                    action: palette.text.disabled,
+                    bgHover: palette.text.disabled,
+                    action: palette.primary.textDisabled,
                 };
                 break;
             //*primary
@@ -1465,13 +1517,15 @@ var Effect = Styled("span")({
 });
 function CButton(prop) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    var style = getFont("medium");
-    var props = __assign({}, prop);
+    var navigate = reactRouterDom.useNavigate();
     var getSetColor = GetSetColor();
+    var fontStyle = getFont("medium");
+    var props = __assign({}, prop);
     var _j = react.useState(false), isHover = _j[0], setIsHover = _j[1];
     var _k = react.useState(false), isAnimating = _k[0], setIsAnimating = _k[1];
-    var color = props.color, lowcase = props.lowcase, outline = props.outline, children = props.children, disabled = props.disabled, onClick = props.onClick, onMouseEnter = props.onMouseEnter, onMouseLeave = props.onMouseLeave;
+    var to = props.to, color = props.color, lowcase = props.lowcase, outline = props.outline, children = props.children, disabled = props.disabled, onClick = props.onClick, onMouseEnter = props.onMouseEnter, onMouseLeave = props.onMouseLeave;
     var buttonColor = getSetColor(color);
+    delete props.to;
     delete props.color;
     delete props.lowcase;
     delete props.outline;
@@ -1516,15 +1570,26 @@ function CButton(prop) {
                 ? getColor(buttonColor === null || buttonColor === void 0 ? void 0 : buttonColor.bgColor)
                 : buttonColor === null || buttonColor === void 0 ? void 0 : buttonColor.bgColor;
     }
-    props.cs = __assign({ a: "c", j: "c", of: "h", dp: "if", pos: "r", animation: 0.3, py: formatSize((((_d = props.size) !== null && _d !== void 0 ? _d : 16) / 16) * 4), px: formatSize((((_e = props.size) !== null && _e !== void 0 ? _e : 16) / 16) * 8), size: (_f = props.size) !== null && _f !== void 0 ? _f : 16, borR: formatSize(2) }, props.cs);
+    var style = ChocoStyleToStyle({
+        a: "c",
+        j: "c",
+        of: "h",
+        dp: "if",
+        pos: "r",
+        animation: 0.3,
+        gap: formatSize(4),
+        borR: formatSize(2),
+        size: (_d = props.size) !== null && _d !== void 0 ? _d : 16,
+        py: formatSize((((_e = props.size) !== null && _e !== void 0 ? _e : 16) / 16) * 4),
+        px: formatSize((((_f = props.size) !== null && _f !== void 0 ? _f : 16) / 16) * 8),
+    });
     var keyframes = "\n        @keyframes CButton-ripple {\n            0% {\n                opacity: 0;\n                transform: scale(0);\n            }\n            70% {\n                opacity: 0.6;\n                transform: scale(2);\n            }\n            100% {\n                opacity: 0;\n                transform: scale(2);\n            }\n        }\n        ";
     var styleSheet = document.styleSheets[0];
     styleSheet.insertRule(keyframes);
-    props.style = __assign(__assign(__assign({}, style), { border: "none" }), props.style);
+    props.style = __assign(__assign(__assign(__assign({}, fontStyle), style), { border: "none" }), props.style);
     if (!lowcase) {
         props.style = __assign({ textTransform: "uppercase" }, props.style);
     }
-    console.log(props);
     return (jsxRuntime.jsxs(Button, __assign({}, props, { onMouseEnter: function (event) {
             setIsHover(true);
             if (onMouseEnter) {
@@ -1540,6 +1605,9 @@ function CButton(prop) {
             setTimeout(function () {
                 setIsAnimating(true);
             }, 1);
+            if (to !== undefined) {
+                navigate(to);
+            }
             if (onClick) {
                 onClick(event);
             }

@@ -61,9 +61,11 @@ export type {
     UseChocoThemeType,
 } from "./types/theme";
 export type {
+    GridAreaType,
     ChocoStyleType,
     ChocoStyleTypes,
     BorderStyleType,
+    GridTemplateType,
     ChocoStyleDefType,
     ChocoStylePropsType,
     ChocoStylePropsTypes,

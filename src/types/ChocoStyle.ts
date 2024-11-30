@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/types/ChocoStyle.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/types/ChocoStyle.ts"
 import { Sizes } from "./Size";
 import { ColorsType } from "./color";
 
@@ -26,6 +26,12 @@ export type BorderStyleType = {
         | "none"
         | "hidden";
 };
+
+export type GridTemplateType =
+    | [(string | number)[]]
+    | [(string | number)[], (string | number)[]];
+
+export type GridAreaType = number[][];
 
 export type ChocoStyleDefType = {
     //* Style
@@ -92,6 +98,11 @@ export type ChocoStyleDefType = {
     //* FontSize
     size?: number;
     fontS?: Sizes;
+
+    //* Grids
+    //? grid-template grid-area
+    gridT?: Sizes<GridTemplateType>;
+    gridA?: Sizes<GridAreaType>;
 
     //* Border
     borR?: Sizes;
