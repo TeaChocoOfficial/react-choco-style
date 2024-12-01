@@ -1,8 +1,10 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/hook/CPaper.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CPaper.tsx"
 import { useTheme } from "../../theme/useTheme";
 import styled, { ChocoStyledProps } from "../custom/Styled";
 
 const Paper = styled("div")(({ theme }) => ({
+    py: 2,
+    px: 4,
     borR: 1,
     color: theme.palette.text.primary,
     bgColor: theme.palette.background.paper,

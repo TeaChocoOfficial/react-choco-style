@@ -220,6 +220,32 @@ export default function chocoPropsToChocoStyle<
             case "ofA":
                 acc.of = "a";
                 break;
+
+            case "ofxV":
+                acc.ofx = "v";
+                break;
+            case "ofxH":
+                acc.ofx = "h";
+                break;
+            case "ofxS":
+                acc.ofx = "s";
+                break;
+            case "ofxA":
+                acc.ofx = "a";
+                break;
+
+            case "ofyV":
+                acc.ofy = "v";
+                break;
+            case "ofyH":
+                acc.ofy = "h";
+                break;
+            case "ofyS":
+                acc.ofy = "s";
+                break;
+            case "ofyA":
+                acc.ofy = "a";
+                break;
         }
 
         return acc;

@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/hook/Ccontainer.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CContainer.tsx"
 import { getFont } from "../custom/font";
 import { useTheme } from "../../theme/useTheme";
 import Styled, { ChocoStyledProps } from "../custom/Styled";
@@ -24,9 +24,13 @@ export default function CContainer(prop: CContainerProps) {
         case undefined:
         case "main":
             props.cs = {
-                p: 0,
-                mx: "auto",
                 ...props.cs,
+                p: 0,
+                a: "c",
+                j: "c",
+                dp: "f",
+                fd: "c",
+                w: "100%",
             };
             break;
         case "header":

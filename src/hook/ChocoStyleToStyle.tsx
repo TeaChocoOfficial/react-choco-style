@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/ChocoStyleToStyle.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/hook/ChocoStyleToStyle.tsx"
 import GetColor from "./GetColor";
 import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
@@ -13,14 +13,19 @@ import { formatSize } from "../components/custom/size";
 import { innerAtom } from "../components/layout/ChocoStart";
 import { removeReservedProps } from "../components/custom/Styled";
 
-export default function ChocoStyleToStyle(
-    cs: ChocoStyleType,
-): React.CSSProperties {
+export default function ChocoStyleToStyle<
+    CS extends undefined | ChocoStyleType = undefined,
+    Return = CS extends undefined
+        ? (chocostyle: ChocoStyleType) => React.CSSProperties
+        : React.CSSProperties,
+>(cs?: CS): Return {
     const theme = useTheme();
     const getColor = GetColor();
     const inner = useRecoilValue(innerAtom);
     const [breakpoint, setBreakpoint] = useState<number>(getBreakpoint());
-    const [css, setCss] = useState<React.CSSProperties>(getChocoStyle(cs));
+    const [css, setCss] = useState<React.CSSProperties>(
+        getChocoStyle(cs ?? {}),
+    );
 
     function getBreakpoint(): number {
         const keys = Object.keys(theme.breakpoint) as SizeKey[];
@@ -299,6 +304,9 @@ export default function ChocoStyleToStyle(
         }
 
         //* Border
+        if (chocostyle.borR !== undefined) {
+            newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
+        }
         if (chocostyle.border !== undefined) {
             if (typeof chocostyle.border === "string") {
                 newCss.border = chocostyle.border;
@@ -318,8 +326,125 @@ export default function ChocoStyleToStyle(
                 newCss.border = border.join(" ");
             }
         }
-        if (chocostyle.borR !== undefined) {
-            newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
+        if (chocostyle.borderY !== undefined) {
+            if (typeof chocostyle.borderY === "string") {
+                newCss.borderTop = chocostyle.borderY;
+                newCss.borderBottom = chocostyle.borderY;
+            } else {
+                const { size, width, style, color } = chocostyle.borderY;
+                const border: string[] = [];
+                if (size !== undefined) {
+                    const borderWidth = width ? width : formatSize(size);
+                    border.push(sizeToCss(borderWidth) ?? "");
+                }
+                if (style !== undefined) {
+                    border.push(style);
+                }
+                if (color !== undefined) {
+                    border.push(getColor(color) ?? "");
+                }
+                newCss.borderTop = border.join(" ");
+                newCss.borderBottom = border.join(" ");
+            }
+        } else {
+            if (chocostyle.borderT !== undefined) {
+                if (typeof chocostyle.borderT === "string") {
+                    newCss.borderTop = chocostyle.borderT;
+                } else {
+                    const { size, width, style, color } = chocostyle.borderT;
+                    const border: string[] = [];
+                    if (size !== undefined) {
+                        const borderWidth = width ? width : formatSize(size);
+                        border.push(sizeToCss(borderWidth) ?? "");
+                    }
+                    if (style !== undefined) {
+                        border.push(style);
+                    }
+                    if (color !== undefined) {
+                        border.push(getColor(color) ?? "");
+                    }
+                    newCss.borderTop = border.join(" ");
+                }
+            }
+            if (chocostyle.borderB !== undefined) {
+                if (typeof chocostyle.borderB === "string") {
+                    newCss.borderBottom = chocostyle.borderB;
+                } else {
+                    const { size, width, style, color } = chocostyle.borderB;
+                    const border: string[] = [];
+                    if (size !== undefined) {
+                        const borderWidth = width ? width : formatSize(size);
+                        border.push(sizeToCss(borderWidth) ?? "");
+                    }
+                    if (style !== undefined) {
+                        border.push(style);
+                    }
+                    if (color !== undefined) {
+                        border.push(getColor(color) ?? "");
+                    }
+                    newCss.borderBottom = border.join(" ");
+                }
+            }
+        }
+        if (chocostyle.borderX !== undefined) {
+            if (typeof chocostyle.borderX === "string") {
+                newCss.borderLeft = chocostyle.borderX;
+                newCss.borderRight = chocostyle.borderX;
+            } else {
+                const { size, width, style, color } = chocostyle.borderX;
+                const border: string[] = [];
+                if (size !== undefined) {
+                    const borderWidth = width ? width : formatSize(size);
+                    border.push(sizeToCss(borderWidth) ?? "");
+                }
+                if (style !== undefined) {
+                    border.push(style);
+                }
+                if (color !== undefined) {
+                    border.push(getColor(color) ?? "");
+                }
+                newCss.borderLeft = border.join(" ");
+                newCss.borderRight = border.join(" ");
+            }
+        } else {
+            if (chocostyle.borderL !== undefined) {
+                if (typeof chocostyle.borderL === "string") {
+                    newCss.borderLeft = chocostyle.borderL;
+                } else {
+                    const { size, width, style, color } = chocostyle.borderL;
+                    const border: string[] = [];
+                    if (size !== undefined) {
+                        const borderWidth = width ? width : formatSize(size);
+                        border.push(sizeToCss(borderWidth) ?? "");
+                    }
+                    if (style !== undefined) {
+                        border.push(style);
+                    }
+                    if (color !== undefined) {
+                        border.push(getColor(color) ?? "");
+                    }
+                    newCss.borderLeft = border.join(" ");
+                }
+            }
+            if (chocostyle.borderR !== undefined) {
+                if (typeof chocostyle.borderR === "string") {
+                    newCss.borderRight = chocostyle.borderR;
+                } else {
+                    const { size, width, style, color } = chocostyle.borderR;
+                    const border: string[] = [];
+                    if (size !== undefined) {
+                        const borderWidth = width ? width : formatSize(size);
+                        border.push(sizeToCss(borderWidth) ?? "");
+                    }
+                    if (style !== undefined) {
+                        border.push(style);
+                    }
+                    if (color !== undefined) {
+                        border.push(getColor(color) ?? "");
+                    }
+                    newCss.borderRight = border.join(" ");
+                }
+            }
         }
 
         //* transition
@@ -557,6 +682,40 @@ export default function ChocoStyleToStyle(
                 newCss.overflow = "auto";
                 break;
         }
+        switch (sizeToCss(chocostyle.ofx)) {
+            case null:
+                newCss.overflowX = "unset";
+                break;
+            case "v":
+                newCss.overflowX = "visible";
+                break;
+            case "h":
+                newCss.overflowX = "hidden";
+                break;
+            case "s":
+                newCss.overflowX = "scroll";
+                break;
+            case "a":
+                newCss.overflowX = "auto";
+                break;
+        }
+        switch (sizeToCss(chocostyle.ofy)) {
+            case null:
+                newCss.overflowY = "unset";
+                break;
+            case "v":
+                newCss.overflowY = "visible";
+                break;
+            case "h":
+                newCss.overflowY = "hidden";
+                break;
+            case "s":
+                newCss.overflowY = "scroll";
+                break;
+            case "a":
+                newCss.overflowY = "auto";
+                break;
+        }
 
         //* Cursor
         //? default pointer move not-allowed wait text crosshair alias copy col-resize
@@ -600,11 +759,11 @@ export default function ChocoStyleToStyle(
     }, [inner, theme]);
 
     useEffect(() => {
-        const newChocoStyle = getChocoStyle(cs);
+        const newChocoStyle = getChocoStyle(cs ?? {});
         if (JSON.stringify(newChocoStyle) !== JSON.stringify(css)) {
             setCss(newChocoStyle);
         }
     }, [cs, breakpoint]);
 
-    return css;
+    return (cs === undefined ? getChocoStyle : css) as Return;
 }

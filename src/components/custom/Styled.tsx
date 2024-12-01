@@ -1,4 +1,5 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/custom/Styled.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/Styled.tsx"
+import { useRef } from "react";
 import {
     ChocoStyleType,
     ChocoStyleTypes,
@@ -9,7 +10,6 @@ import { UseChocoThemeType } from "../../types/theme";
 import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
 import chocoPropsToChocoStyle from "../../hook/chocoPropsToChocoStyle";
 import { keysChocoStyle, keysChocoStyleProps } from "../data/reservedKeywords";
-import { useRef } from "react";
 
 export type ChocoStyledProps<
     Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any>,

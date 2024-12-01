@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/types/ChocoStyle.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/ChocoStyle.ts"
 import React from "react";
 import { Sizes } from "./Size";
 import { ColorsType } from "./color";
@@ -108,6 +108,12 @@ export type ChocoStyleDefType = {
     //* Border
     borR?: Sizes;
     border?: BorderStyleType | string;
+    borderT?: BorderStyleType | string;
+    borderB?: BorderStyleType | string;
+    borderL?: BorderStyleType | string;
+    borderR?: BorderStyleType | string;
+    borderX?: BorderStyleType | string;
+    borderY?: BorderStyleType | string;
 
     //* transition
     animation?: number | string;
@@ -152,6 +158,8 @@ export type ChocoStyleType = ChocoStyleDefType & {
     //* Overflow
     //? visible hidden scroll auto
     of?: Sizes<null | "v" | "h" | "s" | "a">;
+    ofx?: Sizes<null | "v" | "h" | "s" | "a">;
+    ofy?: Sizes<null | "v" | "h" | "s" | "a">;
 
     //* Cursor
     //? default pointer move not-allowed wait text crosshair alias copy  col-resize
@@ -241,4 +249,12 @@ export type ChocoStylePropsType<
     ofH?: boolean;
     ofS?: boolean;
     ofA?: boolean;
+    ofxV?: boolean;
+    ofxH?: boolean;
+    ofxS?: boolean;
+    ofxA?: boolean;
+    ofyV?: boolean;
+    ofyH?: boolean;
+    ofyS?: boolean;
+    ofyA?: boolean;
 };

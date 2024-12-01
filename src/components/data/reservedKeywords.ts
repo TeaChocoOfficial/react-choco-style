@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/data/reservedKeywords.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/data/reservedKeywords.ts"
 import {
     ChocoStyleType,
     ChocoStyleDefType,
@@ -46,6 +46,12 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "gridA",
     "borR",
     "border",
+    "borderT",
+    "borderB",
+    "borderL",
+    "borderR",
+    "borderX",
+    "borderY",
     "animation",
     "transform",
     "transformCenter",
@@ -60,6 +66,8 @@ export const KeywordsChocoStyle: (keyof ChocoStyleType)[] = [
     "text",
     "pos",
     "of",
+    "ofx",
+    "ofy",
     "cur",
 ];
 
@@ -115,6 +123,14 @@ export const KeywordsChocoStyleProps: (keyof ChocoStylePropsType)[] = [
     "ofH",
     "ofS",
     "ofA",
+    "ofxV",
+    "ofxH",
+    "ofxS",
+    "ofxA",
+    "ofyV",
+    "ofyH",
+    "ofyS",
+    "ofyA",
 ];
 
 export const keysChocoStyle = [
