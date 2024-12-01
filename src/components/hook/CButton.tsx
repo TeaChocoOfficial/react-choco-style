@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/components/hook/CButton.tsx"
+import { v4 } from "uuid";
 import { useState } from "react";
 import { getFont } from "../custom/font";
 import { formatSize } from "../custom/size";
@@ -8,7 +9,17 @@ import Styled, { ChocoStyledProps } from "../custom/Styled";
 import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
 import { ColorHexType, ColorsType, ColorType } from "../../types/color";
 
-const Button = Styled("button")();
+const Button = Styled("button")({
+    a: "c",
+    j: "c",
+    of: "h",
+    dp: "if",
+    pos: "r",
+    animation: 0.3,
+    gap: formatSize(4),
+    borR: formatSize(2),
+});
+
 const Effect = Styled("span")({
     op: 0,
     pos: "a",
@@ -30,7 +41,7 @@ export default function CButton(prop: CButtonProps) {
     const fontStyle = getFont("medium");
     const props: CButtonProps = { ...prop };
     const [isHover, setIsHover] = useState(false);
-    const [isAnimating, setIsAnimating] = useState(false);
+    const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);
     const {
         to,
         color,
@@ -94,14 +105,6 @@ export default function CButton(prop: CButtonProps) {
     }
 
     const style = ChocoStyleToStyle({
-        a: "c",
-        j: "c",
-        of: "h",
-        dp: "if",
-        pos: "r",
-        animation: 0.3,
-        gap: formatSize(4),
-        borR: formatSize(2),
         size: props.size ?? 16,
         py: formatSize(((props.size ?? 16) / 16) * 4),
         px: formatSize(((props.size ?? 16) / 16) * 8),
@@ -113,13 +116,13 @@ export default function CButton(prop: CButtonProps) {
                 opacity: 0;
                 transform: scale(0);
             }
-            70% {
+            60% {
                 opacity: 0.6;
-                transform: scale(2);
+                transform: scale(1);
             }
             100% {
                 opacity: 0;
-                transform: scale(2);
+                transform: scale(1.2);
             }
         }
         `;
@@ -132,6 +135,26 @@ export default function CButton(prop: CButtonProps) {
             textTransform: "uppercase",
             ...props.style,
         };
+    }
+
+    function addPressEffect() {
+        const id = v4();
+        const size = (props.size ?? 16) * 16;
+        setPressEffects((prev) => [
+            ...prev,
+            <Effect
+                key={id}
+                h={formatSize(size)}
+                w={formatSize(size)}
+                bgColor={buttonColor?.action}
+                style={{
+                    animation: "CButton-ripple 0.5s linear forwards",
+                }}
+            />,
+        ]);
+        setTimeout(() => {
+            setPressEffects((prev) => prev.filter((p) => p.key !== id));
+        }, 1000);
     }
 
     return (
@@ -150,10 +173,7 @@ export default function CButton(prop: CButtonProps) {
                 }
             }}
             onClick={(event) => {
-                setIsAnimating(false);
-                setTimeout(() => {
-                    setIsAnimating(true);
-                }, 1);
+                addPressEffect();
                 if (to !== undefined) {
                     navigate(to);
                 }
@@ -161,17 +181,8 @@ export default function CButton(prop: CButtonProps) {
                     onClick(event);
                 }
             }}>
+            {pressEffects}
             {children}
-            <Effect
-                bgColor={buttonColor?.action}
-                h={formatSize((props.size ?? 16) * 8)}
-                w={formatSize((props.size ?? 16) * 8)}
-                style={{
-                    animation: isAnimating
-                        ? "CButton-ripple 0.5s linear forwards"
-                        : "",
-                }}
-            />
         </Button>
     );
 }

@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/hook/ChocoStyleToStyle.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/ChocoStyleToStyle.tsx"
 import GetColor from "./GetColor";
 import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
@@ -91,10 +91,10 @@ export default function ChocoStyleToStyle(
     function getChocoStyle(chocostyle: ChocoStyleType) {
         const timeBox = 4;
         const timeText = 1 / 16;
-        const newCss: React.CSSProperties = removeReservedProps(
+        const newCss = removeReservedProps(
             [...KeywordsChocoStyleDef, ...KeywordsChocoStyle],
             { ...chocostyle },
-        );
+        ) as React.CSSProperties;
 
         //* Style
         //? background color background-color

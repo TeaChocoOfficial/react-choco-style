@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/types/ChocoStyle.ts"
+import React from "react";
 import { Sizes } from "./Size";
 import { ColorsType } from "./color";
 
@@ -157,7 +158,11 @@ export type ChocoStyleType = ChocoStyleDefType & {
     cur?: Sizes<null | "d" | "p" | "m" | "n" | "w" | "t" | "c" | "cr">;
 };
 
-export type ChocoStylePropsType = ChocoStyleDefType & {
+export type ChocoStylePropsType<
+    Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any> = "div",
+> = ChocoStyleDefType & {
+    useRef?: React.Ref<React.ElementRef<Tag>>;
+
     //* Keywords
     //? width&height:100% width&height:100view
     cs?: ChocoStyleType;
@@ -225,9 +230,15 @@ export type ChocoStylePropsType = ChocoStyleDefType & {
 
     //* Position
     //? position: relative absolute fixed sticky
-    pos?: ChocoStyleType["pos"];
     posR?: boolean;
     posA?: boolean;
     posF?: boolean;
     posS?: boolean;
+
+    //* Overflow
+    //? visible hidden scroll auto
+    ofV?: boolean;
+    ofH?: boolean;
+    ofS?: boolean;
+    ofA?: boolean;
 };

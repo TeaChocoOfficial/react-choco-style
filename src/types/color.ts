@@ -27,6 +27,7 @@ export const ColorCommon = {
     PAPER: "paper",
     INHERIT: "inherit",
     DISABLED: "disabled",
+    DISABLEDTEXT: "disabledText",
 } as const;
 
 export type ColorCommonType = (typeof ColorCommon)[keyof typeof ColorCommon];

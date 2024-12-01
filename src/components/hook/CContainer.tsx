@@ -30,10 +30,9 @@ export default function CContainer(prop: CContainerProps) {
             };
             break;
         case "header":
-            const styleFontHeader = getFont("bold");
+            const styleFontHeader = getFont("medium");
             props.cs = {
                 a: "c",
-                j: "c",
                 dp: "f",
                 size: 32,
                 text: "c",

@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/hook/chocoPropsToChocoStyle.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/chocoPropsToChocoStyle.ts"
 import {
     ChocoStyleType,
     ChocoStyleTypes,
@@ -12,9 +12,9 @@ import {
 } from "../components/data/reservedKeywords";
 import { Sizes } from "../types/Size";
 
-export default function chocoPropsToChocoStyle(
-    csp: ChocoStylePropsType,
-): ChocoStyleType {
+export default function chocoPropsToChocoStyle<
+    Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any>,
+>(csp: ChocoStylePropsType<Tag>): ChocoStyleType {
     const keys = Object.keys(csp) as (keyof ChocoStyleDefType)[];
 
     const chocoProps = keys.reduce<ChocoStyleTypes>((acc, key) => {
@@ -193,9 +193,6 @@ export default function chocoPropsToChocoStyle(
 
             //* Position
             //? static relative absolute fixed sticky
-            case "pos":
-                acc.pos = style as ChocoStylePropsType["pos"];
-                break;
             case "posR":
                 acc.pos = "r";
                 break;
@@ -207,6 +204,21 @@ export default function chocoPropsToChocoStyle(
                 break;
             case "posS":
                 acc.pos = "s";
+                break;
+
+            //* Overflow
+            //? visible hidden scroll auto
+            case "ofV":
+                acc.of = "v";
+                break;
+            case "ofH":
+                acc.of = "h";
+                break;
+            case "ofS":
+                acc.of = "s";
+                break;
+            case "ofA":
+                acc.of = "a";
                 break;
         }
 

@@ -22,17 +22,17 @@ export default function GetSetColor(): (
             case "paper":
                 Color = {
                     color: palette.text.primary,
+                    action: palette.text.disabled,
                     bgColor: palette.background.paper,
                     bgHover: palette.background.default,
-                    action: palette.text.disabled,
                 };
                 break;
             case "inherit":
                 Color = {
-                    color: palette.background.default,
                     bgColor: null,
-                    bgHover: palette.text.disabled,
                     action: palette.text.primary,
+                    bgHover: palette.text.disabled,
+                    color: palette.background.default,
                 };
                 break;
 
@@ -40,9 +40,17 @@ export default function GetSetColor(): (
             case "disabled":
                 Color = {
                     color: palette.text.disabled,
+                    action: palette.shadow.light,
                     bgColor: palette.shadow.main,
                     bgHover: palette.shadow.dark,
+                };
+                break;
+            case "disabledText":
+                Color = {
+                    bgColor: null,
+                    color: palette.shadow.main,
                     action: palette.shadow.light,
+                    bgHover: palette.shadow.dark,
                 };
                 break;
             case "text":
@@ -61,6 +69,16 @@ export default function GetSetColor(): (
                     bgColor: palette.primary.main,
                     bgHover: palette.primary.dark,
                     action: palette.primary.textDisabled,
+                };
+                break;
+            case "primaryText":
+                Color = {
+                    bgColor: null,
+                    color: palette.primary.main,
+                    action: palette.primary.dark,
+                    bgHover: `${
+                        palette.primary.dark ?? palette.primary.main
+                    }66`,
                 };
                 break;
 

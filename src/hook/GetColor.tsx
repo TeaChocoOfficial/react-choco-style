@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/hook/GetColor.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/GetColor.tsx"
 import { useTheme } from "../theme/useTheme";
 import { ColorDefaultType, ColorsType } from "../types/color";
 
@@ -27,6 +27,9 @@ export default function GetColor(): (color?: ColorsType) => string | undefined {
             //*text
             case "disabled":
                 Color = palette.text.disabled;
+                break;
+            case "disabledText":
+                Color = palette.primary.textDisabled;
                 break;
             case "text":
                 Color = palette.text.primary;
