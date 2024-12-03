@@ -717,6 +717,17 @@ export default function ChocoStyleToStyle<
                 break;
         }
 
+        if (chocostyle.event !== undefined) {
+            switch (chocostyle.event) {
+                case "n":
+                    newCss.pointerEvents = "none";
+                    break;
+                case "a":
+                    newCss.pointerEvents = "auto";
+                    break;
+            }
+        }
+
         //* Cursor
         //? default pointer move not-allowed wait text crosshair alias copy col-resize
         switch (sizeToCss(chocostyle.cur)) {
@@ -748,6 +759,27 @@ export default function ChocoStyleToStyle<
                 newCss.cursor = "col-resize";
                 break;
         }
+
+        //* User select
+        //? none auto text all
+        switch (sizeToCss(chocostyle.us)) {
+            case null:
+                newCss.userSelect = "unset";
+                break;
+            case "n":
+                newCss.userSelect = "none";
+                break;
+            case "a":
+                newCss.userSelect = "auto";
+                break;
+            case "t":
+                newCss.userSelect = "text";
+                break;
+            case "al":
+                newCss.userSelect = "all";
+                break;
+        }
+
         return newCss;
     }
 

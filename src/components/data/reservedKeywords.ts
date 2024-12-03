@@ -9,9 +9,15 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "bg",
     "color",
     "bgColor",
+    "bgImage",
     "op",
+    "z",
     "w",
     "h",
+    "minW",
+    "minH",
+    "maxW",
+    "maxH",
     "i",
     "t",
     "b",
@@ -42,6 +48,7 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "gapY",
     "size",
     "fontS",
+    "event",
     "gridT",
     "gridA",
     "borR",
@@ -69,6 +76,7 @@ export const KeywordsChocoStyle: (keyof ChocoStyleType)[] = [
     "ofx",
     "ofy",
     "cur",
+    "us",
 ];
 
 export const KeywordsChocoStyleProps: (keyof ChocoStylePropsType)[] = [
@@ -131,6 +139,12 @@ export const KeywordsChocoStyleProps: (keyof ChocoStylePropsType)[] = [
     "ofyH",
     "ofyS",
     "ofyA",
+    "eventN",
+    "eventA",
+    "usN",
+    "usA",
+    "usT",
+    "usAll",
 ];
 
 export const keysChocoStyle = [

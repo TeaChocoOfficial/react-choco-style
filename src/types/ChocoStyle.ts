@@ -48,7 +48,8 @@ export type ChocoStyleDefType = {
     //* Z-index
     z?: number;
 
-    //* Width and Height
+    //* Size
+    //? Width Height min-width min-height max-width max-height
     w?: Sizes;
     h?: Sizes;
     minW?: Sizes;
@@ -121,6 +122,10 @@ export type ChocoStyleDefType = {
     //* Transform
     transform?: React.CSSProperties["transform"];
     transformCenter?: "all" | "x" | "y";
+
+    //* Pointer events
+    //? none auto
+    event?: Sizes<null | "n" | "a">;
 };
 
 export type ChocoStyleType = ChocoStyleDefType & {
@@ -164,6 +169,10 @@ export type ChocoStyleType = ChocoStyleDefType & {
     //* Cursor
     //? default pointer move not-allowed wait text crosshair alias copy  col-resize
     cur?: Sizes<null | "d" | "p" | "m" | "n" | "w" | "t" | "c" | "cr">;
+
+    //* User select
+    //? none auto text all
+    us?: Sizes<null | "n" | "a" | "t" | "al">;
 };
 
 export type ChocoStylePropsType<
@@ -257,4 +266,16 @@ export type ChocoStylePropsType<
     ofyH?: boolean;
     ofyS?: boolean;
     ofyA?: boolean;
+
+    //* Pointer events
+    //? none auto
+    eventN?: boolean;
+    eventA?: boolean;
+
+    //* User select
+    //? none auto text all
+    usN?: boolean;
+    usA?: boolean;
+    usT?: boolean;
+    usAll?: boolean;
 };

@@ -21,7 +21,6 @@ export default function CContainer(prop: CContainerProps) {
     const { content } = props;
     delete props.content;
     switch (content) {
-        case undefined:
         case "main":
             props.cs = {
                 ...props.cs,
@@ -50,6 +49,7 @@ export default function CContainer(prop: CContainerProps) {
                 ...props.style,
             };
             break;
+        case undefined:
         case "content":
             const styleFontContent = getFont();
             props.cs = {

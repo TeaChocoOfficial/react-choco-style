@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/chocoPropsToChocoStyle.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/hook/chocoPropsToChocoStyle.ts"
 import {
     ChocoStyleType,
     ChocoStyleTypes,
@@ -6,11 +6,12 @@ import {
     ChocoStylePropsType,
     ChocoStylePropsTypes,
 } from "../types/ChocoStyle";
+import { Sizes } from "../types/Size";
 import {
     KeywordsChocoStyleDef,
     KeywordsChocoStyleProps,
 } from "../components/data/reservedKeywords";
-import { Sizes } from "../types/Size";
+import { formatSize } from "../components/custom/size";
 
 export default function chocoPropsToChocoStyle<
     Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any>,
@@ -33,11 +34,81 @@ export default function chocoPropsToChocoStyle<
         return acc;
     }, {});
 
-    const keysProps = Object.keys(
+    const keysProps = Object.keys(chocoProps) as (keyof ChocoStyleTypes)[];
+
+    const keysStyleProps = Object.keys(
         chocoStyleProps,
     ) as (keyof ChocoStylePropsType)[];
 
-    const newChocoStyle = keysProps.reduce<ChocoStyleType>((acc, key) => {
+    const newChocoProps = keysProps.reduce<ChocoStyleTypes>((acc, key) => {
+        const style = chocoProps[key];
+
+        switch (key) {
+            //* Size
+            //? Width Height min-width min-height max-width max-height
+            case "w":
+            case "h":
+            case "minW":
+            case "minH":
+            case "maxW":
+            case "maxH":
+
+            //? all top bottom left right left&right top&bottom
+            case "i":
+            case "t":
+            case "b":
+            case "l":
+            case "r":
+            case "x":
+            case "y":
+
+            //* Padding
+            //? all top bottom left right left&right top&bottom
+            case "p":
+            case "pt":
+            case "pb":
+            case "pl":
+            case "pr":
+            case "px":
+            case "py":
+
+            //* Margin
+            //? all top bottom left right left&right top&bottom
+            case "m":
+            case "mt":
+            case "mb":
+            case "ml":
+            case "mr":
+            case "mx":
+            case "my":
+
+            //* Gap
+            //? all top bottom left right left&right top&bottom
+            case "gap":
+            case "gapT":
+            case "gapB":
+            case "gapL":
+            case "gapR":
+            case "gapX":
+            case "gapY":
+
+            //* Border
+            case "borR":
+                if (typeof style === "number") {
+                    acc[key] = formatSize(style);
+                } else {
+                    acc[key] = style;
+                }
+                break;
+            default:
+                acc[key] = style;
+                break;
+        }
+
+        return acc;
+    }, {});
+
+    const newChocoStyle = keysStyleProps.reduce<ChocoStyleType>((acc, key) => {
         const style = chocoStyleProps[key];
         switch (key) {
             //* Keywords
@@ -246,11 +317,35 @@ export default function chocoPropsToChocoStyle<
             case "ofyA":
                 acc.ofy = "a";
                 break;
+
+            //* Pointer events
+            //? none auto
+            case "eventN":
+                acc.event = "n";
+                break;
+            case "eventA":
+                acc.event = "a";
+                break;
+
+            //* User select
+            //? none auto text all
+            case "usN":
+                acc.us = "n";
+                break;
+            case "usA":
+                acc.us = "a";
+                break;
+            case "usT":
+                acc.us = "t";
+                break;
+            case "usAll":
+                acc.us = "al";
+                break;
         }
 
         return acc;
     }, {});
 
-    const chocoStyle = { ...chocoProps, ...newChocoStyle } as ChocoStyleType;
+    const chocoStyle = { ...newChocoProps, ...newChocoStyle } as ChocoStyleType;
     return chocoStyle;
 }
