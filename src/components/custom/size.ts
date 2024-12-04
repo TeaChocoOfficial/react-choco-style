@@ -1,5 +1,11 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/custom/size.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/size.ts"
 import { Size, SizeKey, SizeValue } from "../../types/Size";
+
+export type FormatSizeType = <S = SizeValue>(
+    max: number,
+    size?: Size<S> | undefined,
+    unit?: string | undefined,
+) => Size<S>;
 
 export function formatSize<S = SizeValue>(
     max: number,
@@ -18,6 +24,11 @@ export function formatSize<S = SizeValue>(
     });
     return output;
 }
+
+export type CallbackSizeType = <S = SizeValue>(
+    size: number | Size,
+    callback: (value: S) => string,
+) => Size<S>;
 
 export function callbackSize<S = SizeValue>(
     size: number | Size,

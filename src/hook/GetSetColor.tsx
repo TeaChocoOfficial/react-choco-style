@@ -1,5 +1,5 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/hook/GetSetColor.tsx"
-import { useTheme } from "../theme/useTheme";
+import useTheme from "../theme/useTheme";
 import { ColorType, ColorsType, ColorDefaultType } from "../types/color";
 
 export type SetColorType = {

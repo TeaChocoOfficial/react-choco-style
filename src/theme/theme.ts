@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/theme/theme.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/theme/theme.ts"
 import { atom } from "recoil";
 import { ChocoThemeType, ModesKeyType } from "../types/theme";
 
@@ -17,6 +17,7 @@ export const getThemeMode = () => {
 };
 
 export const ChocoTheme: ChocoThemeType = {
+    mode: getThemeMode() ?? "dark",
     fonts: {
         family: [
             "-apple-system",
@@ -42,7 +43,55 @@ export const ChocoTheme: ChocoThemeType = {
         l: 1024,
         d: 1248,
     },
-    mode: getThemeMode() ?? "dark",
+    styleSheets: ({ theme }) => {
+        const size = 8;
+        return `
+            body {
+                top: 0;
+                left: 0;
+                width: 100dvw;
+                height: 100dvh;
+                position: fixed;
+                color: ${theme.palette.text.primary};
+                background-color: ${theme.palette.background.body};
+            }
+            #root {
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
+            }
+            a {
+                text-decoration: none;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            *::-webkit-scrollbar {
+                z-index: 10000;
+                width: ${size}px;
+                height: ${size}px;
+            }
+            *::-webkit-scrollbar-track {
+                background-color: ${theme.palette.primary.textDisabled}66;
+                border: ${size / 10}px solid ${theme.palette.primary.main};
+            }
+            *::-webkit-scrollbar-thumb {
+                transition: 0.3s;
+                background-color: ${theme.palette.primary.light}99;
+            }
+            *::-webkit-scrollbar-track:hover {
+                border-radius: ${size / 2}px;
+                background-color: ${theme.palette.primary.text};
+                border: ${size / 10}px solid ${theme.palette.primary.light};
+            }
+            *::-webkit-scrollbar-thumb:hover {
+                border-radius: ${size / 2}px;
+                background-color: ${theme.palette.primary.light};
+            }
+        `;
+    },
     modes: {
         default: {
             common: {

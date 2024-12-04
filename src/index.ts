@@ -6,6 +6,13 @@ export {
 } from "./components/custom/Styled";
 import Styled from "./components/custom/Styled";
 export { getFont } from "./components/custom/font";
+export {
+    applyStyleSheet,
+    SetUpStyleSheets,
+    convertToStyleSheet,
+    type ChocoStyleSheetsType,
+} from "./components/custom/StyleSheets";
+import ChocoStyleSheets from "./components/custom/StyleSheets";
 export { ComponentSize } from "./components/custom/ComponentSize";
 export { formatSize, callbackSize } from "./components/custom/size";
 
@@ -40,7 +47,7 @@ export type { SetColorType } from "./hook/GetSetColor";
 import ChocoStyleToStyle from "./hook/ChocoStyleToStyle";
 import chocoPropsToChocoStyle from "./hook/chocoPropsToChocoStyle";
 
-export { useTheme } from "./theme/useTheme";
+import useTheme from "./theme/useTheme";
 export { getThemeMode, ChocoTheme, themeModeAtom } from "./theme/theme";
 
 export type {
@@ -75,6 +82,7 @@ export { ColorText, ColorCommon, ColorDefault } from "./types/color";
 
 export {
     Styled,
+    ChocoStyleSheets,
     CBox,
     CText,
     CPaper,
@@ -87,4 +95,5 @@ export {
     GetSetColor,
     ChocoStyleToStyle,
     chocoPropsToChocoStyle,
+    useTheme,
 };

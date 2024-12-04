@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/types/theme.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/theme.ts"
 import { SizeKey } from "./Size";
 import { ColorHexType } from "./color";
 
@@ -44,9 +44,10 @@ export type PaletteType = {
 };
 
 export type DefChocoThemeType = {
-    fonts: ThemeFontsType;
     mode: ModesKeyType;
+    fonts: ThemeFontsType;
     breakpoint: Record<SizeKey, number>;
+    styleSheets: ({ theme }: { theme: UseChocoThemeType }) => string;
 };
 
 export type ChocoThemeType = DefChocoThemeType & {

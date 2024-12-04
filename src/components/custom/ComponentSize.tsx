@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/custom/ComponentSize.tsx"
 import { formatSize } from "./size";
 import { useRecoilValue } from "recoil";
+import useTheme from "../../theme/useTheme";
 import { useEffect, useState } from "react";
-import { useTheme } from "../../theme/useTheme";
 import { innerAtom } from "../layout/ChocoStart";
 import { Size, Sizes, SizeValue } from "../../types/Size";
 

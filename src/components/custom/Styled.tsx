@@ -1,11 +1,17 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/Styled.tsx"
-import { useRef } from "react";
+import {
+    formatSize,
+    callbackSize,
+    FormatSizeType,
+    CallbackSizeType,
+} from "./size";
+import { useMemo, useRef } from "react";
 import {
     ChocoStyleType,
     ChocoStyleTypes,
     ChocoStylePropsType,
 } from "../../types/ChocoStyle";
-import { useTheme } from "../../theme/useTheme";
+import useTheme from "../../theme/useTheme";
 import { UseChocoThemeType } from "../../types/theme";
 import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
 import chocoPropsToChocoStyle from "../../hook/chocoPropsToChocoStyle";
@@ -37,51 +43,75 @@ export default function Styled<
         tag,
         props,
         theme,
+        formatSize,
+        callbackSize,
     }: {
         tag: Tag;
         props: Props;
         theme: UseChocoThemeType;
+        formatSize: FormatSizeType;
+        callbackSize: CallbackSizeType;
     }) => CustomTheme,
 >(tag: Tag) {
     return (customStyles?: CustomStyles | CustomTheme) => {
         return (props: Props) => {
-            const tagRef = useRef<React.ElementRef<Tag>>(null);
             const theme = useTheme();
-            const customStyleProps =
-                (customStyles && typeof customStyles === "function"
-                    ? customStyles({ tag, props, theme })
-                    : customStyles) ?? {};
-            const customStyle = { ...customStyleProps } as React.CSSProperties;
-            const customChocoStyle = keysChocoStyle.reduce<ChocoStyleTypes>(
-                (acc, key) => {
-                    if (
-                        (customStyleProps as ChocoStyleTypes)[key] !== undefined
-                    ) {
-                        acc[key] = (customStyleProps as ChocoStyleTypes)[key];
-                        delete customStyle[key as keyof React.CSSProperties];
+            const tagRef = useRef<React.ElementRef<Tag>>(null);
+            const chocoStyleToStyle = ChocoStyleToStyle();
+            const newProps = useMemo(() => {
+                const getCustomStyleProps = (): CustomTheme => {
+                    if (customStyles && typeof customStyles === "function") {
+                        return customStyles({
+                            tag,
+                            props,
+                            theme,
+                            formatSize,
+                            callbackSize,
+                        });
+                    } else {
+                        return customStyles ?? {};
                     }
-                    return acc;
-                },
-                {},
-            ) as ChocoStyleType;
+                };
+                const customStyleProps = getCustomStyleProps();
+                const customStyle = {
+                    ...customStyleProps,
+                } as React.CSSProperties;
+                const customChocoStyle = keysChocoStyle.reduce<ChocoStyleTypes>(
+                    (acc, key) => {
+                        if (
+                            (customStyleProps as ChocoStyleTypes)[key] !==
+                            undefined
+                        ) {
+                            acc[key] = (customStyleProps as ChocoStyleTypes)[
+                                key
+                            ] as ChocoStyleTypes[keyof ChocoStyleTypes[typeof key]];
+                            delete customStyle[
+                                key as keyof React.CSSProperties
+                            ];
+                        }
+                        return acc;
+                    },
+                    {},
+                ) as ChocoStyleType;
 
-            const { cs } = props;
+                const { cs } = props;
 
-            const chocoStyle = chocoPropsToChocoStyle(props);
-            const css = ChocoStyleToStyle({
-                ...customChocoStyle,
-                ...chocoStyle,
-                ...cs,
-            });
+                const chocoStyle = chocoPropsToChocoStyle(props);
+                const css = chocoStyleToStyle({
+                    ...customChocoStyle,
+                    ...chocoStyle,
+                    ...cs,
+                });
 
-            const style: React.CSSProperties = {
-                ...customStyle,
-                ...props.style,
-                ...css,
-            };
+                const style: React.CSSProperties = {
+                    ...customStyle,
+                    ...props.style,
+                    ...css,
+                };
 
-            const prop: Prop = { ...props, style };
-            const newProps = removeReservedProps(keysChocoStyleProps, prop);
+                const prop: Prop = { ...props, style };
+                return removeReservedProps(keysChocoStyleProps, prop);
+            }, [customStyles, props, tag, theme]);
 
             const Tag = tag as React.ElementType;
             return (

@@ -4,11 +4,11 @@ import { Sizes } from "./Size";
 import { ColorsType } from "./color";
 
 export type ChocoStyleTypes = {
-    [key in keyof ChocoStyleType]?: Sizes | BorderStyleType;
+    [key in keyof ChocoStyleType]?: ChocoStyleType[key];
 };
 
 export type ChocoStylePropsTypes = {
-    [key in keyof ChocoStylePropsType]?: Sizes | BorderStyleType;
+    [key in keyof ChocoStylePropsType]?: ChocoStylePropsType[key];
 };
 
 export type BorderStyleType = {
@@ -278,4 +278,17 @@ export type ChocoStylePropsType<
     usA?: boolean;
     usT?: boolean;
     usAll?: boolean;
+};
+
+export type ChocoStylesKeyIsType =
+    | "root"
+    | "hover"
+    | "focus"
+    | "active"
+    | "target";
+
+export type ChocoStylesKeyType = `&${string}` | `:${ChocoStylesKeyIsType}`;
+
+export type ChocoStylesType = ChocoStyleType & {
+    [key in ChocoStylesKeyType]?: ChocoStyleType;
 };

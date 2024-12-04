@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { getThemeMode } from "../../theme/theme";
 import { atom, useSetRecoilState } from "recoil";
-import StyleSheets from "../custom/StyleSheets";
+import { SetUpStyleSheets } from "../custom/StyleSheets";
 
 export type InnerType = { width: number; height: number };
 
@@ -19,7 +19,7 @@ export default function ChocoStart({
 }: {
     children: React.ReactNode;
 }) {
-    StyleSheets();
+    SetUpStyleSheets();
     const setInner = useSetRecoilState(innerAtom);
 
     useEffect(() => {

@@ -1,15 +1,15 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CContainer.tsx"
 import { getFont } from "../custom/font";
-import { useTheme } from "../../theme/useTheme";
+import useTheme from "../../theme/useTheme";
 import Styled, { ChocoStyledProps } from "../custom/Styled";
 
-const Container = Styled("div")({
-    py: 8,
+const Container = Styled("div")(({ formatSize }) => ({
+    py: formatSize(8),
     borR: 2,
     pos: "r",
     px: "5%",
     w: { m: "100%", l: 1024 },
-});
+}));
 
 export type CContainerProps = ChocoStyledProps<"div"> & {
     content?: "main" | "header" | "content";

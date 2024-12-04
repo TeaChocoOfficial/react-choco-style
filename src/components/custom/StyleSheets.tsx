@@ -1,84 +1,123 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/StyleSheets.tsx"
-import { useEffect } from "react";
-import { useTheme } from "../../theme/useTheme";
+import { v4 } from "uuid";
+import {
+    ChocoStylesType,
+    ChocoStyleTypes,
+    ChocoStylesKeyType,
+} from "../../types/ChocoStyle";
+import { useMemo } from "react";
+import useTheme from "../../theme/useTheme";
+import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
 
-export default function StyleSheets() {
-    const { palette } = useTheme();
+export function SetUpStyleSheets() {
+    const theme = useTheme();
 
-    const createScrollbarStyles = () => {
-        const size = 10;
-        const styles = `
-            body {
-                top: 0;
-                left: 0;
-                width: 100dvw;
-                height: 100dvh;
-                position: fixed;
-                color: ${palette.text.primary};
-                background-color: ${palette.background.body};
-            }
-            #root {
-                width: 100%;
-                height: 100%;
-                overflow-y: auto;
-            }
-            a {
-                text-decoration: none;
-            }
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            *::-webkit-scrollbar {
-                z-index: 10000;
-                width: ${size}px;
-                height: ${size}px;
-            }
-            *::-webkit-scrollbar-track {
-                background-color: ${palette.primary.textDisabled}66;
-                border: ${size / 10}px solid ${palette.primary.main};
-            }
-            *::-webkit-scrollbar-thumb {
-                transition: 0.3s;
-                background-color: ${palette.primary.light}99;
-            }
-            *::-webkit-scrollbar-track:hover {
-                border-radius: ${size / 2}px;
-                background-color: ${palette.primary.text};
-                border: ${size / 10}px solid ${palette.primary.light};
-            }
-            *::-webkit-scrollbar-thumb:hover {
-                border-radius: ${size / 2}px;
-                background-color: ${palette.primary.light};
-            }
-        `;
-
-        return styles.replace(/\s+/g, " ").trim();
-    };
-
-    // ใช้งาน
-    const applyScrollbarStyles = () => {
-        try {
-            const styleSheet = document.styleSheets[0];
-            const cssRules = createScrollbarStyles();
-            cssRules
-                .split("}")
-                .filter((rule) => rule.trim().length > 0)
-                .forEach((rule) => {
-                    styleSheet.insertRule(
-                        rule + "}",
-                        styleSheet.cssRules.length,
-                    );
-                });
-        } catch (error) {
-            console.error("Error applying scrollbar styles:", error);
-        }
-    };
-
-    useEffect(() => {
-        applyScrollbarStyles();
+    return useMemo(() => {
+        return applyStyleSheet(theme.styleSheets({ theme }));
     }, []);
+}
 
-    return <div></div>;
+export function convertToStyleSheet(
+    tag: string,
+    cssProperties: React.CSSProperties,
+): string {
+    // แปลง camelCase เป็น kebab-case
+    const convertToKebabCase = (str: string) => {
+        return str
+            .replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, "$1-$2")
+            .toLowerCase();
+    };
+
+    // สร้าง CSS string
+    const cssString = Object.entries(cssProperties)
+        .map(([key, value]) => {
+            const cssKey = convertToKebabCase(key);
+            return `${cssKey}: ${value};`;
+        })
+        .join("\n    ");
+
+    return `${tag} {
+    ${cssString}
+}`;
+}
+
+export function applyStyleSheet(styles: string) {
+    try {
+        const styleSheet = document.styleSheets[0];
+
+        const cssRules = styles.replace(/\s+/g, " ").trim();
+        cssRules
+            .split("}")
+            .filter((rule) => rule.trim().length > 0)
+            .forEach((rule) => {
+                styleSheet.insertRule(rule + "}", styleSheet.cssRules.length);
+            });
+    } catch (error) {
+        console.error("Error applying styles:", error);
+    }
+}
+
+export type ChocoStyleSheetsType = <
+    ClassName extends `ChocoStyleSheet${string}`,
+>(
+    cs: ChocoStylesType,
+) => ClassName;
+
+export default function ChocoStyleSheets<
+    Return extends ChocoStyle extends undefined
+        ? ChocoStyleSheetsType
+        : `ChocoStyleSheet${string}`,
+    ChocoStyle extends ChocoStylesType | undefined = undefined,
+>(
+    chocoStyle?: ChocoStyle,
+): ChocoStyle extends undefined
+    ? ChocoStyleSheetsType
+    : `ChocoStyleSheet${string}` {
+    const chocoStyleToStyle = ChocoStyleToStyle();
+    const chocoStyleSheets: ChocoStyleSheetsType = <
+        ClassName extends `ChocoStyleSheet${string}`,
+    >(
+        cs: ChocoStylesType,
+    ): ClassName => {
+        const className = `ChocoStyleSheet${v4()}` as ClassName;
+        const keyCs = Object.keys(cs) as ChocoStylesKeyType[];
+        const andChocoStyles: Record<string, ChocoStyleTypes> = {};
+        const css = keyCs.reduce<ChocoStyleTypes>((acc, key) => {
+            const value = cs[key];
+            const cssKey = key as keyof ChocoStyleTypes;
+            if (key.startsWith("&")) {
+                andChocoStyles[` ${key.slice(1)}`] = value as ChocoStyleTypes;
+            } else if (key.startsWith(":")) {
+                andChocoStyles[`:${key.slice(1)}`] = value as ChocoStyleTypes;
+            } else {
+                acc[cssKey] =
+                    value as ChocoStyleTypes[keyof ChocoStyleTypes[typeof cssKey]];
+            }
+            return acc;
+        }, {});
+        const style = chocoStyleToStyle(css);
+        const keyStyles = Object.keys(andChocoStyles);
+        const styles = keyStyles.reduce<Record<string, React.CSSProperties>>(
+            (acc, key) => {
+                const value = andChocoStyles[key];
+                acc[key] = chocoStyleToStyle(value);
+                return acc;
+            },
+            {},
+        );
+        const stylesheet = convertToStyleSheet(`.${className}`, style);
+        const stylesheets = keyStyles.map((key) => {
+            const value = styles[key];
+            const tag = `.${className}${key}`;
+            const stylesheet = convertToStyleSheet(tag, value);
+            return stylesheet;
+        });
+        applyStyleSheet(stylesheet);
+        stylesheets.forEach((stylesheet) => applyStyleSheet(stylesheet));
+        return className;
+    };
+    if (chocoStyle) {
+        return chocoStyleSheets(chocoStyle) as Return;
+    }
+    return chocoStyleSheets as Return;
 }

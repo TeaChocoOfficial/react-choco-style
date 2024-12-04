@@ -21,7 +21,8 @@ export default function chocoPropsToChocoStyle<
     const chocoProps = keys.reduce<ChocoStyleTypes>((acc, key) => {
         const prop = csp[key];
         if (KeywordsChocoStyleDef.includes(key)) {
-            acc[key] = prop as Sizes;
+            acc[key] =
+                prop as ChocoStyleTypes[keyof ChocoStyleTypes[typeof key]];
         }
         return acc;
     }, {});
@@ -29,7 +30,8 @@ export default function chocoPropsToChocoStyle<
     const chocoStyleProps = keys.reduce<ChocoStylePropsTypes>((acc, key) => {
         const prop = csp[key];
         if (KeywordsChocoStyleProps.includes(key)) {
-            acc[key] = prop as Sizes;
+            acc[key] =
+                prop as ChocoStylePropsTypes[keyof ChocoStylePropsTypes[typeof key]];
         }
         return acc;
     }, {});
@@ -41,7 +43,7 @@ export default function chocoPropsToChocoStyle<
     ) as (keyof ChocoStylePropsType)[];
 
     const newChocoProps = keysProps.reduce<ChocoStyleTypes>((acc, key) => {
-        const style = chocoProps[key];
+        const style = chocoProps[key] as ChocoStyleTypes[keyof ChocoStyleTypes[typeof key]];
 
         switch (key) {
             //* Size
@@ -97,7 +99,7 @@ export default function chocoPropsToChocoStyle<
                 if (typeof style === "number") {
                     acc[key] = formatSize(style);
                 } else {
-                    acc[key] = style;
+                    acc[key] = style ;
                 }
                 break;
             default:
