@@ -10,6 +10,7 @@ export {
     applyStyleSheet,
     SetUpStyleSheets,
     convertToStyleSheet,
+    type ChocoStyleSheetType,
     type ChocoStyleSheetsType,
 } from "./components/custom/StyleSheets";
 import ChocoStyleSheets from "./components/custom/StyleSheets";
@@ -30,12 +31,14 @@ import CPaper from "./components/hook/CPaper";
 import CButton from "./components/hook/CButton";
 import CSkeleton from "./components/hook/CSkeleton";
 import CContainer from "./components/hook/CContainer";
+import CIconButton from "./components/hook/CIconButton";
 export type { CBoxProps } from "./components/hook/CBox";
 export type { CTextProps } from "./components/hook/CText";
 export type { CPaperProps } from "./components/hook/CPaper";
 export type { CButtonProps } from "./components/hook/CButton";
 export type { CSkeletonProps } from "./components/hook/CSkeleton";
 export type { CContainerProps } from "./components/hook/CContainer";
+export type { CIconButtonProps } from "./components/hook/CIconButton";
 
 import InitChoco from "./components/layout/InitChoco";
 import ChocoStart from "./components/layout/ChocoStart";
@@ -89,6 +92,7 @@ export {
     CButton,
     CSkeleton,
     CContainer,
+    CIconButton,
     InitChoco,
     ChocoStart,
     GetColor,

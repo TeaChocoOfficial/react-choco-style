@@ -178,7 +178,7 @@ export type ChocoStyleType = ChocoStyleDefType & {
 export type ChocoStylePropsType<
     Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any> = "div",
 > = ChocoStyleDefType & {
-    useRef?: React.Ref<React.ElementRef<Tag>>;
+    useRef?: (ref: Tag) => void;
 
     //* Keywords
     //? width&height:100% width&height:100view

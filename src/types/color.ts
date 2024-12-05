@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/types/color.ts"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/color.ts"
 
 export const ColorDefault = {
     INFO: "info",
@@ -34,11 +34,14 @@ export type ColorCommonType = (typeof ColorCommon)[keyof typeof ColorCommon];
 
 export type ColorHexType = `#${string}`;
 
+export type PaletteColorType = `palette.${string}`;
+
 export type ColorType = ColorDefaultType | ColorTextType | ColorCommonType;
 
 export type ColorsType =
     | ColorDefaultType
     | ColorTextType
     | ColorCommonType
+    | PaletteColorType
     | ColorHexType
     | null;

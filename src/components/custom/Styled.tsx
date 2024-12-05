@@ -5,12 +5,12 @@ import {
     FormatSizeType,
     CallbackSizeType,
 } from "./size";
-import { useMemo, useRef } from "react";
 import {
     ChocoStyleType,
     ChocoStyleTypes,
     ChocoStylePropsType,
 } from "../../types/ChocoStyle";
+import { useMemo } from "react";
 import useTheme from "../../theme/useTheme";
 import { UseChocoThemeType } from "../../types/theme";
 import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
@@ -19,7 +19,10 @@ import { keysChocoStyle, keysChocoStyleProps } from "../data/reservedKeywords";
 
 export type ChocoStyledProps<
     Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any>,
-> = ChocoStylePropsType<Tag> & React.ComponentPropsWithoutRef<Tag>;
+    Prop extends React.ComponentPropsWithoutRef<Tag> = React.ComponentPropsWithoutRef<Tag>,
+    Props extends ChocoStylePropsType<Tag> & Prop = ChocoStylePropsType<Tag> &
+        Prop,
+> = Props;
 
 export type CustomTheme = ChocoStyleType | React.CSSProperties;
 
@@ -55,8 +58,8 @@ export default function Styled<
 >(tag: Tag) {
     return (customStyles?: CustomStyles | CustomTheme) => {
         return (props: Props) => {
+            const Tag = tag as React.ElementType;
             const theme = useTheme();
-            const tagRef = useRef<React.ElementRef<Tag>>(null);
             const chocoStyleToStyle = ChocoStyleToStyle();
             const newProps = useMemo(() => {
                 const getCustomStyleProps = (): CustomTheme => {
@@ -105,18 +108,25 @@ export default function Styled<
 
                 const style: React.CSSProperties = {
                     ...customStyle,
-                    ...props.style,
                     ...css,
+                    ...props.style,
                 };
 
                 const prop: Prop = { ...props, style };
+
                 return removeReservedProps(keysChocoStyleProps, prop);
             }, [customStyles, props, tag, theme]);
 
-            const Tag = tag as React.ElementType;
-            return (
-                <Tag ref={props.useRef ? props.useRef : tagRef} {...newProps} />
-            );
+            if (typeof tag === "string") {
+                return (
+                    <Tag
+                        ref={(ref: Tag) => newProps?.useRef?.(ref)}
+                        {...newProps}
+                    />
+                );
+            }
+
+            return <Tag {...newProps} />;
         };
     };
 }

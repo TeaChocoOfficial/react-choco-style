@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CPaper.tsx"
+import { useMemo } from "react";
 import useTheme from "../../theme/useTheme";
 import styled, { ChocoStyledProps } from "../custom/Styled";
 
@@ -13,7 +14,7 @@ const Paper = styled("div")(({ theme }) => ({
 
 export type CPaperProps = ChocoStyledProps<"div"> & { elevation?: number };
 
-function getElevation(elevation?: number): string {
+export function getElevation(elevation?: number): string {
     if (elevation !== undefined && elevation < 10) {
         return `${elevation}${elevation}`;
     }
@@ -35,14 +36,19 @@ function getElevation(elevation?: number): string {
 
 export default function CPaper(prop: CPaperProps) {
     const { palette } = useTheme();
-    const { elevation } = prop;
-    const props = { ...prop };
-    delete props.elevation;
-    const opacity = getElevation(elevation ?? 0);
-    const bg = `${palette.text.primary}${opacity}`;
-    props.cs = {
-        bgImage: `linear-gradient(${bg}, ${bg})`,
-        ...props.cs,
-    };
+
+    const props = useMemo(() => {
+        const { elevation } = prop;
+        const props = { ...prop };
+        delete props.elevation;
+        const opacity = getElevation(elevation ?? 0);
+        const bg = `${palette.text.primary}${opacity}`;
+        props.cs = {
+            bgImage: `linear-gradient(${bg}, ${bg})`,
+            ...props.cs,
+        };
+        return props;
+    }, [prop, palette]);
+
     return <Paper {...props} />;
 }

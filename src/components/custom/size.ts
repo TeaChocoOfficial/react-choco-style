@@ -25,25 +25,63 @@ export function formatSize<S = SizeValue>(
     return output;
 }
 
-export type CallbackSizeType = <S = SizeValue>(
-    size: number | Size,
-    callback: (value: S) => string,
-) => Size<S>;
+export type CallbackSizeType = <
+    MaxSize extends number | number[] | Size,
+    S = MaxSize extends number[] ? SizeValue[] : SizeValue,
+    Return extends SizeValue = SizeValue,
+>(
+    size: MaxSize,
+    callback: (value: S) => Return,
+) => Size<Return>;
 
-export function callbackSize<S = SizeValue>(
-    size: number | Size,
-    callback: (value: S) => string,
-): Size<S> {
-    let sizes: Size<S> | undefined;
+export function callbackSize<
+    MaxSize extends number | number[] | Size,
+    S = MaxSize extends number[] ? SizeValue[] : SizeValue,
+    Return extends SizeValue = SizeValue,
+>(size: MaxSize, callback: (value: S) => Return): Size<Return> {
+    let sizes: Size<S> | Size<S>[] | undefined;
     if (typeof size === "number") {
         sizes = formatSize(size);
+    } else if (Array.isArray(size)) {
+        sizes = size.map((s) => formatSize(s));
     } else {
         sizes = size as Size<S>;
     }
-    const output: Record<string, string> = {};
-    Object.keys(sizes).forEach((key) => {
-        const value = (sizes?.[key as SizeKey] ?? 0) as S;
-        output[key] = callback(value);
-    });
+    const output: Record<string, Return> = {};
+    // Handle array of sizes
+    if (Array.isArray(sizes)) {
+        const values: { [key in SizeKey]?: S[] } = {};
+
+        const ForEach = (
+            method: (key: SizeKey, s: Size<S>, index: number) => void,
+        ) => {
+            sizes.forEach((s, index) => {
+                const keys = Object.keys(s) as SizeKey[];
+                keys.forEach((key) => {
+                    method(key, s, index);
+                });
+            });
+        };
+
+        ForEach((key, s, index) => {
+            const value = (s[key] ?? 0) as S;
+            if (!values[key]) {
+                values[key] = [];
+            }
+            if (values[key]) {
+                values[key][`${index}`] = value;
+            }
+        });
+
+        ForEach((key) => {
+            output[key] = callback(values[key] as S);
+        });
+    } else {
+        const keys = Object.keys(sizes) as SizeKey[];
+        keys.forEach((key) => {
+            const value = (sizes[key] ?? 0) as S;
+            output[key] = callback(value);
+        });
+    }
     return output;
 }

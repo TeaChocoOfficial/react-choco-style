@@ -1,8 +1,8 @@
-//-Path: "TeaChoco-Official/client/src/lib/react-choco-style/components/custom/ComponentSize.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/ComponentSize.tsx"
+import { useMemo } from "react";
 import { formatSize } from "./size";
 import { useRecoilValue } from "recoil";
 import useTheme from "../../theme/useTheme";
-import { useEffect, useState } from "react";
 import { innerAtom } from "../layout/ChocoStart";
 import { Size, Sizes, SizeValue } from "../../types/Size";
 
@@ -13,32 +13,30 @@ export function ComponentSize<S = SizeValue>({
     size?: Sizes<S>;
     children: (value: S) => React.ReactNode;
 }): React.ReactNode {
-    const theme = useTheme();
+    const { breakpoint } = useTheme();
     const inner = useRecoilValue(innerAtom);
-    const [sizes, setSizes] = useState<Size<S>>();
-    const [value, setValue] = useState<S>(size as S);
 
-    useEffect(() => {
+    const sizes = useMemo(() => {
         if (typeof size === "number") {
-            setSizes(formatSize(size));
+            return formatSize(size) as Size<S>;
         } else {
-            setSizes(size as Size<S>);
+            return size as Size<S>;
         }
     }, [size]);
 
-    useEffect(() => {
-        const keys = Object.keys(
-            theme.breakpoint,
-        ) as (keyof typeof theme.breakpoint)[];
+    const value = useMemo(() => {
+        let value = size as S;
+        const keys = Object.keys(breakpoint) as (keyof typeof breakpoint)[];
         keys.map((key) => {
-            const breakpoints = theme.breakpoint[key];
+            const breakpoints = breakpoint[key];
             const matche = inner.width > breakpoints;
 
             if (matche && sizes?.[key] !== undefined) {
-                setValue(sizes[key]);
+                value = sizes[key];
             }
         });
-    }, [sizes, inner]);
+        return value;
+    }, [sizes, inner, breakpoint]);
 
     return children(value);
 }

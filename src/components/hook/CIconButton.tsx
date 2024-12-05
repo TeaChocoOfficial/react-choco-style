@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CButton.tsx"
+//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CIconButton.tsx"
 import { v4 } from "uuid";
 import { getFont } from "../custom/font";
 import { useMemo, useState } from "react";
@@ -6,18 +6,18 @@ import { formatSize } from "../custom/size";
 import GetSetColor from "../../hook/GetSetColor";
 import { To, useNavigate } from "react-router-dom";
 import Styled, { ChocoStyledProps } from "../custom/Styled";
+import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
 import { ColorHexType, ColorsType, ColorType } from "../../types/color";
 import ChocoStyleSheets, { applyStyleSheet } from "../custom/StyleSheets";
 
-const Button = Styled("button")({
+const IconButton = Styled("button")({
     a: "c",
     j: "c",
     of: "h",
     dp: "if",
     pos: "r",
+    borR: "50%",
     animation: 0.3,
-    gap: formatSize(4),
-    borR: formatSize(2),
 });
 
 const Effect = Styled("span")({
@@ -27,32 +27,29 @@ const Effect = Styled("span")({
     pointerEvents: "none",
 });
 
-export type CButtonProps = ChocoStyledProps<"button"> & {
+export type CIconButtonProps = ChocoStyledProps<"button"> & {
     to?: To;
     color?: ColorType;
-    lowcase?: boolean;
-    outline?: boolean;
     disabled?: boolean;
 };
 
-export default function CButton(prop: CButtonProps) {
+export default function CIconButton(prop: CIconButtonProps) {
     const navigate = useNavigate();
     const getSetColor = GetSetColor();
     const { to, children, onClick } = prop;
     const chocoStyleSheets = ChocoStyleSheets();
+    const chocoStyleToStyle = ChocoStyleToStyle();
     const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);
 
     const { props, addPressEffect } = useMemo(() => {
         const fontStyle = getFont("medium");
-        const props: CButtonProps = { ...prop };
-        const defaultColor: ColorsType = "secondary";
-        const { color, lowcase, outline, disabled } = props;
+        const defaultColor: ColorsType = "text";
+        const props: CIconButtonProps = { ...prop };
+        const { color, disabled } = props;
         const buttonColor = getSetColor(color ?? defaultColor);
 
         delete props.to;
         delete props.color;
-        delete props.lowcase;
-        delete props.outline;
         delete props.bgColor;
         delete props.children;
         delete props.onClick;
@@ -68,48 +65,25 @@ export default function CButton(prop: CButtonProps) {
                 : (color?.length ?? 0) > 7
                 ? color
                 : `${color as ColorHexType}${disabled}`;
-        if (outline) {
-            props.border = {
-                size: 2,
-                style: "solid",
-                color: disabled
-                    ? getColor(buttonColor?.bgColor)
-                    : buttonColor?.bgColor ?? defaultColor,
-            };
-            props.color = (
-                disabled
-                    ? getColor(buttonColor?.bgColor)
-                    : buttonColor?.bgColor ?? defaultColor
-            ) as ColorType;
-            props.className = chocoStyleSheets({
-                bgColor: null,
-                ":hover": {
-                    bgColor: disabled ? undefined : getColor(buttonColor?.bgHover, disabledColor / 2),
-                },
-            });
-        } else {
-            props.border = "none";
-            props.color = (
-                disabled
-                    ? getColor(buttonColor?.color)
-                    : buttonColor?.color ?? defaultColor
-            ) as ColorType;
-            props.className = chocoStyleSheets({
-                bgColor: disabled
-                    ? getColor(buttonColor?.bgColor)
-                    : buttonColor?.bgColor,
-                ":hover": {
-                    bgColor: disabled ? undefined : buttonColor?.bgHover,
-                },
-            });
-        }
 
-        props.cs = {
+        props.color = (
+            disabled
+                ? getColor(buttonColor?.color)
+                : buttonColor?.color ?? defaultColor
+        ) as ColorType;
+        props.className = chocoStyleSheets({
+            bgColor: disabled
+                ? getColor(buttonColor?.bgColor)
+                : buttonColor?.bgColor,
+            ":hover": {
+                bgColor: disabled ? undefined : buttonColor?.bgHover,
+            },
+        });
+
+        const style = chocoStyleToStyle({
             size: props.size ?? 16,
-            py: formatSize(((props.size ?? 16) / 16) * 4),
-            px: formatSize(((props.size ?? 16) / 16) * 8),
-            ...props.cs,
-        };
+            p: formatSize(((props.size ?? 16) / 16) * 2),
+        });
 
         applyStyleSheet(`@keyframes CButton-ripple {
             0% {
@@ -126,17 +100,16 @@ export default function CButton(prop: CButtonProps) {
             }
         }`);
 
-        props.style = { ...fontStyle, ...props.style };
-        if (!lowcase) {
-            props.style = {
-                textTransform: "uppercase",
-                ...props.style,
-            };
-        }
+        props.style = {
+            ...fontStyle,
+            ...style,
+            border: "none",
+            ...props.style,
+        };
 
         const addPressEffect = () => {
             const id = v4();
-            const size = (props.size ?? 16) * 16;
+            const size = (props.size ?? 16) * 2;
             setPressEffects((prev) => [
                 ...prev,
                 <Effect
@@ -158,7 +131,7 @@ export default function CButton(prop: CButtonProps) {
     }, [prop]);
 
     return (
-        <Button
+        <IconButton
             {...props}
             onClick={(event) => {
                 addPressEffect();
@@ -171,6 +144,6 @@ export default function CButton(prop: CButtonProps) {
             }}>
             {pressEffects}
             {children}
-        </Button>
+        </IconButton>
     );
 }
