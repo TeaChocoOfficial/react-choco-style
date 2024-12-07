@@ -13,12 +13,19 @@ export type CSkeletonProps = ChocoStyledProps<"div"> & {
     circle?: boolean;
 };
 
-export default function CSkeleton(prop: CSkeletonProps) {
+export default function CSkeleton<Props extends CSkeletonProps>(prop: Props) {
     const props = useMemo(() => {
-        const props = { ...prop };
+        const props = { ...prop } as Props;
         const { circle } = props;
 
-        delete props.circle;
+        applyStyleSheet(`@keyframes CSkeleton {
+            from {
+                transform: translate(-200%);
+            }
+            to {
+                transform: translate(200%);
+            }
+        }`);
 
         const textSc = {
             borR: 2,
@@ -36,15 +43,6 @@ export default function CSkeleton(prop: CSkeletonProps) {
             props.cs = { ...props.cs, ...textSc };
         }
 
-        applyStyleSheet(`@keyframes CSkeleton {
-            from {
-                transform: translate(-200%);
-            }
-            to {
-                transform: translate(200%);
-            }
-        }`);
-
         props.children = (
             <Skeleton
                 posA
@@ -59,6 +57,8 @@ export default function CSkeleton(prop: CSkeletonProps) {
                 }}
             />
         );
+
+        delete props.circle;
         return props;
     }, [prop]);
 

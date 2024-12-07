@@ -11,7 +11,7 @@ export type ChocoStylePropsTypes = {
     [key in keyof ChocoStylePropsType]?: ChocoStylePropsType[key];
 };
 
-export type BorderStyleType = {
+export type LineStyleType = {
     size?: number;
     width?: Sizes;
     color?: ColorsType;
@@ -108,13 +108,16 @@ export type ChocoStyleDefType = {
 
     //* Border
     borR?: Sizes;
-    border?: BorderStyleType | string;
-    borderT?: BorderStyleType | string;
-    borderB?: BorderStyleType | string;
-    borderL?: BorderStyleType | string;
-    borderR?: BorderStyleType | string;
-    borderX?: BorderStyleType | string;
-    borderY?: BorderStyleType | string;
+    borders?: LineStyleType | string;
+    borderT?: LineStyleType | string;
+    borderB?: LineStyleType | string;
+    borderL?: LineStyleType | string;
+    borderR?: LineStyleType | string;
+    borderX?: LineStyleType | string;
+    borderY?: LineStyleType | string;
+
+    //* Outline
+    outlines?: LineStyleType | string;
 
     //* transition
     animation?: number | string;
@@ -285,10 +288,16 @@ export type ChocoStylesKeyIsType =
     | "hover"
     | "focus"
     | "active"
-    | "target";
+    | "target"
+    | "checked"
+    | "disabled";
 
 export type ChocoStylesKeyType = `&${string}` | `:${ChocoStylesKeyIsType}`;
 
-export type ChocoStylesType = ChocoStyleType & {
-    [key in ChocoStylesKeyType]?: ChocoStyleType;
+export type ChocoStylesType<
+    Style extends ChocoStyleType | React.CSSProperties =
+        | ChocoStyleType
+        | React.CSSProperties,
+> = Style & {
+    [key in ChocoStylesKeyType]?: Style;
 };

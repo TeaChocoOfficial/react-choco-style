@@ -13,10 +13,10 @@ export function formatSize<S = SizeValue>(
     unit: string | undefined = undefined,
 ): Size<S> {
     if (!size) {
-        size = { m: 50, t: 70, l: 90, d: 100 } as Size<S>;
+        size = { v: 50, h: 60, t: 80, l: 90, d: 100 } as Size<S>;
     }
     const keySize = Object.keys(size);
-    const output = { m: 0, t: 0, l: 0, d: 0 } as Size<S>;
+    const output = { v: 0, h: 0, t: 0, l: 0, d: 0 } as Size<S>;
     keySize.forEach((key) => {
         const value = (((size?.[key as SizeKey] as number) ?? 100) *
             (max / 100)) as S;

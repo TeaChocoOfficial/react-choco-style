@@ -2,6 +2,7 @@
 import { useMemo } from "react";
 import useTheme from "../../theme/useTheme";
 import styled, { ChocoStyledProps } from "../custom/Styled";
+import removeProps from "../../hook/removeProps";
 
 const Paper = styled("div")(({ theme }) => ({
     py: 2,
@@ -34,20 +35,21 @@ export function getElevation(elevation?: number): string {
     }
 }
 
-export default function CPaper(prop: CPaperProps) {
+export default function CPaper<Props extends CPaperProps>(prop: Props) {
     const { palette } = useTheme();
 
     const props = useMemo(() => {
         const { elevation } = prop;
-        const props = { ...prop };
-        delete props.elevation;
+        const props = { ...prop } as Props;
+
         const opacity = getElevation(elevation ?? 0);
         const bg = `${palette.text.primary}${opacity}`;
         props.cs = {
             bgImage: `linear-gradient(${bg}, ${bg})`,
             ...props.cs,
         };
-        return props;
+
+        return removeProps(props, ["elevation"]);
     }, [prop, palette]);
 
     return <Paper {...props} />;

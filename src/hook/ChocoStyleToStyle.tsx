@@ -307,11 +307,11 @@ export default function ChocoStyleToStyle<
             if (chocostyle.borR !== undefined) {
                 newCss.borderRadius = sizeToCss(chocostyle.borR, timeBox);
             }
-            if (chocostyle.border !== undefined) {
-                if (typeof chocostyle.border === "string") {
-                    newCss.border = chocostyle.border;
+            if (chocostyle.borders !== undefined) {
+                if (typeof chocostyle.borders === "string") {
+                    newCss.border = chocostyle.borders;
                 } else {
-                    const { size, width, style, color } = chocostyle.border;
+                    const { size, width, style, color } = chocostyle.borders;
                     const border: string[] = [];
                     const borderWidth =
                         size !== undefined ? formatSize(size) : width ?? 8;
@@ -413,6 +413,22 @@ export default function ChocoStyleToStyle<
                         border.push(getColor(color ?? "secondary") ?? "");
                         newCss.borderRight = border.join(" ");
                     }
+                }
+            }
+
+            //* Outline
+            if (chocostyle.outlines !== undefined) {
+                if (typeof chocostyle.outlines === "string") {
+                    newCss.outline = chocostyle.outlines;
+                } else {
+                    const { size, width, style, color } = chocostyle.outlines;
+                    const outline: string[] = [];
+                    const outlineWidth =
+                        size !== undefined ? formatSize(size) : width ?? 8;
+                    outline.push(sizeToCss(outlineWidth) ?? "");
+                    outline.push(style ?? "solid");
+                    outline.push(getColor(color ?? "secondary") ?? "");
+                    newCss.outline = outline.join(" ");
                 }
             }
 

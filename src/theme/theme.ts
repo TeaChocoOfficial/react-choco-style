@@ -38,7 +38,8 @@ export const ChocoTheme: ChocoThemeType = {
         },
     },
     breakpoint: {
-        m: 0,
+        v: 0,
+        h: 600,
         t: 860,
         l: 1024,
         d: 1248,

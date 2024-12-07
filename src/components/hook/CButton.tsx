@@ -3,11 +3,12 @@ import { v4 } from "uuid";
 import { getFont } from "../custom/font";
 import { useMemo, useState } from "react";
 import { formatSize } from "../custom/size";
-import GetSetColor from "../../hook/GetSetColor";
+import { ColorType } from "../../types/color";
 import { To, useNavigate } from "react-router-dom";
+import { applyStyleSheet } from "../custom/StyleSheets";
+import GetSetColorProps from "../../hook/GetSetColorProps";
 import Styled, { ChocoStyledProps } from "../custom/Styled";
-import { ColorHexType, ColorsType, ColorType } from "../../types/color";
-import ChocoStyleSheets, { applyStyleSheet } from "../custom/StyleSheets";
+import removeProps from "../../hook/removeProps";
 
 const Button = Styled("button")({
     a: "c",
@@ -29,87 +30,21 @@ const Effect = Styled("span")({
 
 export type CButtonProps = ChocoStyledProps<"button"> & {
     to?: To;
-    color?: ColorType;
     lowcase?: boolean;
     outline?: boolean;
-    disabled?: boolean;
+    setColor?: ColorType;
 };
 
-export default function CButton(prop: CButtonProps) {
+export default function CButton<Props extends CButtonProps>(prop: Props) {
     const navigate = useNavigate();
-    const getSetColor = GetSetColor();
     const { to, children, onClick } = prop;
-    const chocoStyleSheets = ChocoStyleSheets();
+    const getSetColorProps = GetSetColorProps();
     const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);
 
     const { props, addPressEffect } = useMemo(() => {
+        const props: Props = { ...prop };
         const fontStyle = getFont("medium");
-        const props: CButtonProps = { ...prop };
-        const defaultColor: ColorsType = "secondary";
-        const { color, lowcase, outline, disabled } = props;
-        const buttonColor = getSetColor(color ?? defaultColor);
-
-        delete props.to;
-        delete props.color;
-        delete props.lowcase;
-        delete props.outline;
-        delete props.bgColor;
-        delete props.children;
-        delete props.onClick;
-        delete props.onMouseEnter;
-        delete props.onMouseLeave;
-        const disabledColor = 88;
-        const getColor = (
-            color?: ColorsType,
-            disabled: number = disabledColor,
-        ): ColorsType | undefined =>
-            typeof color !== "string"
-                ? color
-                : (color?.length ?? 0) > 7
-                ? color
-                : `${color as ColorHexType}${disabled}`;
-        if (outline) {
-            props.border = {
-                size: 2,
-                style: "solid",
-                color: disabled
-                    ? getColor(buttonColor?.bgColor)
-                    : buttonColor?.bgColor ?? defaultColor,
-            };
-            props.color = (
-                disabled
-                    ? getColor(buttonColor?.bgColor)
-                    : buttonColor?.bgColor ?? defaultColor
-            ) as ColorType;
-            props.className = chocoStyleSheets({
-                bgColor: null,
-                ":hover": {
-                    bgColor: disabled ? undefined : getColor(buttonColor?.bgHover, disabledColor / 2),
-                },
-            });
-        } else {
-            props.border = "none";
-            props.color = (
-                disabled
-                    ? getColor(buttonColor?.color)
-                    : buttonColor?.color ?? defaultColor
-            ) as ColorType;
-            props.className = chocoStyleSheets({
-                bgColor: disabled
-                    ? getColor(buttonColor?.bgColor)
-                    : buttonColor?.bgColor,
-                ":hover": {
-                    bgColor: disabled ? undefined : buttonColor?.bgHover,
-                },
-            });
-        }
-
-        props.cs = {
-            size: props.size ?? 16,
-            py: formatSize(((props.size ?? 16) / 16) * 4),
-            px: formatSize(((props.size ?? 16) / 16) * 8),
-            ...props.cs,
-        };
+        const { setColor, lowcase, outline, disabled } = props;
 
         applyStyleSheet(`@keyframes CButton-ripple {
             0% {
@@ -125,6 +60,21 @@ export default function CButton(prop: CButtonProps) {
                 transform: scale(1.2);
             }
         }`);
+
+        const { className, setColors } = getSetColorProps({
+            outline,
+            disabled,
+            setColor,
+        });
+
+        props.className = className;
+
+        props.cs = {
+            size: props.size ?? 16,
+            py: formatSize(((props.size ?? 16) / 16) * 4),
+            px: formatSize(((props.size ?? 16) / 16) * 8),
+            ...props.cs,
+        };
 
         props.style = { ...fontStyle, ...props.style };
         if (!lowcase) {
@@ -143,7 +93,7 @@ export default function CButton(prop: CButtonProps) {
                     key={id}
                     h={formatSize(size)}
                     w={formatSize(size)}
-                    bgColor={buttonColor?.action}
+                    bgColor={setColors?.action}
                     style={{
                         animation: "CButton-ripple 0.5s linear forwards",
                     }}
@@ -154,7 +104,17 @@ export default function CButton(prop: CButtonProps) {
             }, 1000);
         };
 
-        return { props, addPressEffect };
+        return {
+            addPressEffect,
+            props: removeProps(props, [
+                "to",
+                "lowcase",
+                "outline",
+                "setColor",
+                "children",
+                "onClick",
+            ]),
+        };
     }, [prop]);
 
     return (

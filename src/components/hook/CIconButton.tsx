@@ -3,12 +3,12 @@ import { v4 } from "uuid";
 import { getFont } from "../custom/font";
 import { useMemo, useState } from "react";
 import { formatSize } from "../custom/size";
-import GetSetColor from "../../hook/GetSetColor";
+import { ColorType } from "../../types/color";
 import { To, useNavigate } from "react-router-dom";
+import { applyStyleSheet } from "../custom/StyleSheets";
+import GetSetColorProps from "../../hook/GetSetColorProps";
 import Styled, { ChocoStyledProps } from "../custom/Styled";
-import ChocoStyleToStyle from "../../hook/ChocoStyleToStyle";
-import { ColorHexType, ColorsType, ColorType } from "../../types/color";
-import ChocoStyleSheets, { applyStyleSheet } from "../custom/StyleSheets";
+import removeProps from "../../hook/removeProps";
 
 const IconButton = Styled("button")({
     a: "c",
@@ -29,61 +29,23 @@ const Effect = Styled("span")({
 
 export type CIconButtonProps = ChocoStyledProps<"button"> & {
     to?: To;
-    color?: ColorType;
+    outline?: boolean;
     disabled?: boolean;
+    setColor?: ColorType;
 };
 
-export default function CIconButton(prop: CIconButtonProps) {
+export default function CIconButton<Props extends CIconButtonProps>(
+    prop: Props,
+) {
     const navigate = useNavigate();
-    const getSetColor = GetSetColor();
-    const { to, children, onClick } = prop;
-    const chocoStyleSheets = ChocoStyleSheets();
-    const chocoStyleToStyle = ChocoStyleToStyle();
+    const getSetColorProps = GetSetColorProps();
+    const { to, outline, children, onClick } = prop;
     const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);
 
     const { props, addPressEffect } = useMemo(() => {
+        const props = { ...prop } as Props;
         const fontStyle = getFont("medium");
-        const defaultColor: ColorsType = "text";
-        const props: CIconButtonProps = { ...prop };
-        const { color, disabled } = props;
-        const buttonColor = getSetColor(color ?? defaultColor);
-
-        delete props.to;
-        delete props.color;
-        delete props.bgColor;
-        delete props.children;
-        delete props.onClick;
-        delete props.onMouseEnter;
-        delete props.onMouseLeave;
-        const disabledColor = 88;
-        const getColor = (
-            color?: ColorsType,
-            disabled: number = disabledColor,
-        ): ColorsType | undefined =>
-            typeof color !== "string"
-                ? color
-                : (color?.length ?? 0) > 7
-                ? color
-                : `${color as ColorHexType}${disabled}`;
-
-        props.color = (
-            disabled
-                ? getColor(buttonColor?.color)
-                : buttonColor?.color ?? defaultColor
-        ) as ColorType;
-        props.className = chocoStyleSheets({
-            bgColor: disabled
-                ? getColor(buttonColor?.bgColor)
-                : buttonColor?.bgColor,
-            ":hover": {
-                bgColor: disabled ? undefined : buttonColor?.bgHover,
-            },
-        });
-
-        const style = chocoStyleToStyle({
-            size: props.size ?? 16,
-            p: formatSize(((props.size ?? 16) / 16) * 2),
-        });
+        const { setColor, disabled } = props;
 
         applyStyleSheet(`@keyframes CButton-ripple {
             0% {
@@ -100,12 +62,21 @@ export default function CIconButton(prop: CIconButtonProps) {
             }
         }`);
 
-        props.style = {
-            ...fontStyle,
-            ...style,
-            border: "none",
-            ...props.style,
+        const { className, setColors } = getSetColorProps({
+            outline,
+            disabled,
+            setColor,
+        });
+
+        props.className = className;
+
+        props.cs = {
+            size: props.size ?? 16,
+            p: formatSize(((props.size ?? 16) / 16) * 2),
+            ...props.cs,
         };
+
+        props.style = { ...fontStyle, ...props.style };
 
         const addPressEffect = () => {
             const id = v4();
@@ -116,7 +87,7 @@ export default function CIconButton(prop: CIconButtonProps) {
                     key={id}
                     h={formatSize(size)}
                     w={formatSize(size)}
-                    bgColor={buttonColor?.action}
+                    bgColor={setColors?.action}
                     style={{
                         animation: "CButton-ripple 0.5s linear forwards",
                     }}
@@ -127,7 +98,15 @@ export default function CIconButton(prop: CIconButtonProps) {
             }, 1000);
         };
 
-        return { props, addPressEffect };
+        return {
+            addPressEffect,
+            props: removeProps(props, [
+                "to",
+                "children",
+                "setColor",
+                "onClick",
+            ]),
+        };
     }, [prop]);
 
     return (

@@ -13,7 +13,7 @@ export type ThemeFontsType = {
     };
 };
 
-export type ColorsTypes = {
+export type CommonColorsTypes = {
     text?: ColorHexType;
     main: ColorHexType;
     dark?: ColorHexType;
@@ -22,15 +22,24 @@ export type ColorsTypes = {
     textDisabled?: ColorHexType;
 };
 
+export type ColorsTypes = {
+    text: ColorHexType;
+    main: ColorHexType;
+    dark?: ColorHexType;
+    light?: ColorHexType;
+    disabled: ColorHexType;
+    textDisabled?: ColorHexType;
+};
+
 export type PaletteType = {
-    common: Record<string, ColorsTypes>;
+    common: Record<string, CommonColorsTypes>;
     primary: ColorsTypes;
     secondary: ColorsTypes;
     error: ColorsTypes;
     warning: ColorsTypes;
     info: ColorsTypes;
     success: ColorsTypes;
-    shadow: ColorsTypes;
+    shadow: CommonColorsTypes;
     background: {
         body: ColorHexType;
         paper: ColorHexType;
