@@ -1,8 +1,10 @@
 //-Path: "react-choco-style/src/app/App.tsx"
 import { useEffect } from "react";
-import CText from "../components/hook/CText";
-import CreateStyled from "../components/custom/CreateStyled";
-import useSetStyleSheets from "../hook/useSetStyleSheets";
+import {
+    CText,
+    CreateStyled,
+    useSetStyleSheets,
+} from "@teachocoofficial/react-choco-style";
 
 const Text = CreateStyled("span", "CText")({ size: 32 });
 
@@ -24,10 +26,10 @@ export default function App() {
     return (
         <div>
             <h1>hello world</h1>
-            <Text dFlex size={44}>hello worlddd</Text>
-            <CText dFlex>
-                text
-            </CText>
+            <Text dFlex size={44}>
+                hello worlddd
+            </Text>
+            <CText dFlex>text</CText>
         </div>
     );
 }
