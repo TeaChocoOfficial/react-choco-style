@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/hook/chocoPropsToChocoStyle.ts"
+//-Path: "react-choco-style/src/function/chocoPropsToChocoStyle.ts"
 import {
     ChocoStyleType,
     ChocoStyleTypes,
@@ -6,12 +6,12 @@ import {
     ChocoStylePropsType,
     ChocoStylePropsTypes,
 } from "../types/ChocoStyle";
+import { formatSize } from "./size";
 import { Sizes } from "../types/Size";
 import {
     keysChocoStyleProps,
     KeywordsChocoStyleDef,
 } from "../components/data/reservedKeywords";
-import { formatSize } from "../components/custom/size";
 
 export default function chocoPropsToChocoStyle<
     Tag extends keyof JSX.IntrinsicElements | React.ComponentType<any>,
@@ -88,7 +88,7 @@ export default function chocoPropsToChocoStyle<
 
             //* Gap
             //? all top bottom left right left&right top&bottom
-            case "gap":
+            case "gaps":
             case "gapT":
             case "gapB":
             case "gapL":

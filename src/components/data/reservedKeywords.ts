@@ -7,7 +7,7 @@ import {
 
 export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "bg",
-    "color",
+    "clr",
     "bgColor",
     "bgImage",
     "op",
@@ -39,7 +39,7 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "mr",
     "mx",
     "my",
-    "gap",
+    "gaps",
     "gapT",
     "gapB",
     "gapL",
@@ -60,7 +60,7 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "borderX",
     "borderY",
     "outlines",
-    "animation",
+    "trans",
     "transform",
     "transformCenter",
 ];

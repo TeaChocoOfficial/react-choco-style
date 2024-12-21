@@ -1,27 +1,36 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CButton.tsx"
 import { v4 } from "uuid";
-import { getFont } from "../custom/font";
+import { getFont } from "../../function/font";
 import { useMemo, useState } from "react";
-import { formatSize } from "../custom/size";
+import { formatSize } from "../../function/size";
+import useTheme from "../../theme/useTheme";
 import { ColorType } from "../../types/color";
 import { To, useNavigate } from "react-router-dom";
-import { applyStyleSheet } from "../custom/StyleSheets";
-import GetSetColorProps from "../../hook/GetSetColorProps";
-import Styled, { ChocoStyledProps } from "../custom/Styled";
-import removeProps from "../../hook/removeProps";
+import { StyleTypes } from "../../types/ChocoStyle";
+import removeProps from "../../function/removeProps";
+import useCreateStyle from "../../hook/useCreateClass";
+import { applyStyleSheet } from "../../function/styleSheet";
+import useGetSetColorProps from "../../hook/useGetSetColorProps";
+import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
-const Button = Styled("button")({
+const Button = CreateStyled(
+    "button",
+    "CButton",
+)({
     a: "c",
     j: "c",
     of: "h",
     dp: "if",
     pos: "r",
     animation: 0.3,
-    gap: formatSize(4),
+    gaps: formatSize(4),
     borR: formatSize(2),
 });
 
-const Effect = Styled("span")({
+const Effect = CreateStyled(
+    "span",
+    "CButton-effect",
+)({
     op: 0,
     pos: "a",
     borR: "50%",
@@ -32,19 +41,22 @@ export type CButtonProps = ChocoStyledProps<"button"> & {
     to?: To;
     lowcase?: boolean;
     outline?: boolean;
+    container?: boolean;
     setColor?: ColorType;
 };
 
 export default function CButton<Props extends CButtonProps>(prop: Props) {
     const navigate = useNavigate();
+    const { joinNames } = useTheme();
+    const createStyle = useCreateStyle();
     const { to, children, onClick } = prop;
-    const getSetColorProps = GetSetColorProps();
+    const getSetColorProps = useGetSetColorProps();
     const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);
 
     const { props, addPressEffect } = useMemo(() => {
         const props: Props = { ...prop };
         const fontStyle = getFont("medium");
-        const { setColor, lowcase, outline, disabled } = props;
+        const { setColor, container, lowcase, outline, disabled } = props;
 
         applyStyleSheet(`@keyframes CButton-ripple {
             0% {
@@ -53,40 +65,63 @@ export default function CButton<Props extends CButtonProps>(prop: Props) {
             }
             60% {
                 opacity: 0.6;
-                transform: scale(1);
+                transform: scale(2);
             }
             100% {
                 opacity: 0;
-                transform: scale(1.2);
+                transform: scale(3);
             }
         }`);
 
-        const { className, setColors } = getSetColorProps({
+        let chocoStyle: StyleTypes = {
+            ...fontStyle,
+            size: props.size ?? 16,
+        };
+
+        if (container) {
+            chocoStyle = {
+                p: formatSize(((props.size ?? 16) / 16) * 4),
+                ...chocoStyle,
+            };
+            props.className = joinNames(
+                props.className,
+                createStyle("CButton-container", chocoStyle),
+            );
+        } else {
+            chocoStyle = {
+                py: formatSize(((props.size ?? 16) / 16) * 4),
+                px: formatSize(((props.size ?? 16) / 16) * 8),
+                ...chocoStyle,
+            };
+            props.className = joinNames(
+                props.className,
+                createStyle("CButton-text", chocoStyle),
+            );
+        }
+
+        if (!lowcase && !container) {
+            props.className = joinNames(
+                props.className,
+                createStyle("CButton-uppercase", {
+                    textTransform: "uppercase",
+                }),
+            );
+        }
+
+        const { styles, setColors } = getSetColorProps({
             outline,
             disabled,
             setColor,
         });
 
-        props.className = className;
-
-        props.cs = {
-            size: props.size ?? 16,
-            py: formatSize(((props.size ?? 16) / 16) * 4),
-            px: formatSize(((props.size ?? 16) / 16) * 8),
-            ...props.cs,
-        };
-
-        props.style = { ...fontStyle, ...props.style };
-        if (!lowcase) {
-            props.style = {
-                textTransform: "uppercase",
-                ...props.style,
-            };
-        }
+        props.className = joinNames(
+            props.className,
+            createStyle("CButton", styles),
+        );
 
         const addPressEffect = () => {
             const id = v4();
-            const size = (props.size ?? 16) * 16;
+            const size = (props.size ?? 16) * 4;
             setPressEffects((prev) => [
                 ...prev,
                 <Effect
@@ -110,9 +145,10 @@ export default function CButton<Props extends CButtonProps>(prop: Props) {
                 "to",
                 "lowcase",
                 "outline",
+                "onClick",
                 "setColor",
                 "children",
-                "onClick",
+                "container",
             ]),
         };
     }, [prop]);

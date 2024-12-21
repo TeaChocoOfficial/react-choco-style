@@ -1,17 +1,31 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/layout/ChocoStart.tsx"
-import { useEffect } from "react";
+//-Path: "react-choco-style/src/components/layout/ChocoStart.tsx"
+import { atom, useSetAtom } from "jotai";
+import { useMemo, useEffect } from "react";
+import useTheme from "../../theme/useTheme";
 import { getThemeMode } from "../../theme/theme";
-import { atom, useSetRecoilState } from "recoil";
-import { SetUpStyleSheets } from "../custom/StyleSheets";
+import useCreateStyle from "../../hook/useCreateStyle";
+import { callbackSize, formatSize } from "../../function/size";
+
+export function SetUpStyleSheets() {
+    const theme = useTheme();
+    const CreateStyle = useCreateStyle();
+
+    return useMemo(() => {
+        const themeSheets = theme.styleSheets({
+            theme,
+            formatSize,
+            callbackSize,
+        });
+        const styles = CreateStyle("&", themeSheets);
+        return styles;
+    }, []);
+}
 
 export type InnerType = { width: number; height: number };
 
 export const innerAtom = atom<InnerType>({
-    key: "window inner",
-    default: {
-        width: window ? window.innerWidth : 0,
-        height: window ? window.innerHeight : 0,
-    },
+    width: window ? window.innerWidth : 0,
+    height: window ? window.innerHeight : 0,
 });
 
 export default function ChocoStart({
@@ -20,7 +34,7 @@ export default function ChocoStart({
     children: React.ReactNode;
 }) {
     SetUpStyleSheets();
-    const setInner = useSetRecoilState(innerAtom);
+    const setInner = useSetAtom(innerAtom);
 
     useEffect(() => {
         getThemeMode();

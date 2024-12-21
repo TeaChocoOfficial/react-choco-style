@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/color.ts"
 
-export const ColorDefault = {
+const ColorDefault = {
     INFO: "info",
     ERROR: "error",
     PRIMARY: "primary",
@@ -11,7 +11,7 @@ export const ColorDefault = {
 
 export type ColorDefaultType = (typeof ColorDefault)[keyof typeof ColorDefault];
 
-export const ColorText = {
+const ColorText = {
     INFO: "infoText",
     ERROR: "errorText",
     PRIMARY: "primaryText",
@@ -22,7 +22,7 @@ export const ColorText = {
 
 export type ColorTextType = (typeof ColorText)[keyof typeof ColorText];
 
-export const ColorCommon = {
+const ColorCommon = {
     TEXT: "text",
     PAPER: "paper",
     INHERIT: "inherit",

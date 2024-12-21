@@ -1,70 +1,80 @@
 {
-  "name": "@teachocoofficial/react-choco-style",
-  "version": "0.0.11",
-  "private": false,
-  "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "scripts": {
-    "test": "jest",
-    "build": "rollup -c",
-    "prepare": "npm run build",
-    "storybook": "start-storybook -p 6006",
-    "public": "npm publish --scope=@teachoco-official --access=public",
-    "publicforce": "npm publish --scope=@teachoco-official --access=public --force"
-  },
-  "peerDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-brands-svg-icons": "^6.7.1",
-    "@fortawesome/free-regular-svg-icons": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^7.0.1",
-    "recoil": "^0.7.7",
-    "uuid": "^11.0.3"
-  },
-  "author": "teachoco-official",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TeaChocoOfficial/react-choco-style.git"
-  },
-  "description": "Chocolate themed React components library",
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-brands-svg-icons": "^6.7.1",
-    "@fortawesome/free-regular-svg-icons": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@rollup/plugin-commonjs": "^28.0.1",
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-typescript": "^12.1.1",
-    "react-router-dom": "^7.0.1",
-    "rollup": "^4.27.4",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "styled-components": "^6.1.13",
-    "uuid": "^11.0.3"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "recoil": "^0.7.7",
-    "tslib": "^2.8.1",
-    "typescript": "^5.0.0"
-  },
-  "bugs": {
-    "url": "https://github.com/TeaChocoOfficial/react-choco-style/issues"
-  },
-  "homepage": "https://github.com/TeaChocoOfficial/react-choco-style#readme"
+    "name": "@teachocoofficial/react-choco-style",
+    "version": "0.1.0",
+    "private": false,
+    "type": "module",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "scripts": {
+        "test": "jest",
+        "build": "rollup -c",
+        "prepare": "npm run build",
+        "storybook": "start-storybook -p 6006",
+        "dev": "vite --host 127.0.0.1 --port 5001",
+        "public": "npm publish --scope=@teachoco-official --access=public",
+        "publicforce": "npm publish --scope=@teachoco-official --access=public --force"
+    },
+    "peerDependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.7.1",
+        "@fortawesome/free-brands-svg-icons": "^6.7.1",
+        "@fortawesome/free-regular-svg-icons": "^6.7.1",
+        "@fortawesome/free-solid-svg-icons": "^6.7.1",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@types/crypto-js": "^4.2.2",
+        "crypto-js": "^4.2.0",
+        "jotai": "^2.10.4",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^7.0.1",
+        "recoil": "^0.7.7",
+        "uuid": "^11.0.3"
+    },
+    "author": "teachoco-official",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TeaChocoOfficial/react-choco-style.git"
+    },
+    "description": "Chocolate themed React components library",
+    "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.7.1",
+        "@fortawesome/free-brands-svg-icons": "^6.7.1",
+        "@fortawesome/free-regular-svg-icons": "^6.7.1",
+        "@fortawesome/free-solid-svg-icons": "^6.7.1",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@rollup/plugin-commonjs": "^28.0.1",
+        "@rollup/plugin-node-resolve": "^15.3.0",
+        "@rollup/plugin-typescript": "^12.1.1",
+        "@types/crypto-js": "^4.2.2",
+        "@types/react-dom": "^19.0.2",
+        "@vitejs/plugin-react-swc": "^3.7.2",
+        "crypto-js": "^4.2.0",
+        "jotai": "^2.10.4",
+        "react-router-dom": "^7.0.1",
+        "rollup": "^4.27.4",
+        "rollup-plugin-peer-deps-external": "^2.2.4",
+        "styled-components": "^6.1.13",
+        "uuid": "^11.0.3",
+        "vite": "^6.0.3"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "recoil": "^0.7.7",
+        "tslib": "^2.8.1",
+        "typescript": "^5.0.0"
+    },
+    "bugs": {
+        "url": "https://github.com/TeaChocoOfficial/react-choco-style/issues"
+    },
+    "homepage": "https://github.com/TeaChocoOfficial/react-choco-style#readme"
 }

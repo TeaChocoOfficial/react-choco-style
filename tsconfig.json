@@ -7,14 +7,18 @@
         "declaration": true,
         "declarationDir": "dist",
         "strict": true,
+        "paths": {
+            "@teachocoofficial/react-choco-style": ["./src/index.ts"]
+        },
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "outDir": "dist",
+        "outDir": "./dist",
         "importHelpers": true,
         "isolatedModules": true
     },
+    "outDir": "./dist",
     "include": ["src"],
     "exclude": ["node_modules", "dist"]
 }

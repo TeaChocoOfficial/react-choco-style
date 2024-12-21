@@ -1,16 +1,24 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CContainer.tsx"
+import CBox from "./CBox";
 import { useMemo } from "react";
-import { getFont } from "../custom/font";
+import Icon from "../custom/Icon";
+import CIconButton from "./CIconButton";
+import { getFont } from "../../function/font";
+import { formatSize } from "../../function/size";
 import useTheme from "../../theme/useTheme";
-import { formatSize } from "../custom/size";
-import removeProps from "../../hook/removeProps";
-import Styled, { ChocoStyledProps } from "../custom/Styled";
+import removeProps from "../../function/removeProps";
+import { StyleTypes } from "../../types/ChocoStyle";
+import useCreateStyle from "../../hook/useCreateClass";
+import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
-const Container = Styled("div")({
+const Container = CreateStyled(
+    "div",
+    "CContainer",
+)({
     borR: 2,
     pos: "r",
     px: "5%",
-    py: formatSize(8),
+    py: formatSize(6),
     w: { v: "100%", l: 1024 },
 });
 
@@ -24,6 +32,8 @@ export type CContainerHeaderProps = {
     content: "header";
     back?: string;
     hiddle?: boolean;
+    leftContent?: React.ReactNode;
+    rightContent?: React.ReactNode;
 };
 export type CContainerContentProps = {
     content?: "content";
@@ -41,77 +51,122 @@ export type CContainerProps<Content extends CContainerContents = "content"> =
             ? CContainerHeaderProps
             : CContainerContentProps);
 
-export default function CContainer<Props extends CContainerProp>(prop: Props) {
-    const { palette } = useTheme();
+export function CContainerMain<Props extends CContainerProps<"main">>(
+    prop: Props,
+) {
+    const { joinNames } = useTheme();
+    const createStyle = useCreateStyle();
 
     const props = useMemo(() => {
-        const getProps = (prop: Props) => {
-            if (prop.content === "main") {
-                const props = { ...prop } as CContainerProps<"main">;
-                const { fullWidth } = props;
-                props.cs = {
-                    ...props.cs,
-                    p: 0,
-                    a: "c",
-                    j: "c",
-                    dp: "f",
-                    fd: "c",
-                    gap: formatSize(1),
-                };
-                if (fullWidth) {
-                    props.cs.w = "100%";
-                } else {
-                    props.cs.mx = "auto";
-                }
-                return removeProps(props, ["fullWidth"]);
-            } else if (prop.content === "header") {
-                const props = { ...prop } as CContainerProps<"header">;
-                const { hiddle } = props;
-                const styleFontHeader = getFont("medium");
-                props.cs = {
-                    a: "c",
-                    size: 32,
-                    text: "c",
-                    bgColor: hiddle
-                        ? undefined
-                        : `${palette.background.default}88`,
-                    ...props.cs,
-                };
-                props.style = {
-                    ...styleFontHeader,
-                    textTransform: "capitalize",
-                    boxShadow: hiddle
-                        ? undefined
-                        : `0px 10px 13px -6px ${palette.shadow.main},0px 20px 31px 3px ${palette.shadow.main}),0px 8px 38px 7px ${palette.shadow.main}`,
-                    ...props.style,
-                };
-                return removeProps(props, ["hiddle", "back"]);
-            } else {
-                const props = { ...prop } as CContainerProps<"content">;
-                const { hiddle } = props;
-                const styleFontContent = getFont();
-                props.cs = {
-                    size: 16,
-                    bgColor: hiddle
-                        ? undefined
-                        : `${palette.background.paper}44`,
-                    ...props.cs,
-                };
-                props.style = {
-                    ...styleFontContent,
-                    boxShadow: hiddle
-                        ? undefined
-                        : `0px 10px 13px -6px ${palette.shadow.main},0px 20px 31px 3px ${palette.shadow.main}),0px 8px 38px 7px ${palette.shadow.main}`,
-                    ...props.style,
-                };
-                return removeProps(props, ["hiddle"]);
-            }
+        const props = { ...prop } as CContainerProps<"main">;
+        const { fullWidth } = props;
+
+        const styles: StyleTypes = {
+            p: 0,
+            a: "c",
+            j: "c",
+            dp: "f",
+            fd: "c",
+            gaps: formatSize(1),
         };
+        if (fullWidth) {
+            styles.w = "100%";
+        } else {
+            styles.mx = "auto";
+        }
+        const className = createStyle("CContainerMain", styles);
+        props.className = joinNames(props.className, className);
+        return removeProps(props, ["content", "fullWidth"]);
+    }, [prop]);
 
-        const props = getProps(prop);
+    return <Container {...props} />;
+}
 
-        return removeProps(props, ["content"]);
+export function CContainerHeader<Props extends CContainerProps<"header">>(
+    prop: Props,
+) {
+    const createStyle = useCreateStyle();
+    const { palette, joinNames } = useTheme();
+
+    const props = useMemo(() => {
+        const props = { ...prop } as CContainerProps<"header">;
+        const { hiddle } = props;
+        const styleFontHeader = getFont("medium");
+
+        const className = createStyle("CContainerHeader", {
+            ...styleFontHeader,
+            a: "c",
+            dp: "f",
+            size: 32,
+            text: "c",
+            textTransform: "capitalize",
+            bgColor: hiddle ? undefined : `${palette.background.default}88`,
+            boxShadow: hiddle
+                ? undefined
+                : `0px 10px 13px -6px ${palette.shadow.main},0px 20px 31px 3px ${palette.shadow.main}),0px 8px 38px 7px ${palette.shadow.main}`,
+        });
+        props.className = joinNames(props.className, className);
+        return removeProps(props, [
+            "back",
+            "hiddle",
+            "content",
+            "children",
+            "leftContent",
+            "rightContent",
+        ]);
+    }, [prop, palette]);
+
+    return (
+        <Container {...props}>
+            {(prop.leftContent || prop.back) && (
+                <CBox posA l={50}>
+                    <CIconButton to={prop.back} setColor="text">
+                        <Icon fa="faLeftLong" />
+                    </CIconButton>
+                    {prop.leftContent}
+                </CBox>
+            )}
+            {prop.children}
+            {prop.rightContent && (
+                <CBox posA r={50}>
+                    {prop.rightContent}
+                </CBox>
+            )}
+        </Container>
+    );
+}
+export function CContainerContent<Props extends CContainerProps<"content">>(
+    prop: Props,
+) {
+    const createStyle = useCreateStyle();
+    const { palette, joinNames } = useTheme();
+
+    const props = useMemo(() => {
+        const props = { ...prop } as CContainerProps<"content">;
+        const { hiddle } = props;
+        const styleFontContent = getFont();
+        const className = createStyle("CContainerContent", {
+            ...styleFontContent,
+            size: 16,
+            bgColor: hiddle ? undefined : `${palette.background.paper}44`,
+            boxShadow: hiddle
+                ? undefined
+                : `0px 10px 13px -6px ${palette.shadow.main},0px 20px 31px 3px ${palette.shadow.main}),0px 8px 38px 7px ${palette.shadow.main}`,
+        });
+        props.className = joinNames(props.className, className);
+        return removeProps(props, ["content", "hiddle"]);
     }, [prop, palette]);
 
     return <Container {...props} />;
+}
+
+export default function CContainer<Props extends CContainerProp>(prop: Props) {
+    switch (prop.content) {
+        case "main":
+            return <CContainerMain {...prop} />;
+        case "header":
+            return <CContainerHeader {...prop} />;
+        default:
+            return <CContainerContent {...prop} />;
+    }
 }

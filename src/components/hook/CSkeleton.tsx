@@ -1,19 +1,23 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CSkeleton.tsx"
+//-Path: "react-choco-style/src/components/hook/CSkeleton.tsx"
 import { useMemo } from "react";
-import { applyStyleSheet } from "../custom/StyleSheets";
-import Styled, { ChocoStyledProps } from "../custom/Styled";
+import useTheme from "../../theme/useTheme";
+import removeProps from "../../function/removeProps";
+import useCreateStyle from "../../hook/useCreateClass";
+import { applyStyleSheet } from "../../function/styleSheet";
+import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
-const Skeleton = Styled("div")({
+const Skeleton = CreateStyled("div")({
     of: "h",
     pos: "r",
     bgColor: "#ffffff22",
 });
 
-export type CSkeletonProps = ChocoStyledProps<"div"> & {
-    circle?: boolean;
-};
+export type CSkeletonProps = ChocoStyledProps<"div"> & { circle?: boolean };
 
 export default function CSkeleton<Props extends CSkeletonProps>(prop: Props) {
+    const { joinNames } = useTheme();
+    const createStyle = useCreateStyle();
+
     const props = useMemo(() => {
         const props = { ...prop } as Props;
         const { circle } = props;
@@ -27,20 +31,19 @@ export default function CSkeleton<Props extends CSkeletonProps>(prop: Props) {
             }
         }`);
 
-        const textSc = {
+        const classNameText = createStyle("CSkeleton-text", {
             borR: 2,
             minH: props.style?.fontSize ?? 16,
-        };
-        const circleSc = {
+        });
+        const classNameCircle = createStyle("CSkeleton-circle", {
             borR: "50%",
             h: props.size ?? 64,
             w: props.size ?? 64,
-        };
-
+        });
         if (circle) {
-            props.cs = { ...props.cs, ...circleSc };
+            props.className = joinNames(props.className, classNameText);
         } else {
-            props.cs = { ...props.cs, ...textSc };
+            props.className = joinNames(props.className, classNameCircle);
         }
 
         props.children = (
@@ -58,8 +61,7 @@ export default function CSkeleton<Props extends CSkeletonProps>(prop: Props) {
             />
         );
 
-        delete props.circle;
-        return props;
+        return removeProps(props, ["circle"]);
     }, [prop]);
 
     return <Skeleton {...props} />;

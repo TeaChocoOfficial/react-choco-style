@@ -1,6 +1,9 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/theme/theme.ts"
-import { atom } from "recoil";
+//-Path: "react-choco-style/src/theme/theme.ts"
+import { atom } from "jotai";
+import { StyleTypes } from "../types/ChocoStyle";
 import { ChocoThemeType, ModesKeyType } from "../types/theme";
+import { CustomStylesType } from "../components/custom/CreateStyled";
+import { ColorsType } from "../types/color";
 
 export const getThemeMode = () => {
     if (localStorage && window) {
@@ -18,6 +21,11 @@ export const getThemeMode = () => {
 
 export const ChocoTheme: ChocoThemeType = {
     mode: getThemeMode() ?? "dark",
+    root: {
+        zIndex: {
+            backdrop: 10000,
+        },
+    },
     fonts: {
         family: [
             "-apple-system",
@@ -38,61 +46,76 @@ export const ChocoTheme: ChocoThemeType = {
         },
     },
     breakpoint: {
-        v: 0,
-        h: 600,
-        t: 860,
-        l: 1024,
-        d: 1248,
+        size: {
+            v: 0,
+            h: 600,
+            t: 860,
+            l: 1024,
+            d: 1248,
+        },
+        format: {
+            v: 50,
+            h: 60,
+            t: 80,
+            l: 90,
+            d: 100,
+        },
     },
-    styleSheets: ({ theme }) => {
+    styleSheets: (({ theme }) => {
         const size = 8;
-        return `
-            body {
-                top: 0;
-                left: 0;
-                width: 100dvw;
-                height: 100dvh;
-                position: fixed;
-                color: ${theme.palette.text.primary};
-                background-color: ${theme.palette.background.body};
-            }
-            #root {
-                width: 100%;
-                height: 100%;
-                overflow-y: auto;
-            }
-            a {
-                text-decoration: none;
-            }
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            *::-webkit-scrollbar {
-                z-index: 10000;
-                width: ${size}px;
-                height: ${size}px;
-            }
-            *::-webkit-scrollbar-track {
-                background-color: ${theme.palette.primary.textDisabled}66;
-                border: ${size / 10}px solid ${theme.palette.primary.main};
-            }
-            *::-webkit-scrollbar-thumb {
-                transition: 0.3s;
-                background-color: ${theme.palette.primary.light}99;
-            }
-            *::-webkit-scrollbar-track:hover {
-                border-radius: ${size / 2}px;
-                background-color: ${theme.palette.primary.text};
-                border: ${size / 10}px solid ${theme.palette.primary.light};
-            }
-            *::-webkit-scrollbar-thumb:hover {
-                border-radius: ${size / 2}px;
-                background-color: ${theme.palette.primary.light};
-            }
-        `;
-    },
+        const styles: StyleTypes = {
+            "&*": {
+                m: 0,
+                p: 0,
+                boxSizing: "border-box",
+            },
+            "&body": {
+                t: 0,
+                l: 0,
+                pos: "f",
+                w: "100dvw",
+                h: "100dvh",
+                color: theme.palette.text.primary,
+                bgColor: theme.palette.background.body,
+            },
+            "&#root": {
+                ofy: "a",
+                w: "100%",
+                h: "100%",
+            },
+            "&a": {
+                textDecoration: "none",
+            },
+            "&*::-webkit-scrollbar": {
+                z: 10000,
+                w: size,
+                h: size,
+            },
+            "&*::-webkit-scrollbar-track": {
+                bgColor:
+                    `${theme.palette.primary.textDisabled}66` as ColorsType,
+                borders: { size: size / 10, color: theme.palette.primary.main },
+            },
+            "&*::-webkit-scrollbar-thumb": {
+                trans: 0.3,
+                bgColor: `${theme.palette.primary.light}99` as ColorsType,
+            },
+            "&*::-webkit-scrollbar-track:hover": {
+                borR: size / 2,
+                bgColor: theme.palette.primary.text,
+                borders: {
+                    size: size / 10,
+                    color: theme.palette.primary.light,
+                },
+            },
+            "&*::-webkit-scrollbar-thumb:hover": {
+                borR: size / 2,
+                bgColor: theme.palette.primary.light,
+            },
+        };
+        return styles as StyleTypes;
+    }) as CustomStylesType,
+    joinNames: (...names: (string | undefined)[]) => names.join(" "),
     modes: {
         default: {
             common: {
@@ -189,7 +212,4 @@ export const ChocoTheme: ChocoThemeType = {
     },
 };
 
-export const themeModeAtom = atom<ModesKeyType>({
-    key: "theme mode",
-    default: ChocoTheme.mode,
-});
+export const themeModeAtom = atom<ModesKeyType>(ChocoTheme.mode);

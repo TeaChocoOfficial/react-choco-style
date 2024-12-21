@@ -1,15 +1,19 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CSelect.tsx"
+//-Path: "react-choco-style/src/components/hook/CSelect.tsx"
 import { useMemo } from "react";
-import { getFont } from "../custom/font";
-import { formatSize } from "../custom/size";
+import { getFont } from "../../function/font";
+import useTheme from "../../theme/useTheme";
+import { formatSize } from "../../function/size";
 import { ColorType } from "../../types/color";
-import removeProps from "../../hook/removeProps";
-import ChocoStyleSheets from "../custom/StyleSheets";
+import removeProps from "../../function/removeProps";
+import useCreateStyle from "../../hook/useCreateClass";
 import { ChocoStyleType } from "../../types/ChocoStyle";
-import GetSetColorProps from "../../hook/GetSetColorProps";
-import Styled, { ChocoStyledProps } from "../custom/Styled";
+import useGetSetColorProps from "../../hook/useGetSetColorProps";
+import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
-const Select = Styled("div")({
+const Select = CreateStyled(
+    "div",
+    "Select",
+)({
     a: "c",
     j: "c",
     of: "h",
@@ -20,7 +24,10 @@ const Select = Styled("div")({
     p: formatSize(4),
     borR: formatSize(2),
 });
-const Option = Styled("li")({
+const Option = CreateStyled(
+    "li",
+    "SelectOption",
+)({
     size: 16,
     animation: 0.3,
     p: formatSize(4),
@@ -58,8 +65,9 @@ export type CSelectItemProps = ChocoStyledProps<"li"> & {
 };
 
 export function CSelectItem<Props extends CSelectItemProps>(prop: Props) {
-    const chocoStyleSheets = ChocoStyleSheets();
-    const getSetColorProps = GetSetColorProps();
+    const { joinNames } = useTheme();
+    const createStyle = useCreateStyle();
+    const getSetColorProps = useGetSetColorProps();
 
     const props = useMemo(() => {
         const fontStyle = getFont();
@@ -68,28 +76,28 @@ export function CSelectItem<Props extends CSelectItemProps>(prop: Props) {
         const setColorProps = { outline, disabled, setColor };
         const { setColors } = getSetColorProps(setColorProps);
 
-        const sheets = chocoStyleSheets(
-            {
-                p: 40,
-                ":checked": {
-                    bgColor: setColors?.bgHover,
-                },
-                ":disabled": {
-                    bgColor: setColors?.action,
-                },
-                ":hover": {
-                    boxShadow: `0 0 10px 100px #1882A8 inset`,
-                    bgColor: setColors?.color,
-                    fontSize: 64,
-                },
+        const className = createStyle("CSelectItem", fontStyle);
+        const { styles } = getSetColorProps(setColorProps);
+        const classNameCustom = createStyle("CSelectItem-custom", {
+            ...styles,
+            "&$:checked": {
+                bgColor: setColors?.bgHover,
             },
-            true,
+            "&$:disabled": {
+                bgColor: setColors?.action,
+            },
+            "&$:hover": {
+                boxShadow: `0 0 10px 100px #1882A8 inset`,
+                bgColor: setColors?.color,
+                fontSize: 64,
+            },
+        });
+
+        props.className = joinNames(
+            props.className,
+            className,
+            classNameCustom,
         );
-
-        const { className } = getSetColorProps(setColorProps);
-
-        props.className = `${sheets.className} ${className}`;
-        props.style = { ...fontStyle, ...props.style };
 
         return removeProps(props, ["disabled", "outline", "setColor"]);
     }, [prop]);
@@ -101,17 +109,16 @@ export default function CSelect<
     Option extends CSelectOptions = CSelectOptions,
     Props extends CSelectProps<Option> = CSelectProps<Option>,
 >(prop: Props) {
-    const getSetColorProps = GetSetColorProps();
+    const { joinNames } = useTheme();
+    const createStyle = useCreateStyle();
+    const getSetColorProps = useGetSetColorProps();
 
     const props = useMemo(() => {
         const props = { ...prop } as Props;
         const fontStyle = getFont("medium");
         const { render, disabled, outline, options, setColor } = props;
         const setColorProps = { outline, disabled, setColor };
-
-        const { className } = getSetColorProps(setColorProps);
-
-        props.className = className;
+        const { styles } = getSetColorProps(setColorProps);
 
         if (render) {
             const Options = options?.map((value, index) => {
@@ -119,7 +126,14 @@ export default function CSelect<
             });
             props.children = Options;
         }
-        props.style = { ...fontStyle, ...props.style };
+
+        const className = createStyle("CSelect", fontStyle);
+        const classNameCustom = createStyle("CSelect-custom", styles);
+        props.className = joinNames(
+            props.className,
+            className,
+            classNameCustom,
+        );
         return props;
     }, [prop]);
 

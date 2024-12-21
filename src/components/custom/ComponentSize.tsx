@@ -1,9 +1,9 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/ComponentSize.tsx"
 import { useMemo } from "react";
-import { formatSize } from "./size";
-import { useRecoilValue } from "recoil";
+import { useAtomValue } from "jotai";
 import useTheme from "../../theme/useTheme";
 import { innerAtom } from "../layout/ChocoStart";
+import { formatSize } from "../../function/size";
 import { Size, Sizes, SizeValue } from "../../types/Size";
 
 export function ComponentSize<S = SizeValue>({
@@ -14,7 +14,7 @@ export function ComponentSize<S = SizeValue>({
     children: (value: S) => React.ReactNode;
 }): React.ReactNode {
     const { breakpoint } = useTheme();
-    const inner = useRecoilValue(innerAtom);
+    const inner = useAtomValue(innerAtom);
 
     const sizes = useMemo(() => {
         if (typeof size === "number") {
@@ -26,9 +26,9 @@ export function ComponentSize<S = SizeValue>({
 
     const value = useMemo(() => {
         let value = size as S;
-        const keys = Object.keys(breakpoint) as (keyof typeof breakpoint)[];
+        const keys = Object.keys(breakpoint) as (keyof typeof breakpoint.size)[];
         keys.map((key) => {
-            const breakpoints = breakpoint[key];
+            const breakpoints = breakpoint.size[key];
             const matche = inner.width > breakpoints;
 
             if (matche && sizes?.[key] !== undefined) {

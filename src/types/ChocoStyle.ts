@@ -1,8 +1,22 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/ChocoStyle.ts"
+//-Path: "react-choco-style/src/types/ChocoStyle.ts"
 import React from "react";
 import { Sizes } from "./Size";
 import { ColorsType } from "./color";
 
+export type KeysStyleTypes =
+    | keyof ChocoStyleType
+    | keyof React.CSSProperties
+    | KeyStylesAndType;
+
+export type StyleTypes = {
+    [key in KeysStyleTypes]?: key extends keyof ChocoStyleType
+        ? ChocoStyleType[key]
+        : key extends keyof React.CSSProperties
+        ? Sizes<React.CSSProperties[key]>
+        : key extends KeyStylesAndType
+        ? StyleTypes
+        : never;
+};
 export type ChocoStyleTypes = {
     [key in keyof ChocoStyleType]?: ChocoStyleType[key];
 };
@@ -11,9 +25,25 @@ export type ChocoStylePropsTypes = {
     [key in keyof ChocoStylePropsType]?: ChocoStylePropsType[key];
 };
 
-export type LineStyleType = {
+export type LinesStyleType = {
     size?: number;
     width?: Sizes;
+    color?: ColorsType;
+    style?:
+        | "dotted"
+        | "dashed"
+        | "solid"
+        | "double"
+        | "groove"
+        | "ridge"
+        | "inset"
+        | "outset"
+        | "none"
+        | "hidden";
+};
+
+export type LineStyleType = {
+    width?: number | string;
     color?: ColorsType;
     style?:
         | "dotted"
@@ -38,7 +68,7 @@ export type ChocoStyleDefType = {
     //* Style
     //? background color background-color
     bg?: string;
-    color?: ColorsType;
+    clr?: ColorsType;
     bgColor?: ColorsType;
     bgImage?: string;
 
@@ -89,7 +119,7 @@ export type ChocoStyleDefType = {
 
     //* Gap
     //? all top bottom left right left&right top&bottom
-    gap?: Sizes;
+    gaps?: Sizes;
     gapT?: Sizes;
     gapB?: Sizes;
     gapL?: Sizes;
@@ -108,19 +138,19 @@ export type ChocoStyleDefType = {
 
     //* Border
     borR?: Sizes;
-    borders?: LineStyleType | string;
-    borderT?: LineStyleType | string;
-    borderB?: LineStyleType | string;
-    borderL?: LineStyleType | string;
-    borderR?: LineStyleType | string;
-    borderX?: LineStyleType | string;
-    borderY?: LineStyleType | string;
+    borders?: LinesStyleType | string;
+    borderT?: LinesStyleType | string;
+    borderB?: LinesStyleType | string;
+    borderL?: LinesStyleType | string;
+    borderR?: LinesStyleType | string;
+    borderX?: LinesStyleType | string;
+    borderY?: LinesStyleType | string;
 
     //* Outline
-    outlines?: LineStyleType | string;
+    outlines?: LinesStyleType | string;
 
     //* transition
-    animation?: number | string;
+    trans?: number | string;
 
     //* Transform
     transform?: React.CSSProperties["transform"];
@@ -185,7 +215,7 @@ export type ChocoStylePropsType<
 
     //* Keywords
     //? width&height:100% width&height:100view
-    cs?: ChocoStyleType;
+    cs?: StyleTypes;
     full?: boolean;
     fullV?: boolean;
 
@@ -283,21 +313,51 @@ export type ChocoStylePropsType<
     usAll?: boolean;
 };
 
-export type ChocoStylesKeyIsType =
-    | "root"
-    | "hover"
-    | "focus"
-    | "active"
-    | "target"
-    | "checked"
-    | "disabled";
+export type KeyStylesAndKoronTypes =
+    | ":root"
+    | ":hover"
+    | ":focus"
+    | ":active"
+    | ":target"
+    | ":checked"
+    | ":disabled";
 
-export type ChocoStylesKeyType = `&${string}` | `:${ChocoStylesKeyIsType}`;
+export type KeyStylesAndKoronsTypes =
+    | "::-webkit-scrollbar"
+    | "::-webkit-scrollbar-track"
+    | "::-webkit-scrollbar-thumb";
+
+export type KeyStylesAndKoronType = `${
+    | ""
+    | KeyStylesAndKoronTypes
+    | KeyStylesAndKoronsTypes
+    | `${KeyStylesAndKoronsTypes}${KeyStylesAndKoronTypes}`}`;
+
+export type KeyStylesStartAndType = "" | "&" | "& " | "$";
+
+export type KeyStylesAndTypes =
+    | `${KeyStylesStartAndType}${
+          | `.${string}`
+          | `#${string}`
+          | `${KeyStylesAndKoronType}`}`
+    | `${keyof JSX.IntrinsicElements | "*"}${"" | `${KeyStylesAndKoronType}`}`;
+
+export type KeyStylesAndType = `&${KeyStylesAndTypes}`;
+
+export type KeyMediaTypes = `@media ${string}`;
+
+export type SelectorStyleType =
+    | "*"
+    | `${keyof JSX.IntrinsicElements}`
+    | `#${string}`
+    | KeyMediaTypes
+    | KeyStylesAndType
+    | KeyStylesAndTypes;
 
 export type ChocoStylesType<
     Style extends ChocoStyleType | React.CSSProperties =
         | ChocoStyleType
         | React.CSSProperties,
 > = Style & {
-    [key in ChocoStylesKeyType]?: Style;
+    [key in KeyStylesAndType]?: Style;
 };

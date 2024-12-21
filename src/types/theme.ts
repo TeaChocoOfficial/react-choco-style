@@ -1,8 +1,15 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/theme.ts"
+//-Path: "react-choco-style/src/types/theme.ts"
 import { SizeKey } from "./Size";
 import { ColorHexType } from "./color";
+import { CustomStylesType } from "../components/custom/CreateStyled";
 
 export type ModesKeyType = "dark" | "light";
+
+export type RootThemeType = {
+    zIndex: {
+        backdrop: number;
+    };
+};
 
 export type ThemeFontsType = {
     family: string;
@@ -11,6 +18,11 @@ export type ThemeFontsType = {
         medium: number;
         bold: number;
     };
+};
+
+export type BreakpointType = {
+    format: Record<SizeKey, number>;
+    size: Record<SizeKey, number>;
 };
 
 export type CommonColorsTypes = {
@@ -54,9 +66,11 @@ export type PaletteType = {
 
 export type DefChocoThemeType = {
     mode: ModesKeyType;
+    root: RootThemeType;
     fonts: ThemeFontsType;
-    breakpoint: Record<SizeKey, number>;
-    styleSheets: ({ theme }: { theme: UseChocoThemeType }) => string;
+    breakpoint: BreakpointType;
+    styleSheets: CustomStylesType;
+    joinNames: (...names: (string | undefined)[]) => string;
 };
 
 export type ChocoThemeType = DefChocoThemeType & {

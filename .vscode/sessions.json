@@ -1,0 +1,178 @@
+{
+    "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v10/terminal-keeper.json",
+    "theme": "tribe",
+    "active": "react-choco-style",
+    "activateOnStartup": true,
+    "keepExistingTerminals": true,
+    "sessions": {
+        "default": [
+            {
+                "name": "hello",
+                "autoExecuteCommands": true,
+                "icon": "person",
+                "color": "terminal.ansiGreen",
+                "commands": [
+                    "echo hello"
+                ]
+            },
+            [
+                {
+                    "name": "docker:ros",
+                    "commands": [
+                        ""
+                    ]
+                },
+                {
+                    "name": "docker:k8s",
+                    "commands": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "name": "docker:nats",
+                    "commands": [
+                        ""
+                    ]
+                },
+                {
+                    "name": "docker:fleet",
+                    "commands": [
+                        ""
+                    ]
+                }
+            ]
+        ],
+        "saved-session": [
+            {
+                "name": "connect",
+                "commands": [
+                    ""
+                ]
+            }
+        ],
+        "TeaChoco-Official": [
+            {
+                "name": "Run dev",
+                "autoExecuteCommands": true,
+                "icon": "run",
+                "color": "terminal.ansiGreen",
+                "cwd": "C:\\dev\\TeaChoco-Official",
+                "commands": [
+                    "concurrently -n \"Client,Api,Server,Dev\" -c \"blue,yellow,red,green\" \"cd client && pnpm dev\" \"cd api && pnpm run dev\" \"cd server && pnpm dev\" \"cd dev && pnpm dev\""
+                ]
+            },
+            {
+                "name": "Run desktop",
+                "icon": "device-desktop",
+                "color": "terminal.ansiBrightBlue",
+                "cwd": "C:\\dev\\TeaChoco-Official\\desktop",
+                "commands": [
+                    "pnpm dev"
+                ]
+            },
+            {
+                "name": "Run mobile",
+                "icon": "device-mobile",
+                "color": "terminal.ansiCyan",
+                "cwd": "C:\\dev\\TeaChoco-Official\\mobile",
+                "commands": [
+                    "pnpm dev"
+                ]
+            },
+            {
+                "name": "devs",
+                "color": "terminal.ansiBrightRed",
+                "cwd": "C:\\dev\\TeaChoco-Official",
+                "commands": [
+                    "concurrently -n \"Client,Api,Server,Dev\" -c \"blue,yellow,red,green\" \"cd client && pnpm dev\" \"cd api && pnpm run dev\" \"cd server && pnpm dev\" \"cd dev && pnpm dev\""
+                ]
+            },
+            {
+                "name": "build",
+                "icon": "project",
+                "color": "terminal.ansiGreen",
+                "cwd": "C:\\dev\\TeaChoco-Official",
+                "commands": [
+                    "concurrently -n \"Client,Api,Server,Dev\" -c \"blue,yellow,red,green\" \"cd client && pnpm build\" \"cd api && pnpm build\" \"cd server && pnpm build\" \"cd dev && pnpm build\""
+                ]
+            },
+            {
+                "name": "updateversion",
+                "cwd": "C:\\dev\\TeaChoco-Official",
+                "commands": [
+                    "node update-version.js "
+                ]
+            },
+            [
+                {
+                    "name": "Client",
+                    "icon": "screen-full",
+                    "color": "terminal.ansiBrightBlue",
+                    "cwd": "C:\\dev\\TeaChoco-Official\\client",
+                    "commands": [
+                        "pnpm install --save "
+                    ]
+                },
+                {
+                    "name": "Api",
+                    "icon": "database",
+                    "color": "terminal.ansiBrightYellow",
+                    "cwd": "C:\\dev\\TeaChoco-Official\\api",
+                    "commands": [
+                        "pnpm install --save "
+                    ]
+                },
+                {
+                    "name": "Server",
+                    "icon": "server",
+                    "color": "terminal.ansiBrightRed",
+                    "cwd": "C:\\dev\\TeaChoco-Official\\server",
+                    "commands": [
+                        "pnpm install --save "
+                    ]
+                },
+                {
+                    "name": "Dev",
+                    "icon": "code",
+                    "color": "terminal.ansiBrightGreen",
+                    "cwd": "C:\\dev\\TeaChoco-Official\\dev",
+                    "commands": [
+                        "pnpm install --save "
+                    ]
+                }
+            ]
+        ],
+        "react-choco-style": [
+            {
+                "name": "Run dev",
+                "icon": "run",
+                "color": "terminal.ansiBrightBlue",
+                "autoExecuteCommands": true,
+                "cwd": "C:\\dev\\react-choco-style",
+                "commands": [
+                    "pnpm dev"
+                ]
+            },
+            {
+                "name": "Build",
+                "icon": "project",
+                "color": "terminal.ansiGreen",
+                "cwd": "C:\\dev\\react-choco-style",
+                "commands": [
+                    "pnpm build"
+                ]
+            },
+            {
+                "name": "Public",
+                "icon": "globe",
+                "color": "terminal.ansiGreen",
+                "cwd": "C:\\dev\\react-choco-style",
+                "commands": [
+                    "pnpm public "
+                ]
+            }
+        ]
+    }
+}

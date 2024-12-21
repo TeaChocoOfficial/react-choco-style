@@ -1,16 +1,21 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CIconButton.tsx"
 import { v4 } from "uuid";
-import { getFont } from "../custom/font";
+import { getFont } from "../../function/font";
 import { useMemo, useState } from "react";
-import { formatSize } from "../custom/size";
+import useTheme from "../../theme/useTheme";
+import { formatSize } from "../../function/size";
 import { ColorType } from "../../types/color";
 import { To, useNavigate } from "react-router-dom";
-import { applyStyleSheet } from "../custom/StyleSheets";
-import GetSetColorProps from "../../hook/GetSetColorProps";
-import Styled, { ChocoStyledProps } from "../custom/Styled";
-import removeProps from "../../hook/removeProps";
+import removeProps from "../../function/removeProps";
+import useCreateStyle from "../../hook/useCreateClass";
+import { applyStyleSheet } from "../../function/styleSheet";
+import useGetSetColorProps from "../../hook/useGetSetColorProps";
+import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
-const IconButton = Styled("button")({
+const IconButton = CreateStyled(
+    "button",
+    "CIconButton",
+)({
     a: "c",
     j: "c",
     of: "h",
@@ -20,7 +25,10 @@ const IconButton = Styled("button")({
     animation: 0.3,
 });
 
-const Effect = Styled("span")({
+const Effect = CreateStyled(
+    "span",
+    "CIconButton-effect",
+)({
     op: 0,
     pos: "a",
     borR: "50%",
@@ -38,14 +46,16 @@ export default function CIconButton<Props extends CIconButtonProps>(
     prop: Props,
 ) {
     const navigate = useNavigate();
-    const getSetColorProps = GetSetColorProps();
-    const { to, outline, children, onClick } = prop;
+    const { joinNames } = useTheme();
+    const createStyle = useCreateStyle();
+    const { to, children, onClick } = prop;
+    const getSetColorProps = useGetSetColorProps();
     const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);
 
     const { props, addPressEffect } = useMemo(() => {
         const props = { ...prop } as Props;
         const fontStyle = getFont("medium");
-        const { setColor, disabled } = props;
+        const { setColor, disabled, outline } = props;
 
         applyStyleSheet(`@keyframes CButton-ripple {
             0% {
@@ -62,21 +72,25 @@ export default function CIconButton<Props extends CIconButtonProps>(
             }
         }`);
 
-        const { className, setColors } = getSetColorProps({
+        props.className = joinNames(
+            props.className,
+            createStyle("CIconButton", {
+                ...fontStyle,
+                size: props.size ?? 16,
+                p: formatSize(((props.size ?? 16) / 16) * 2),
+            }),
+        );
+
+        const { styles, setColors } = getSetColorProps({
             outline,
             disabled,
             setColor,
         });
 
-        props.className = className;
-
-        props.cs = {
-            size: props.size ?? 16,
-            p: formatSize(((props.size ?? 16) / 16) * 2),
-            ...props.cs,
-        };
-
-        props.style = { ...fontStyle, ...props.style };
+        props.className = joinNames(
+            props.className,
+            createStyle("CIconButton", styles),
+        );
 
         const addPressEffect = () => {
             const id = v4();
@@ -114,11 +128,9 @@ export default function CIconButton<Props extends CIconButtonProps>(
             {...props}
             onClick={(event) => {
                 addPressEffect();
+                onClick?.(event);
                 if (to !== undefined) {
                     navigate(to);
-                }
-                if (onClick) {
-                    onClick(event);
                 }
             }}>
             {pressEffects}

@@ -1,18 +1,20 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/theme/useTheme.tsx"
+//-Path: "react-choco-style/src/theme/useTheme.tsx"
 import { useMemo } from "react";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { ChocoTheme, themeModeAtom } from "./theme";
-import { ModesKeyType, PaletteType, UseChocoThemeType } from "../types/theme";
+import { PaletteType, UseChocoThemeType } from "../types/theme";
 
 export default function useTheme(): UseChocoThemeType {
-    const [mode, setMode] = useRecoilState<ModesKeyType>(themeModeAtom);
+    const [mode, setMode] = useAtom(themeModeAtom);
 
     return useMemo(() => {
         return {
             mode: mode,
+            root: ChocoTheme.root,
             fonts: ChocoTheme.fonts,
             breakpoint: ChocoTheme.breakpoint,
             styleSheets: ChocoTheme.styleSheets,
+            joinNames: ChocoTheme.joinNames,
             palette: {
                 ...ChocoTheme.modes.default,
                 ...ChocoTheme.modes[mode],
