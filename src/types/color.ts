@@ -1,4 +1,6 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/color.ts"
+//-Path: "react-choco-style/src/types/color.ts"
+
+type KeyConst<Const extends Record<string, unknown>> = Const[keyof Const];
 
 const ColorDefault = {
     INFO: "info",
@@ -9,7 +11,7 @@ const ColorDefault = {
     SECONDARY: "secondary",
 } as const;
 
-export type ColorDefaultType = (typeof ColorDefault)[keyof typeof ColorDefault];
+export type ColorDefaultType = KeyConst<typeof ColorDefault>;
 
 const ColorText = {
     INFO: "infoText",

@@ -1,11 +1,5 @@
-//-Path: "react-choco-style/src/app/Main.tsx"
-import App from "./App";
-import { InitChoco } from "@teachocoofficial/react-choco-style";
+//-Path: "react-choco-style/src/main.tsx"
+import Setup from "./Setup";
+import { createRoot } from "react-dom/client";
 
-export default function Main() {
-    return (
-        <InitChoco>
-            <App />
-        </InitChoco>
-    );
-}
+createRoot(document.getElementById("root")!).render(<Setup />);
