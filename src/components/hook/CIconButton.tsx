@@ -101,7 +101,7 @@ export default function CIconButton<Props extends CIconButtonProps>(
                     key={id}
                     h={formatSize(size)}
                     w={formatSize(size)}
-                    bgColor={setColors?.action}
+                    bgClr={setColors?.action}
                     style={{
                         animation: "CButton-ripple 0.5s linear forwards",
                     }}

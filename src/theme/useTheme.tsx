@@ -1,11 +1,10 @@
 //-Path: "react-choco-style/src/theme/useTheme.tsx"
 import { useMemo } from "react";
-import { useAtom } from "jotai";
 import { ChocoTheme, themeModeAtom } from "./theme";
 import { PaletteType, UseChocoThemeType } from "../types/theme";
 
 export default function useTheme(): UseChocoThemeType {
-    const [mode, setMode] = useAtom(themeModeAtom);
+    const [mode, setMode] = themeModeAtom.use();
 
     return useMemo(() => {
         return {

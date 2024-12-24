@@ -81,14 +81,14 @@ export function CSelectItem<Props extends CSelectItemProps>(prop: Props) {
         const classNameCustom = createStyle("CSelectItem-custom", {
             ...styles,
             "&$:checked": {
-                bgColor: setColors?.bgHover,
+                bgClr: setColors?.bgHover,
             },
             "&$:disabled": {
-                bgColor: setColors?.action,
+                bgClr: setColors?.action,
             },
             "&$:hover": {
                 boxShadow: `0 0 10px 100px #1882A8 inset`,
-                bgColor: setColors?.color,
+                bgClr: setColors?.color,
                 fontSize: 64,
             },
         });

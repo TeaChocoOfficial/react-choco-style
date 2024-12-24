@@ -1,6 +1,6 @@
 {
-    "name": "@teachocoofficial/react-choco-style",
-    "version": "0.1.0",
+    "name": "@teachoco-official/react-choco-style",
+    "version": "0.1.1",
     "private": false,
     "type": "module",
     "main": "dist/index.js",
@@ -28,13 +28,12 @@
         "@fortawesome/free-regular-svg-icons": "^6.7.1",
         "@fortawesome/free-solid-svg-icons": "^6.7.1",
         "@fortawesome/react-fontawesome": "^0.2.2",
+        "@teachoco-official/react-atom": "^0.0.5",
         "@types/crypto-js": "^4.2.2",
         "crypto-js": "^4.2.0",
-        "jotai": "^2.10.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^7.0.1",
-        "recoil": "^0.7.7",
         "uuid": "^11.0.3"
     },
     "author": "teachoco-official",
@@ -53,11 +52,12 @@
         "@rollup/plugin-commonjs": "^28.0.1",
         "@rollup/plugin-node-resolve": "^15.3.0",
         "@rollup/plugin-typescript": "^12.1.1",
+        "@teachoco-official/react-atom": "^0.0.5",
         "@types/crypto-js": "^4.2.2",
         "@types/react-dom": "^19.0.2",
         "@vitejs/plugin-react-swc": "^3.7.2",
         "crypto-js": "^4.2.0",
-        "jotai": "^2.10.4",
+        "jotai": "^2.11.0",
         "react-router-dom": "^7.0.1",
         "rollup": "^4.27.4",
         "rollup-plugin-peer-deps-external": "^2.2.4",
@@ -76,5 +76,6 @@
     "bugs": {
         "url": "https://github.com/TeaChocoOfficial/react-choco-style/issues"
     },
-    "homepage": "https://github.com/TeaChocoOfficial/react-choco-style#readme"
+    "homepage": "https://github.com/TeaChocoOfficial/react-choco-style#readme",
+    "packageManager": "pnpm@9.15.1+sha512.1acb565e6193efbebda772702950469150cf12bcc764262e7587e71d19dc98a423dff9536e57ea44c49bdf790ff694e83c27be5faa23d67e0c033b583be4bfcf"
 }

@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/custom/size.ts"
+//-Path: "react-choco-style/src/function/size.ts"
 import { ChocoTheme } from "../theme/theme";
 import { Size, SizeKey, SizeValue } from "../types/Size";
 
@@ -26,27 +26,28 @@ export function formatSize<S = SizeValue>(
     return output;
 }
 
-export type CallbackSizeType = <MaxSize, Return>(
+export type CallbackSizeType = <MaxSize, Vlaue, Return>(
     size: MaxSize,
-    callback: (value: MaxSize, key: SizeKey) => Return,
+    callback: (value: Vlaue, key: SizeKey) => Return,
 ) => Size<Return>;
 
-export function callbackSize<MaxSize, Return>(
+export function callbackSize<MaxSize, Vlaue, Return>(
     size: MaxSize,
-    callback: (value: MaxSize, key: SizeKey) => Return,
+    callback: (value: Vlaue, key: SizeKey) => Return,
 ): Size<Return> {
-    let sizes: Size<Return>;
+    let sizes: Size<Return> = {};
     const keysBreakpoint = Object.keys(ChocoTheme.breakpoint.size) as SizeKey[];
     if (typeof size === "number") {
         sizes = formatSize(size);
-    } else {
-        const sizeKeys = Object.keys(size as object) as (keyof Size)[];
+    } else if (typeof size === "object") {
+        const Size = size as object;
+        const sizeKeys = Object.keys(Size) as (keyof Size)[];
         if (sizeKeys.find((key) => keysBreakpoint.includes(key))) {
             const keySize = Object.keys(
                 ChocoTheme.breakpoint.format,
             ) as SizeKey[];
             sizes = keySize.reduce<Size<Return>>((acc, key) => {
-                acc[key] = size[key as keyof typeof size] as Return;
+                acc[key] = Size[key as keyof typeof Size] as Return;
                 return acc;
             }, {});
         } else {
@@ -54,20 +55,20 @@ export function callbackSize<MaxSize, Return>(
                 ChocoTheme.breakpoint.format,
             ) as SizeKey[];
             sizes = keySize.reduce<Size<Return>>((acc, key) => {
-                acc[key] = size as unknown as Return;
+                acc[key] = Size as unknown as Return;
                 return acc;
             }, {});
         }
     }
 
-    let oldValue = 0 as MaxSize;
+    let oldValue = 0 as Vlaue;
     const output: Size<Return> = {};
     const keys = Object.keys(sizes) as SizeKey[];
     keys.forEach((key) => {
-        const value = (sizes[key] ?? oldValue) as MaxSize;
+        const value = (sizes[key] ?? oldValue) as Vlaue;
         oldValue = value;
         output[key] = callback(value, key);
-    });
+    })
 
     return output;
 }

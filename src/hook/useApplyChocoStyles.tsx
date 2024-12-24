@@ -4,22 +4,28 @@ import {
     KeyStylesAndType,
     SelectorStyleType,
 } from "../types/ChocoStyle";
-import { useCallback } from "react";
-import { SizeKey } from "../types/Size";
-import useTheme from "../theme/useTheme";
-import useChocoStyle from "./useChocoStyle";
 import useSetStyleSheets, {
     SetChocoSheetType,
     SetChocoStyleSheetType,
 } from "./useSetStyleSheets";
+import { SizeKey } from "../types/Size";
+import useTheme from "../theme/useTheme";
+import useChocoStyle from "./useChocoStyle";
 import { ResponsiveCSSType } from "../types/style";
+import { useCallback, useEffect, useState } from "react";
 import useConvertResponsive from "./useConvertResponsive";
 
 export default function useApplyChocoStyles() {
     const { breakpoint } = useTheme();
     const ChocoStyle = useChocoStyle();
-    const { addStyle } = useSetStyleSheets();
+    const SetStyleSheets = useSetStyleSheets();
     const ConvertResponsive = useConvertResponsive();
+    const [styleQueue, setStyleQueue] = useState<SetChocoSheetType[]>([]);
+
+    useEffect(() => {
+        // Apply queued styles after render
+        styleQueue.forEach((style) => SetStyleSheets(style));
+    }, [styleQueue, SetStyleSheets]);
 
     return useCallback(
         (
@@ -34,7 +40,7 @@ export default function useApplyChocoStyles() {
             return keyAndChocoStyles.map((selectorTag) => {
                 const newCss = ChocoStyle(andChocoStyles[selectorTag]);
                 const coverts = ConvertResponsive(selectorTag, newCss);
-                // console.log(selectorTag, newCss, andChocoStyles[selectorTag]);
+                // console.log( newCss, andChocoStyles[selectorTag]);
                 const keysCoverts = Object.keys(
                     coverts,
                 ) as (keyof ResponsiveCSSType)[];
@@ -46,6 +52,8 @@ export default function useApplyChocoStyles() {
                                 if (size !== undefined) {
                                     if (size > 0) {
                                         const selector: SelectorStyleType = `@media only screen and (min-width: ${size}px)`;
+                                        const importantMedia =
+                                            (important || 0) + size;
                                         const style = newCss[
                                             key
                                         ] as React.CSSProperties;
@@ -53,18 +61,18 @@ export default function useApplyChocoStyles() {
                                             [
                                                 {
                                                     style,
-                                                    important,
                                                     type: "style",
                                                     css: coverts[key],
                                                     selector: selectorTag,
+                                                    important: importantMedia,
                                                 },
                                             ];
                                         // console.log(style, styles, coverts[key]);
                                         return {
                                             styles,
                                             selector,
-                                            important,
                                             type: "media",
+                                            important: importantMedia,
                                             css: `${selector} {${coverts[key]}}`,
                                         };
                                     } else {
@@ -87,11 +95,14 @@ export default function useApplyChocoStyles() {
                             }
                         })
                         .reverse();
-
-                newCoverts.forEach((style) => style && addStyle(style));
+                // Queue styles instead of applying directly
+                const validStyles = newCoverts.filter(
+                    (style): style is SetChocoSheetType => !!style,
+                );
+                setStyleQueue((prev) => [...prev, ...validStyles]);
                 return coverts;
             });
         },
-        [],
+        [SetStyleSheets],
     );
 }

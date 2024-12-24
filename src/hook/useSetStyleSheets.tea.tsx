@@ -1,11 +1,10 @@
 //-Path: "react-choco-style/src/hook/useSetStyleSheets.tsx"
 import { getHash } from "./useCreateClass";
-import { useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { SelectorStyleType } from "../types/ChocoStyle";
+import { createAtom } from "@teachoco-official/react-atom";
 import { convertToStyleSheet } from "../function/styleSheet";
 import StyleSheetManager from "../function/StyleSheetManager";
-import { createAtom } from "@teachoco-official/react-atom";
 
 export interface BaseChocoSheet {
     css: string;
@@ -47,6 +46,8 @@ export interface SetChocoMediaSheetType extends SetBaseChocoSheet {
 export type SetChocoSheetType = SetChocoStyleSheetType | SetChocoMediaSheetType;
 
 export type ChocoSheetsMapType = Map<SelectorStyleType, ChocoSheetType>;
+
+const ChocoSheetsAtom = createAtom<ChocoSheetsMapType>(new Map());
 
 export const formatChocoSheet = (sheet: SetChocoSheetType): ChocoSheetType => {
     const base: BaseChocoSheet = {
@@ -91,8 +92,6 @@ export const formatChocoSheet = (sheet: SetChocoSheetType): ChocoSheetType => {
     }
 };
 
-const ChocoSheetsAtom = createAtom<ChocoSheetsMapType>(new Map());
-
 export function SetStyleSheetsInit({
     children,
 }: {
@@ -122,14 +121,12 @@ export function SetStyleSheetsInit({
 }
 
 export default function useSetStyleSheets() {
-    const setChocoSheets = useSetAtom(ChocoSheetsAtom.atomValue);
+    const setChocoSheets = ChocoSheetsAtom.set();
 
     return useCallback((sheet: SetChocoSheetType) => {
         const formattedSheet = formatChocoSheet(sheet);
-        // console.log(sheet);
 
         // Update state
-
         setChocoSheets((prev) => {
             const newMap = new Map(prev);
             const existingSheet = newMap.get(formattedSheet.selector);
@@ -177,8 +174,6 @@ export default function useSetStyleSheets() {
                                 existingSheet.selector,
                                 formatChocoSheet(existingSheet),
                             );
-                        } else {
-                            return prev;
                         }
                     }
                 } else {
@@ -192,8 +187,6 @@ export default function useSetStyleSheets() {
                         formattedSheet.hash === existingSheet.hash)
                 ) {
                     newMap.set(formattedSheet.selector, formattedSheet);
-                } else {
-                    return prev;
                 }
             }
 

@@ -8,7 +8,7 @@
         "declarationDir": "./dist",
         "strict": true,
         "paths": {
-            "@teachocoofficial/react-choco-style": ["./src/index.ts"]
+            "@teachoco-official/react-choco-style": ["./src/index.ts"]
         },
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,

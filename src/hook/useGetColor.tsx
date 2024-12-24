@@ -75,7 +75,7 @@ export default function useGetColor(): (color?: ColorsType) => string | undefine
                     return palette.success.text;
 
                 default:
-                    if (color?.startsWith("palette.")) {
+                    if (color?.startsWith?.("palette.")) {
                         const paletteColors = color.split(".");
                         let paletteColor: string | string[] | object = palette;
                         for (let i = 1; i < paletteColors.length; i++) {

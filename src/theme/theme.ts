@@ -1,9 +1,9 @@
 //-Path: "react-choco-style/src/theme/theme.ts"
-import { atom } from "jotai";
+import { ColorsType } from "../types/color";
 import { StyleTypes } from "../types/ChocoStyle";
+import { createAtom } from "@teachoco-official/react-atom";
 import { ChocoThemeType, ModesKeyType } from "../types/theme";
 import { CustomStylesType } from "../components/custom/CreateStyled";
-import { ColorsType } from "../types/color";
 
 export const getThemeMode = () => {
     if (localStorage && window) {
@@ -76,7 +76,7 @@ export const ChocoTheme: ChocoThemeType = {
                 w: "100dvw",
                 h: "100dvh",
                 color: theme.palette.text.primary,
-                bgColor: theme.palette.background.body,
+                bgClr: theme.palette.background.body,
             },
             "&#root": {
                 ofy: "a",
@@ -92,17 +92,16 @@ export const ChocoTheme: ChocoThemeType = {
                 h: size,
             },
             "&*::-webkit-scrollbar-track": {
-                bgColor:
-                    `${theme.palette.primary.textDisabled}66` as ColorsType,
+                bgClr: `${theme.palette.primary.textDisabled}66` as ColorsType,
                 borders: { size: size / 10, color: theme.palette.primary.main },
             },
             "&*::-webkit-scrollbar-thumb": {
                 trans: 0.3,
-                bgColor: `${theme.palette.primary.light}99` as ColorsType,
+                bgClr: `${theme.palette.primary.light}99` as ColorsType,
             },
             "&*::-webkit-scrollbar-track:hover": {
                 borR: size / 2,
-                bgColor: theme.palette.primary.text,
+                bgClr: theme.palette.primary.text,
                 borders: {
                     size: size / 10,
                     color: theme.palette.primary.light,
@@ -110,7 +109,7 @@ export const ChocoTheme: ChocoThemeType = {
             },
             "&*::-webkit-scrollbar-thumb:hover": {
                 borR: size / 2,
-                bgColor: theme.palette.primary.light,
+                bgClr: theme.palette.primary.light,
             },
         };
         return styles as StyleTypes;
@@ -212,4 +211,4 @@ export const ChocoTheme: ChocoThemeType = {
     },
 };
 
-export const themeModeAtom = atom<ModesKeyType>(ChocoTheme.mode);
+export const themeModeAtom = createAtom<ModesKeyType>(ChocoTheme.mode);

@@ -9,6 +9,7 @@ import {
 import useGetColor from "./useGetColor";
 import useTheme from "../theme/useTheme";
 import React, { useCallback } from "react";
+import { ColorsType } from "../types/color";
 import { ResponsiveCSSType } from "../types/style";
 import { callbackSize, formatSize } from "../function/size";
 import { Size, SizeKey, Sizes, SizeValue } from "../types/Size";
@@ -18,7 +19,7 @@ export default function useChocoStyle() {
     const getColor = useGetColor();
     const { breakpoint } = useTheme();
 
-    const ChocoStyle = useCallback(
+    return useCallback(
         <NewCss extends ResponsiveCSSType>(styles: StyleTypes): NewCss => {
             const breakpointKeys = Object.keys(breakpoint.size) as SizeKey[];
             const chocostyle = { ...styles } as ChocoStyleType;
@@ -94,6 +95,22 @@ export default function useChocoStyle() {
                                     : value;
                             return newValue as Value;
                         });
+                        return getSizes(newSize);
+                    }
+                }
+            }
+
+            function sizeToColor(
+                color?: Sizes<ColorsType>,
+            ): Size<string | undefined> | undefined {
+                if (color !== undefined) {
+                    if (typeof color === "string") {
+                        return getSizes(getColor(color));
+                    } else if (isSize(color)) {
+                        const newSize = callbackSize(
+                            color,
+                            (value: ColorsType) => getColor(value),
+                        );
                         return getSizes(newSize);
                     }
                 }
@@ -184,16 +201,16 @@ export default function useChocoStyle() {
 
             //* Style
             //? background color background-color
-            getCss("background", chocostyle.bg);
-            getCss("color", getColor(chocostyle.clr));
-            getCss("backgroundImage", chocostyle.bgImage);
-            getCss("backgroundColor", getColor(chocostyle.bgColor));
+            getCss("background", sizeToCss(chocostyle.bg));
+            getCss("color", sizeToColor(chocostyle.clr));
+            getCss("backgroundColor", sizeToColor(chocostyle.bgClr));
+            getCss("backgroundImage", sizeToCss(chocostyle.bgImg));
 
             //* Opacity
-            getCss("opacity", chocostyle.op);
+            getCss("opacity", sizeToCss(chocostyle.op));
 
             //* z-index
-            getCss("zIndex", chocostyle.z);
+            getCss("zIndex", sizeToCss(chocostyle.z));
 
             //* Width and Height
             getCss("width", sizeToCss(chocostyle.w));
@@ -266,57 +283,65 @@ export default function useChocoStyle() {
                 const getGritTemplate = (
                     template?: Sizes<GridTemplateType>,
                 ) => {
-                    return callbackSize(template, (size, key) => {
-                        if (size) {
-                            const getGrit = (size?: GridTemplateType) =>
-                                size
-                                    ?.map((row) =>
-                                        row
-                                            .map((col) =>
-                                                typeof col === "number"
-                                                    ? `${col}fr`
-                                                    : col,
-                                            )
-                                            .join(" "),
-                                    )
-                                    .join(" / ");
+                    return callbackSize(
+                        template,
+                        (size: GridTemplateType, key) => {
+                            if (size) {
+                                const getGrit = (size?: GridTemplateType) =>
+                                    size
+                                        ?.map((row) =>
+                                            row
+                                                .map((col) =>
+                                                    typeof col === "number"
+                                                        ? `${col}fr`
+                                                        : col,
+                                                )
+                                                .join(" "),
+                                        )
+                                        .join(" / ");
 
-                            if (Array.isArray(size)) {
-                                return getGrit(size);
-                            } else {
-                                return getGrit(size[key]);
+                                if (Array.isArray(size)) {
+                                    return getGrit(size);
+                                } else {
+                                    return getGrit(size[key]);
+                                }
                             }
-                        }
-                    });
+                        },
+                    );
                 };
 
                 getCss("gridTemplate", getGritTemplate(chocostyle.gridT));
             }
             if (chocostyle.gridA !== undefined) {
                 const keys = Object.keys(breakpoint.size) as SizeKey[];
-                const gridArea = callbackSize(chocostyle.gridA, (grid, key) => {
-                    if (keys.every((key) => Object.keys(grid).includes(key))) {
-                        const grids = grid as Size<GridTemplateType>;
-                        return grids[key]
-                            ?.map((area, index) =>
-                                (index > 0
-                                    ? area.map((a) => `span ${a}`)
-                                    : area
-                                ).join(" / "),
-                            )
-                            ?.join(" / ");
-                    } else {
-                        const template = grid as GridTemplateType;
-                        return template
-                            ?.map((area, index) =>
-                                (index > 0
-                                    ? area.map((a) => `span ${a}`)
-                                    : area
-                                ).join(" / "),
-                            )
-                            ?.join(" / ");
-                    }
-                });
+                const gridArea = callbackSize(
+                    chocostyle.gridA,
+                    (grid: GridTemplateType, key) => {
+                        if (
+                            keys.every((key) => Object.keys(grid).includes(key))
+                        ) {
+                            const grids = grid as Size<GridTemplateType>;
+                            return grids[key]
+                                ?.map((area, index) =>
+                                    (index > 0
+                                        ? area.map((a) => `span ${a}`)
+                                        : area
+                                    ).join(" / "),
+                                )
+                                ?.join(" / ");
+                        } else {
+                            const template = grid as GridTemplateType;
+                            return template
+                                ?.map((area, index) =>
+                                    (index > 0
+                                        ? area.map((a) => `span ${a}`)
+                                        : area
+                                    ).join(" / "),
+                                )
+                                ?.join(" / ");
+                        }
+                    },
+                );
                 getCss("gridArea", gridArea);
             }
 
@@ -762,6 +787,4 @@ export default function useChocoStyle() {
         },
         [],
     );
-
-    return ChocoStyle;
 }

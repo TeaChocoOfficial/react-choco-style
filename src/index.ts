@@ -116,11 +116,7 @@ export {
 } from "./function/size";
 //*  ^
 //*  v styleSheet
-export {
-    convertToStyleSheet,
-    deleteOldStyleSheet,
-    applyStyleSheet,
-} from "./function/styleSheet";
+export { convertToStyleSheet, applyStyleSheet } from "./function/styleSheet";
 //*  ^
 //*  v StyleSheetManager
 import StyleSheetManager from "./function/StyleSheetManager";

@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/hook/GetSetColorProps.tsx"
+//-Path: "react-choco-style/src/hook/useGetSetColorProps.tsx"
 import { useCallback } from "react";
 import { StyleTypes } from "../types/ChocoStyle";
 import useGetSetColor, { SetColorType } from "./useGetSetColor";
@@ -44,7 +44,7 @@ export default function useGetSetColorProps(
                         size: 4,
                         color: getColor(setColors?.borColor),
                     },
-                    bgColor: disabled
+                    bgClr: disabled
                         ? undefined
                         : outline
                         ? getColor(setColors?.bgHover, disabledColor / 2)
@@ -53,7 +53,7 @@ export default function useGetSetColorProps(
             };
             if (outline) {
                 styles = {
-                    bgColor: null,
+                    bgClr: null,
                     borders: {
                         size: 2,
                         style: "solid",
@@ -63,7 +63,7 @@ export default function useGetSetColorProps(
                         ? getColor(setColors?.bgColor)
                         : setColors?.bgColor ?? defaultColor) as ColorType,
                     "&$:hover": {
-                        bgColor: disabled
+                        bgClr: disabled
                             ? undefined
                             : getColor(setColors?.bgHover, disabledColor / 2),
                     },
@@ -75,11 +75,11 @@ export default function useGetSetColorProps(
                     clr: (disabled
                         ? getColor(setColors?.color)
                         : setColors?.color ?? defaultColor) as ColorType,
-                    bgColor: disabled
+                    bgClr: disabled
                         ? getColor(setColors?.bgColor)
                         : setColors?.bgColor,
                     "&$:hover": {
-                        bgColor: disabled ? undefined : setColors?.bgHover,
+                        bgClr: disabled ? undefined : setColors?.bgHover,
                     },
                     ...defStyle,
                 };

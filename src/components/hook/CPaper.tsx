@@ -51,7 +51,7 @@ export default function CPaper<Props extends CPaperProps>(prop: Props) {
         props.className = joinNames(
             props.className,
             createStyle(`CPaper-${opacity}`, {
-                bgImage: `linear-gradient(${bg}, ${bg})`,
+                bgImg: `linear-gradient(${bg}, ${bg})`,
             }),
         );
         return removeProps(props, ["elevation"]);

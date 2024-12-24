@@ -35,7 +35,7 @@ export default function useCreateStyle() {
 
             return ApplyChocoStyles(keyClass, andChocoStyles, important);
         },
-        [],
+        [ApplyChocoStyles],
     );
 
     return CreateStyle;

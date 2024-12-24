@@ -20,7 +20,7 @@ export default function useCreateClass() {
             // console.log(style, keyClass, chocoStyle);
             return className;
         },
-        [],
+        [CreateStyle],
     );
 
     return CreateClass;

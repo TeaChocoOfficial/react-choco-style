@@ -67,16 +67,16 @@ export type GridAreaType = number[][];
 export type ChocoStyleDefType = {
     //* Style
     //? background color background-color
-    bg?: string;
-    clr?: ColorsType;
-    bgColor?: ColorsType;
-    bgImage?: string;
+    bg?: Sizes<string>;
+    clr?: Sizes<ColorsType>;
+    bgClr?: Sizes<ColorsType>;
+    bgImg?: Sizes<string>;
 
     //* Opacity
-    op?: number;
+    op?: Sizes<number>;
 
     //* Z-index
-    z?: number;
+    z?: Sizes<number>;
 
     //* Size
     //? Width Height min-width min-height max-width max-height

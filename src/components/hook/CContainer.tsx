@@ -100,7 +100,7 @@ export function CContainerHeader<Props extends CContainerProps<"header">>(
             size: 32,
             text: "c",
             textTransform: "capitalize",
-            bgColor: hiddle ? undefined : `${palette.background.default}88`,
+            bgClr: hiddle ? undefined : `${palette.background.default}88`,
             boxShadow: hiddle
                 ? undefined
                 : `0px 10px 13px -6px ${palette.shadow.main},0px 20px 31px 3px ${palette.shadow.main}),0px 8px 38px 7px ${palette.shadow.main}`,
@@ -148,7 +148,7 @@ export function CContainerContent<Props extends CContainerProps<"content">>(
         const className = createStyle("CContainerContent", {
             ...styleFontContent,
             size: 16,
-            bgColor: hiddle ? undefined : `${palette.background.paper}44`,
+            bgClr: hiddle ? undefined : `${palette.background.paper}44`,
             boxShadow: hiddle
                 ? undefined
                 : `0px 10px 13px -6px ${palette.shadow.main},0px 20px 31px 3px ${palette.shadow.main}),0px 8px 38px 7px ${palette.shadow.main}`,

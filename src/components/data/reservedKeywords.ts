@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/data/reservedKeywords.ts"
+//-Path: "react-choco-style/src/components/data/reservedKeywords.ts"
 import {
     ChocoStyleType,
     ChocoStyleDefType,
@@ -8,8 +8,8 @@ import {
 export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     "bg",
     "clr",
-    "bgColor",
-    "bgImage",
+    "bgClr",
+    "bgImg",
     "op",
     "z",
     "w",

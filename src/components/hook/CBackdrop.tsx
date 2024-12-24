@@ -35,7 +35,7 @@ export default function CBackdrop<Props extends CBackdropProps>(prop: Props) {
             trans: 0.3,
             op: open ? 1 : 0,
             event: open ? "a" : "n",
-            bgColor: shadow
+            bgClr: shadow
                 ? palette.shadow.dark ?? palette.shadow.main
                 : undefined,
         });

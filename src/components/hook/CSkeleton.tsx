@@ -9,7 +9,7 @@ import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 const Skeleton = CreateStyled("div")({
     of: "h",
     pos: "r",
-    bgColor: "#ffffff22",
+    bgClr: "#ffffff22",
 });
 
 export type CSkeletonProps = ChocoStyledProps<"div"> & { circle?: boolean };
@@ -53,7 +53,7 @@ export default function CSkeleton<Props extends CSkeletonProps>(prop: Props) {
                 l={0}
                 w="20vh"
                 h="20vh"
-                bgColor="#ffffff22"
+                bgClr="#ffffff22"
                 style={{
                     boxShadow: "0 0 10vh 10vh #ffffff22",
                     animation: "CSkeleton 2s linear infinite",
