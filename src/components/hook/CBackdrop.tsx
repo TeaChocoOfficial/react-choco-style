@@ -46,7 +46,7 @@ export default function CBackdrop<Props extends CBackdropProps>(prop: Props) {
         };
 
         return removeProps(props, ["open", "shadow", "onClose"]);
-    }, [prop, palette]);
+    }, [prop, palette, joinNames, createStyle]);
 
     return <Backdrop {...props}></Backdrop>;
 }

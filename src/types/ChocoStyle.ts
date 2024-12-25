@@ -352,6 +352,10 @@ export type SelectorStyleType =
     | KeyStylesAndType
     | KeyStylesAndTypes;
 
+export type SelectorStylesType = {
+    [key in SelectorStyleType]?: ChocoStyleTypes;
+};
+
 export type ChocoStylesType<
     Style extends ChocoStyleType | React.CSSProperties =
         | ChocoStyleType

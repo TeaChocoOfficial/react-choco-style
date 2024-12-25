@@ -11,7 +11,7 @@ import useFormatSize, {
 import useTheme from "../../theme/useTheme";
 import { forwardRef, useMemo } from "react";
 import { UseChocoThemeType } from "../../types/theme";
-import useCreateStyle from "../../hook/useCreateClass";
+import useCreateClass from "../../hook/useCreateClass";
 import usePropsChocoStyle from "../../hook/usePropsChocoStyle";
 import { keysChocoStyleProps } from "../data/reservedKeywords";
 
@@ -59,7 +59,7 @@ export default function CreateStyled<
         return forwardRef((props: Props, ref: React.ForwardedRef<unknown>) => {
             const theme = useTheme();
             const Tag = tag as React.ElementType;
-            const createStyle = useCreateStyle();
+            const createStyle = useCreateClass();
             const PropsChocoStyle = usePropsChocoStyle();
             const { formatSize, callbackSize } = useFormatSize();
 

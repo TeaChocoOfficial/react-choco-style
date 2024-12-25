@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CText.tsx"
+//-Path: "react-choco-style/src/components/hook/CText.tsx"
 import { useMemo } from "react";
 import useFont from "../../hook/useFont";
 import useTheme from "../../theme/useTheme";
@@ -33,7 +33,7 @@ export default function CText<Props extends CTextProps>(prop: Props) {
             props.className = joinNames(props.className, className);
             return removeProps(props, ["skeleton"]);
         }
-    }, [prop]);
+    }, [prop, joinNames, getFont, createStyle]);
 
     return <Text {...props} />;
 }

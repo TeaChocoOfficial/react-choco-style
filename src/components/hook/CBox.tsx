@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CBox.tsx"
+//-Path: "react-choco-style/src/components/hook/CBox.tsx"
 import { useMemo } from "react";
 import useTheme from "../../theme/useTheme";
 import removeProps from "../../function/removeProps";
@@ -18,7 +18,7 @@ export default function CBox<Props extends CBoxProps>(prop: Props) {
         const className = createStyle("CBox", {});
         props.className = joinNames(props.className, className);
         return removeProps(props, []);
-    }, [prop]);
+    }, [prop, joinNames, createStyle]);
 
     return <Box {...props} />;
 }

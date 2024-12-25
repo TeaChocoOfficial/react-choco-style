@@ -113,7 +113,7 @@ export function SetStyleSheetsInit({
         sortedSheets.forEach((sheet) => {
             styleManager.updateRule(sheet.selector, sheet.css);
         });
-        console.log(chocoSheets);
+        // console.log(chocoSheets);
     }, [chocoSheets, styleManager]);
 
     return <>{children}</>;
@@ -194,7 +194,6 @@ export default function useSetStyleSheets() {
                     return prev;
                 }
             }
-
             return newMap;
         });
     }, []);
