@@ -98,22 +98,8 @@ import InitChoco from "./components/layout/InitChoco";
 //*  ^
 //* ^
 //* v function
-//*  v chocoPropsToChocoStyle
-import chocoPropsToChocoStyle from "./function/chocoPropsToChocoStyle";
-//*  ^
-//*  v font
-export { getFont } from "./function/font";
-//*  ^
 //*  v removeProps
 import removeProps from "./function/removeProps";
-//*  ^
-//*  v size
-export {
-    type FormatSizeType,
-    formatSize,
-    type CallbackSizeType,
-    callbackSize,
-} from "./function/size";
 //*  ^
 //*  v styleSheet
 export { convertToStyleSheet, applyStyleSheet } from "./function/styleSheet";
@@ -139,6 +125,13 @@ import useCreateClass from "./hook/useCreateClass";
 //*  v useCreateStyle
 import useCreateStyle from "./hook/useCreateStyle";
 //*  ^
+//*  v useFont
+import useFont from "./hook/useFont";
+//*  ^
+//*  v useFormatSize
+import useFormatSize from "./hook/useFormatSize";
+export type { FormatSizeType, CallbackSizeType } from "./hook/useFormatSize";
+//*  ^
 //*  v useGetColor
 import useGetColor from "./hook/useGetColor";
 //*  ^
@@ -148,6 +141,9 @@ import useGetSetColor from "./hook/useGetSetColor";
 //*  ^
 //*  v useGetSetColorProps
 import useGetSetColorProps from "./hook/useGetSetColorProps";
+//*  ^
+//*  v usePropsChocoStyle
+import usePropsChocoStyle from "./hook/usePropsChocoStyle";
 //*  ^
 //*  v useSetStyleSheets
 export type {
@@ -250,7 +246,6 @@ export {
     CText,
     ChocoStart,
     InitChoco,
-    chocoPropsToChocoStyle,
     removeProps,
     StyleSheetManager,
     useApplyChocoStyles,
@@ -258,9 +253,12 @@ export {
     useApplyResponsive,
     useCreateClass,
     useCreateStyle,
+    useFont,
+    useFormatSize,
     useGetColor,
     useGetSetColor,
     useGetSetColorProps,
+    usePropsChocoStyle,
     useSetStyleSheets,
     useTheme,
 };

@@ -11,13 +11,14 @@ import useTheme from "../theme/useTheme";
 import React, { useCallback } from "react";
 import { ColorsType } from "../types/color";
 import { ResponsiveCSSType } from "../types/style";
-import { callbackSize, formatSize } from "../function/size";
 import { Size, SizeKey, Sizes, SizeValue } from "../types/Size";
 import { keysChocoStyle } from "../components/data/reservedKeywords";
+import useFormatSize from "./useFormatSize";
 
 export default function useChocoStyle() {
     const getColor = useGetColor();
     const { breakpoint } = useTheme();
+    const { formatSize, callbackSize } = useFormatSize();
 
     return useCallback(
         <NewCss extends ResponsiveCSSType>(styles: StyleTypes): NewCss => {

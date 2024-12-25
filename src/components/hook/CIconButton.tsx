@@ -1,12 +1,12 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CIconButton.tsx"
 import { v4 } from "uuid";
-import { getFont } from "../../function/font";
+import useFont from "../../hook/useFont";
 import { useMemo, useState } from "react";
 import useTheme from "../../theme/useTheme";
-import { formatSize } from "../../function/size";
 import { ColorType } from "../../types/color";
 import { To, useNavigate } from "react-router-dom";
 import removeProps from "../../function/removeProps";
+import useFormatSize from "../../hook/useFormatSize";
 import useCreateStyle from "../../hook/useCreateClass";
 import { applyStyleSheet } from "../../function/styleSheet";
 import useGetSetColorProps from "../../hook/useGetSetColorProps";
@@ -45,9 +45,11 @@ export type CIconButtonProps = ChocoStyledProps<"button"> & {
 export default function CIconButton<Props extends CIconButtonProps>(
     prop: Props,
 ) {
+    const { getFont } = useFont();
     const navigate = useNavigate();
     const { joinNames } = useTheme();
     const createStyle = useCreateStyle();
+    const { formatSize } = useFormatSize();
     const { to, children, onClick } = prop;
     const getSetColorProps = useGetSetColorProps();
     const [pressEffects, setPressEffects] = useState<JSX.Element[]>([]);

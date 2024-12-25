@@ -13,6 +13,7 @@ export default function useCreateClass() {
 
     const CreateClass = useCallback(
         (name: string, chocoStyle: StyleTypes, important?: number) => {
+            console.log(chocoStyle);
             const hash = getHash(JSON.stringify(chocoStyle));
             const className = `ChocoStyleSheet-${name}-${hash}`;
             const keyClass = `.${className}` as KeyStylesAndType;

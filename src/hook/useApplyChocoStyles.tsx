@@ -103,6 +103,6 @@ export default function useApplyChocoStyles() {
                 return coverts;
             });
         },
-        [SetStyleSheets],
+        [SetStyleSheets, breakpoint],
     );
 }

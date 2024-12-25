@@ -1,21 +1,19 @@
 //-Path: "react-choco-style/src/components/custom/CreateStyled.tsx"
 import {
-    formatSize,
-    callbackSize,
-    FormatSizeType,
-    CallbackSizeType,
-} from "../../function/size";
-import {
     StyleTypes,
     ChocoStyleType,
     ChocoStylePropsType,
 } from "../../types/ChocoStyle";
-import { useMemo } from "react";
+import useFormatSize, {
+    FormatSizeType,
+    CallbackSizeType,
+} from "../../hook/useFormatSize";
 import useTheme from "../../theme/useTheme";
+import { forwardRef, useMemo } from "react";
 import { UseChocoThemeType } from "../../types/theme";
 import useCreateStyle from "../../hook/useCreateClass";
+import usePropsChocoStyle from "../../hook/usePropsChocoStyle";
 import { keysChocoStyleProps } from "../data/reservedKeywords";
-import chocoPropsToChocoStyle from "../../function/chocoPropsToChocoStyle";
 
 export type CustomTheme = ChocoStyleType | React.CSSProperties;
 
@@ -58,10 +56,12 @@ export default function CreateStyled<
     CustomStyles extends CustomStylesType<{ tag: TagType; props: Props }>,
 >(tag: TagType, nameTag?: string) {
     return (customStyles?: CustomStyles | StyleTypes) => {
-        return (props: Props) => {
+        return forwardRef((props: Props, ref: React.ForwardedRef<unknown>) => {
             const theme = useTheme();
             const Tag = tag as React.ElementType;
             const createStyle = useCreateStyle();
+            const PropsChocoStyle = usePropsChocoStyle();
+            const { formatSize, callbackSize } = useFormatSize();
 
             const newProps = useMemo(() => {
                 const Name = nameTag ? `${tag}-${nameTag}` : `${tag}`;
@@ -80,7 +80,7 @@ export default function CreateStyled<
                 };
                 const customStyleProps = getCustomStyleProps();
                 const { cs } = props;
-                const chocoStyleProps = chocoPropsToChocoStyle(props);
+                const chocoStyleProps = PropsChocoStyle(props);
 
                 const csClassName = createStyle(`cs-${Name}`, cs ?? {}, 1);
                 const propClassName = createStyle(
@@ -102,19 +102,18 @@ export default function CreateStyled<
 
                 const prop: Prop = { ...props, className };
                 return removeReservedProps(keysChocoStyleProps, prop);
-            }, [customStyles, props]);
+            }, [
+                props,
+                theme,
+                formatSize,
+                createStyle,
+                callbackSize,
+                customStyles,
+                PropsChocoStyle,
+            ]);
 
-            if (typeof tag === "string") {
-                return (
-                    <Tag
-                        ref={(ref: TagType) => newProps?.useRef?.(ref)}
-                        {...newProps}
-                    />
-                );
-            }
-
-            return <Tag {...newProps} />;
-        };
+            return <Tag ref={ref} {...newProps} />;
+        });
     };
 }
 

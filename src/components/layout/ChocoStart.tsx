@@ -2,13 +2,14 @@
 import { useMemo, useEffect } from "react";
 import useTheme from "../../theme/useTheme";
 import { getThemeMode } from "../../theme/theme";
+import useFormatSize from "../../hook/useFormatSize";
 import useCreateStyle from "../../hook/useCreateStyle";
-import { callbackSize, formatSize } from "../../function/size";
 import { createAtom } from "@teachoco-official/react-atom";
 
 export function SetUpStyleSheets() {
     const theme = useTheme();
     const CreateStyle = useCreateStyle();
+    const { formatSize, callbackSize } = useFormatSize();
 
     return useMemo(() => {
         const themeSheets = theme.styleSheets({

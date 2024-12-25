@@ -1,11 +1,10 @@
 //-Path: "react-choco-style/src/hook/useSetStyleSheets.tsx"
 import { getHash } from "./useCreateClass";
-import { useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { SelectorStyleType } from "../types/ChocoStyle";
 import { convertToStyleSheet } from "../function/styleSheet";
 import StyleSheetManager from "../function/StyleSheetManager";
-import { createAtom } from "@teachoco-official/react-atom";
 
 export interface BaseChocoSheet {
     css: string;
@@ -26,7 +25,6 @@ export interface ChocoMediaSheetType extends BaseChocoSheet {
 
 export type ChocoSheetType = ChocoStyleSheetType | ChocoMediaSheetType;
 
-// Input types with optional fields
 export interface SetBaseChocoSheet {
     css?: string;
     hash?: string;
@@ -91,14 +89,14 @@ export const formatChocoSheet = (sheet: SetChocoSheetType): ChocoSheetType => {
     }
 };
 
-const ChocoSheetsAtom = createAtom<ChocoSheetsMapType>(new Map());
+const ChocoSheetsAtom = atom<ChocoSheetsMapType>(new Map());
 
 export function SetStyleSheetsInit({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const chocoSheets = ChocoSheetsAtom.get();
+    const chocoSheets = useAtomValue(ChocoSheetsAtom);
     const styleManager = useMemo(() => StyleSheetManager.getInstance(), []);
 
     useEffect(() => {
@@ -122,7 +120,7 @@ export function SetStyleSheetsInit({
 }
 
 export default function useSetStyleSheets() {
-    const setChocoSheets = useSetAtom(ChocoSheetsAtom.atomValue);
+    const setChocoSheets = useSetAtom(ChocoSheetsAtom);
 
     return useCallback((sheet: SetChocoSheetType) => {
         const formattedSheet = formatChocoSheet(sheet);

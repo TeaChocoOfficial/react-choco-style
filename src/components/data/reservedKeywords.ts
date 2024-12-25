@@ -80,8 +80,7 @@ export const KeywordsChocoStyle: (keyof ChocoStyleType)[] = [
     "us",
 ];
 
-export const KeywordsChocoStyleProps: (keyof ChocoStylePropsType)[] = [
-    "useRef",
+export const KeywordsChocoStyleProps: (keyof ChocoStylePropsType)[] = [    
     "cs",
     "full",
     "fullV",

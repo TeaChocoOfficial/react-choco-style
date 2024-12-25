@@ -1,10 +1,10 @@
 //-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CText.tsx"
 import { useMemo } from "react";
-import { getFont } from "../../function/font";
+import useFont from "../../hook/useFont";
 import useTheme from "../../theme/useTheme";
 import removeProps from "../../function/removeProps";
-import CSkeleton, { CSkeletonProps } from "./CSkeleton";
 import useCreateStyle from "../../hook/useCreateClass";
+import CSkeleton, { CSkeletonProps } from "./CSkeleton";
 import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
 const Text = CreateStyled("span", "CText")({ size: 16 });
@@ -12,6 +12,7 @@ const Text = CreateStyled("span", "CText")({ size: 16 });
 export type CTextProps = ChocoStyledProps<"span"> & { skeleton?: boolean };
 
 export default function CText<Props extends CTextProps>(prop: Props) {
+    const { getFont } = useFont();
     const { joinNames } = useTheme();
     const createStyle = useCreateStyle();
 

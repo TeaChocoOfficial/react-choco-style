@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import useTheme from "../../theme/useTheme";
 import { innerAtom } from "../layout/ChocoStart";
-import { formatSize } from "../../function/size";
+import useFormatSize from "../../hook/useFormatSize";
 import { Size, Sizes, SizeValue } from "../../types/Size";
 
 export function ComponentSize<S = SizeValue>({
@@ -14,6 +14,7 @@ export function ComponentSize<S = SizeValue>({
 }): React.ReactNode {
     const inner = innerAtom.get();
     const { breakpoint } = useTheme();
+    const { formatSize } = useFormatSize();
 
     const sizes = useMemo(() => {
         if (typeof size === "number") {

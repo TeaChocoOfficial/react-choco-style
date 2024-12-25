@@ -1,8 +1,7 @@
 //-Path: "react-choco-style/src/components/hook/CSelect.tsx"
 import { useMemo } from "react";
-import { getFont } from "../../function/font";
+import useFont from "../../hook/useFont";
 import useTheme from "../../theme/useTheme";
-import { formatSize } from "../../function/size";
 import { ColorType } from "../../types/color";
 import removeProps from "../../function/removeProps";
 import useCreateStyle from "../../hook/useCreateClass";
@@ -13,7 +12,7 @@ import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 const Select = CreateStyled(
     "div",
     "Select",
-)({
+)(({ formatSize }) => ({
     a: "c",
     j: "c",
     of: "h",
@@ -23,15 +22,15 @@ const Select = CreateStyled(
     animation: 0.3,
     p: formatSize(4),
     borR: formatSize(2),
-});
+}));
 const Option = CreateStyled(
     "li",
     "SelectOption",
-)({
+)(({ formatSize }) => ({
     size: 16,
     animation: 0.3,
     p: formatSize(4),
-});
+}));
 
 export type CSelectOptions = {
     cs?: ChocoStyleType;
@@ -65,6 +64,7 @@ export type CSelectItemProps = ChocoStyledProps<"li"> & {
 };
 
 export function CSelectItem<Props extends CSelectItemProps>(prop: Props) {
+    const { getFont } = useFont();
     const { joinNames } = useTheme();
     const createStyle = useCreateStyle();
     const getSetColorProps = useGetSetColorProps();
@@ -109,6 +109,7 @@ export default function CSelect<
     Option extends CSelectOptions = CSelectOptions,
     Props extends CSelectProps<Option> = CSelectProps<Option>,
 >(prop: Props) {
+    const { getFont } = useFont();
     const { joinNames } = useTheme();
     const createStyle = useCreateStyle();
     const getSetColorProps = useGetSetColorProps();

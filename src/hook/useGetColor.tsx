@@ -1,9 +1,11 @@
-//-Path: "react-choco-style/src/hook/GetColor.tsx"
+//-Path: "react-choco-style/src/hook/useGetColor.tsx"
 import { useCallback } from "react";
 import useTheme from "../theme/useTheme";
 import { ColorDefaultType, ColorsType } from "../types/color";
 
-export default function useGetColor(): (color?: ColorsType) => string | undefined {
+export default function useGetColor(): (
+    color?: ColorsType,
+) => string | undefined {
     const { palette } = useTheme();
 
     return useCallback(

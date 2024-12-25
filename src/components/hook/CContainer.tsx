@@ -1,26 +1,26 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/components/hook/CContainer.tsx"
+//-Path: "react-choco-style/src/components/hook/CContainer.tsx"
 import CBox from "./CBox";
 import { useMemo } from "react";
 import Icon from "../custom/Icon";
+import useFont from "../../hook/useFont";
 import CIconButton from "./CIconButton";
-import { getFont } from "../../function/font";
-import { formatSize } from "../../function/size";
 import useTheme from "../../theme/useTheme";
-import removeProps from "../../function/removeProps";
 import { StyleTypes } from "../../types/ChocoStyle";
+import removeProps from "../../function/removeProps";
+import useFormatSize from "../../hook/useFormatSize";
 import useCreateStyle from "../../hook/useCreateClass";
 import CreateStyled, { ChocoStyledProps } from "../custom/CreateStyled";
 
 const Container = CreateStyled(
     "div",
     "CContainer",
-)({
+)(({ formatSize }) => ({
     borR: 2,
     pos: "r",
     px: "5%",
     py: formatSize(6),
     w: { v: "100%", l: 1024 },
-});
+}));
 
 export type CContainerContents = "main" | "header" | "content";
 
@@ -56,6 +56,7 @@ export function CContainerMain<Props extends CContainerProps<"main">>(
 ) {
     const { joinNames } = useTheme();
     const createStyle = useCreateStyle();
+    const { formatSize } = useFormatSize();
 
     const props = useMemo(() => {
         const props = { ...prop } as CContainerProps<"main">;
@@ -85,6 +86,7 @@ export function CContainerMain<Props extends CContainerProps<"main">>(
 export function CContainerHeader<Props extends CContainerProps<"header">>(
     prop: Props,
 ) {
+    const { getFont } = useFont();
     const createStyle = useCreateStyle();
     const { palette, joinNames } = useTheme();
 
@@ -138,6 +140,7 @@ export function CContainerHeader<Props extends CContainerProps<"header">>(
 export function CContainerContent<Props extends CContainerProps<"content">>(
     prop: Props,
 ) {
+    const { getFont } = useFont();
     const createStyle = useCreateStyle();
     const { palette, joinNames } = useTheme();
 

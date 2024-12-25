@@ -40,7 +40,7 @@ export default function App() {
                 }}>
                 hello worlddddddddd
             </Text>
-            <CText dFlex>testddddd rs</CText>
+            <CText dFlex clr="secondary">testddddd rs</CText>
         </div>
     );
 }
