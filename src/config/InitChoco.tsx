@@ -1,4 +1,5 @@
 //-Path: "react-choco-style/src/config/InitChoco.tsx"
+import { ChocoStyle } from '../hook/ChocoStyle';
 import { ChocoThemeType } from '../types/theme';
 import React, { useEffect, useMemo } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,8 +19,8 @@ export function InitChoco({
     createTheme?: (theme: ChocoThemeType) => Partial<ChocoThemeType>;
 }) {
     const setDebug = ChocoDebug.set();
-    ChocoStyle
     const [theme, setTheme] = themeAtom.use();
+    const chocoStyle = ChocoStyle.useChocoStyle();
 
     useEffect(() => {
         setDebug(debug ?? false);
@@ -36,7 +37,14 @@ export function InitChoco({
 
     const MuiTheme = useMemo(() => {
         console.log('theme: ', theme);
-        const styleOverrides = theme.styleSheets({ theme: ChocoTheme });
+        const styleOverride = theme.styleSheets({ theme });
+        const styleOverrides = Object.entries(styleOverride).reduce(
+            (acc, [componentName, styles]) => {
+                acc[componentName] = chocoStyle(styles);
+                return acc;
+            },
+            {},
+        );
         console.log('styleOverrides: ', styleOverrides);
         const myTheme = { ...theme.modes.default, ...theme.modes[theme.mode] };
         console.log('my common: ', myTheme.common);
@@ -52,7 +60,7 @@ export function InitChoco({
             },
             shape: { borderRadius: 8 },
         };
-    }, [theme]);
+    }, [theme, chocoStyle]);
 
     return (
         <ThemeProvider theme={createMuiTheme(MuiTheme)}>

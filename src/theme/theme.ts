@@ -178,9 +178,9 @@ export const ChocoTheme: ChocoThemeType = {
                 disabled: '#0e0e0e',
             },
             background: {
-                body: '#ffffff',
+                body: '#ededed',
                 paper: '#dddddd',
-                default: '#ededed',
+                default: '#ffffff',
             },
             text: {
                 primary: '#000000',
@@ -198,9 +198,9 @@ export const ChocoTheme: ChocoThemeType = {
                 textDisabled: '#1a1a1a',
             },
             background: {
-                body: '#000000',
+                body: '#121212',
                 paper: '#222222',
-                default: '#121212',
+                default: '#000000',
             },
             text: {
                 primary: '#ffffff',
