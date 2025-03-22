@@ -1,15 +1,11 @@
 //-Path: "react-choco-style/src/types/theme.ts"
-import { SizeKey } from "./Size";
-import { ColorHexType } from "./color";
-import { CustomStylesType } from "../components/custom/CreateStyled";
+import { SizeKey } from './size';
+import { ColorHexType } from './color';
+import { CustomStylesType } from './chocoHook';
 
-export type ModesKeyType = "dark" | "light";
+export type ModesKeyType = 'dark' | 'light';
 
-export type RootThemeType = {
-    zIndex: {
-        backdrop: number;
-    };
-};
+export type RootThemeType = { zIndex: { backdrop: number } };
 
 export type ThemeFontsType = {
     family: string;
@@ -70,12 +66,11 @@ export type DefChocoThemeType = {
     fonts: ThemeFontsType;
     breakpoint: BreakpointType;
     styleSheets: CustomStylesType;
-    joinNames: (...names: (string | undefined)[]) => string;
 };
 
 export type ChocoThemeType = DefChocoThemeType & {
     modes: Record<
-        ModesKeyType | "default",
+        ModesKeyType | 'default',
         { [key in keyof PaletteType]?: PaletteType[key] }
     >;
 };

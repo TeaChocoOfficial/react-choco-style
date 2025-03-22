@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Official/dev/src/hooks/react-choco-style/src/types/Size.ts"
+//-Path: "react-choco-style/src/types/size.ts"
 
 export type SizeKey =
     | "v" //Vertical Mobile
