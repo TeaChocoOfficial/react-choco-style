@@ -1,6 +1,7 @@
-//-Path: "react-choco-style/src/types/chocoHook.d.ts"
-import { ChocoStylePropsType } from './choco';
+//-Path: "react-choco-style/src/types/chocoHook.ts"
 import { UseChocoThemeType } from './theme';
+import { Size, SizeKey, SizeValue } from './size';
+import { ChocoStylePropsType, StyleTypes } from './choco';
 
 export type FormatSizeType = <S = SizeValue>(
     max: number,

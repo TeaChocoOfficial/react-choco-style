@@ -1,7 +1,6 @@
 //-Path: "react-choco-style/src/theme/theme.ts"
 import { ColorsType } from '../types/color';
 import { StyleTypes } from '../types/choco';
-import { CustomStylesType } from '../types/chocoHook';
 import { createAtom } from '@teachoco-official/react-atom';
 import { ChocoThemeType, ModesKeyType } from '../types/theme';
 
@@ -61,10 +60,10 @@ export const ChocoTheme: ChocoThemeType = {
             d: 100,
         },
     },
-    styleSheets: (({ theme }) => {
+    styleSheets: (theme: ChocoThemeType) => {
         const size = 8;
         const palette = theme.modes[theme.mode];
-        const styles: StyleTypes = {
+        return {
             '&*': {
                 m: 0,
                 p: 0,
@@ -76,8 +75,8 @@ export const ChocoTheme: ChocoThemeType = {
                 pos: 'f',
                 w: '100dvw',
                 h: '100dvh',
-                color: palette.text.primary,
-                bgClr: palette.background.body,
+                color: palette.text?.primary,
+                bgClr: palette.background?.body,
             },
             '&#root': {
                 ofy: 'a',
@@ -93,28 +92,27 @@ export const ChocoTheme: ChocoThemeType = {
                 h: size,
             },
             '&*::-webkit-scrollbar-track': {
-                bgClr: `${palette.primary.textDisabled}66` as ColorsType,
-                borders: { size: size / 10, color: palette.primary.main },
+                bgClr: `${palette.primary?.textDisabled}66` as ColorsType,
+                borders: { size: size / 10, color: palette.primary?.main },
             },
             '&*::-webkit-scrollbar-thumb': {
                 trans: 0.3,
-                bgClr: `${palette.primary.light}99` as ColorsType,
+                bgClr: `${palette.primary?.light}99` as ColorsType,
             },
             '&*::-webkit-scrollbar-track:hover': {
                 borR: size / 2,
-                bgClr: palette.primary.text,
+                bgClr: palette.primary?.text,
                 borders: {
                     size: size / 10,
-                    color: palette.primary.light,
+                    color: palette.primary?.light,
                 },
             },
             '&*::-webkit-scrollbar-thumb:hover': {
                 borR: size / 2,
-                bgClr: palette.primary.light,
+                bgClr: palette.primary?.light,
             },
-        };
-        return styles as StyleTypes;
-    }) as CustomStylesType,
+        } as StyleTypes;
+    },
     modes: {
         default: {
             common: {

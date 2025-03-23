@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/vite.config.ts"
-import tsconfig from './tsconfig.app.json';
+import tsconfig from './tsconfig.json';
 import react from '@vitejs/plugin-react-swc';
 import { AliasOptions, defineConfig, PluginOption } from 'vite';
 
@@ -28,9 +28,9 @@ keyPaths.forEach((keys) => {
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react() as PluginOption],
-    resolve: { alias: alias },
+    resolve: { alias },
     build: {
-        // ... other build options
+        // เปิด sourcemap ถ้าต้องการ
         sourcemap: true, // Enable sourcemaps for debugging
     },
 });

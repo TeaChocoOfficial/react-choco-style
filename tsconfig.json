@@ -1,7 +1,24 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "lib": ["dom", "esnext"],
+        "jsx": "react-jsx",
+        "declaration": true,
+        "declarationDir": "./dist",
+        "strict": true,
+        "paths": {
+            "@teachoco-official/react-choco-style": ["./src/index.ts"]
+        },
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "outDir": "./dist",
+        "importHelpers": true,
+        "isolatedModules": true
+    },
+    "outDir": "./dist",
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }

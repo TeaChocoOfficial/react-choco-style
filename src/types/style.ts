@@ -1,10 +1,7 @@
 //-Path: "react-choco-style/src/types/style.ts"
-import {
-    SystemCssProperties,
-    CSSSelectorObjectOrCssVariables,
-} from './mui/styleFunctionSx';
 import { SizeKey } from './size';
 import { SxProps, Theme } from '@mui/material';
+import { SystemCssProperties } from '@mui/system';
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
@@ -30,6 +27,4 @@ export type CSSType = {
 };
 
 export type SxProp = SxProps<Theme>;
-export type SxType =
-    | SystemCssProperties<Theme>
-    | CSSSelectorObjectOrCssVariables<Theme>;
+export type SxType = SystemCssProperties<Theme>;

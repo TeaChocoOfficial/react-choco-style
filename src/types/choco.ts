@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/types/choco.d.ts"
+//-Path: "react-choco-style/src/types/choco.ts"
 import React from 'react';
 import { ColorsType } from './color';
 import { Sizes, SizeValue } from './size';
@@ -19,14 +19,14 @@ export type StyleTypes = {
 };
 
 export type StyledTypes = {
-    [keyof in KeysStyleTypes]?: key extends keyof React.CSSProperties
+    [key in KeysStyleTypes]?: key extends keyof React.CSSProperties
         ? React.CSSProperties[key]
         : key extends KeyStylesAndType
         ? StyledTypes
         : SizeValue;
 };
 
-export type StyledType = { [keyof in React.CSSProperties]?: SizeValue };
+export type StyledType = { [key in keyof React.CSSProperties]?: SizeValue };
 
 export type ChocoStyleTypes = {
     [key in keyof ChocoStyleType]?: ChocoStyleType[key];

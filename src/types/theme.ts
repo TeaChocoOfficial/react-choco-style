@@ -1,7 +1,7 @@
 //-Path: "react-choco-style/src/types/theme.ts"
 import { SizeKey } from './size';
+import { StyleTypes } from './choco';
 import { ColorHexType } from './color';
-import { CustomStylesType } from './chocoHook';
 
 export type ModesKeyType = 'dark' | 'light';
 
@@ -65,7 +65,7 @@ export type DefChocoThemeType = {
     root: RootThemeType;
     fonts: ThemeFontsType;
     breakpoint: BreakpointType;
-    styleSheets: CustomStylesType;
+    styleSheets: (theme: ChocoThemeType) => StyleTypes;
 };
 
 export type ChocoThemeType = DefChocoThemeType & {

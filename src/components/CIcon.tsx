@@ -4,7 +4,7 @@ import { Icon, IconProp } from '../custom/Icon';
 
 export type CIconProps = CTextProps & IconProp;
 
-export default function CIcon<Props extends CIconProps>(prop: Props) {
+export function CIcon<Props extends CIconProps>(prop: Props) {
     const props = { ...prop } as Props;
     const iconProps = {
         fa: props.fa,
