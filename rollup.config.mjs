@@ -1,20 +1,20 @@
 //-Path: "react-choco-style/rollup.config.mjs"
-import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import typescript from "@rollup/plugin-typescript";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 export default {
-    input: "src/index.ts",
+    input: 'src/index.ts',
     output: [
         {
-            file: "dist/index.js",
-            format: "cjs",
+            file: 'dist/index.js',
+            format: 'cjs',
             sourcemap: true,
         },
         {
-            file: "dist/index.esm.js",
-            format: "esm",
+            file: 'dist/index.esm.js',
+            format: 'esm',
             sourcemap: true,
         },
     ],
@@ -23,7 +23,16 @@ export default {
         resolve(),
         commonjs(),
         typescript({
-            tsconfig: "./tsconfig.json",
+            tsconfig: './tsconfig.json',
         }),
+        {
+            name: 'ignore-use-client',
+            transform(code) {
+                if (code.startsWith('"use client";')) {
+                    return code.replace('"use client";', '');
+                }
+                return code;
+            },
+        },
     ],
 };

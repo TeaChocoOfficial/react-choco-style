@@ -1,7 +1,12 @@
 //-Path: "react-choco-style/src/index.ts"
 
 export * from './components/CBox';
+export * from './components/CButton';
+export * from './components/CContainner';
+export * from './components/CDialog';
 export * from './components/CIcon';
+export * from './components/CIconButton';
+export * from './components/CPaper';
 export * from './components/CSkeleton';
 export * from './components/CText';
 

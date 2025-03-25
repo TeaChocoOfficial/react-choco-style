@@ -1,6 +1,8 @@
 //-Path: "react-choco-style/src/hook/ChocoProps.tsx"
 import { useMemo } from 'react';
-import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from './ChocoStyle';
+import { ChocoFormat } from './ChocoFormat';
+import { CustomStylesTypeProp, ChocoStyledProps } from '../types/chocoHook';
 
 export class ChocoProps {
     static removeReservedProps<Props extends Record<string, any>>(
@@ -26,18 +28,21 @@ export class ChocoProps {
         Props extends ChocoStyledProps<TagType>,
     >(
         prop: Props,
-        method: () => Partial<any>,
+        method: ({
+            theme,
+            formatSize,
+            callbackSize,
+        }: CustomStylesTypeProp) => Partial<any>,
         removes: (keyof Props)[] = [],
     ): Partial<Props> {
+        const theme = ChocoStyle.useTheme();
+        const { formatSize, callbackSize } = ChocoFormat.useFormatSize();
+
         return useMemo(() => {
-            const newProps = method();
+            const newProps = method({ formatSize, callbackSize, theme });
             const mergedCs = { ...(prop.cs || {}), ...(newProps.cs || {}) };
             const combinedProps = { ...prop, ...newProps, cs: mergedCs };
-            return Object.fromEntries(
-                Object.entries(combinedProps).filter(
-                    ([key]) => !removes.includes(key as keyof Props),
-                ),
-            ) as Partial<Props>;
+            return this.removeProps(combinedProps, removes) as Partial<Props>;
         }, [prop, method, removes]);
     }
 }

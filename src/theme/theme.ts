@@ -24,6 +24,12 @@ export const ChocoTheme: ChocoThemeType = {
         zIndex: {
             backdrop: 10000,
         },
+        size: {
+            box: 64,
+            text: 16,
+            border: 8,
+            padding: 4,
+        },
     },
     fonts: {
         family: [
@@ -154,12 +160,12 @@ export const ChocoTheme: ChocoThemeType = {
                 textDisabled: '#aaddff',
             },
             success: {
-                main: '#33ee33',
-                dark: '#338833',
-                light: '#88ff88',
+                main: '#33dd00',
+                dark: '#229900',
+                light: '#88ee55',
                 text: '#000000',
-                disabled: '#006600',
-                textDisabled: '#ccffcc',
+                disabled: '#338800',
+                textDisabled: '#ccee99',
             },
             shadow: {
                 main: '#0000001a',

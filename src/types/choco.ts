@@ -2,28 +2,26 @@
 import React from 'react';
 import { ColorsType } from './color';
 import { Sizes, SizeValue } from './size';
+import { MotionProps } from 'framer-motion';
 
 export type KeysStyleTypes =
     | keyof ChocoStyleType
     | keyof React.CSSProperties
-    | KeyStylesAndType;
+    | `&${string}`
+    | `@${string}`;
 
 export type StyleTypes = {
     [key in KeysStyleTypes]?: key extends keyof ChocoStyleType
         ? ChocoStyleType[key]
         : key extends keyof React.CSSProperties
         ? Sizes<React.CSSProperties[key]>
-        : key extends KeyStylesAndType
-        ? StyleTypes
-        : SizeValue;
+        : SizeValue | StyleTypes;
 };
 
 export type StyledTypes = {
     [key in KeysStyleTypes]?: key extends keyof React.CSSProperties
         ? React.CSSProperties[key]
-        : key extends KeyStylesAndType
-        ? StyledTypes
-        : SizeValue;
+        : SizeValue | StyledTypes;
 };
 
 export type StyledType = { [key in keyof React.CSSProperties]?: SizeValue };
@@ -35,6 +33,8 @@ export type ChocoStyleTypes = {
 export type ChocoStylePropsTypes = {
     [key in keyof ChocoStylePropsType]?: ChocoStylePropsType[key];
 };
+
+export type ChocoStyledType = ChocoStylePropsType & MotionProps;
 
 export type LinesStyleType = {
     size?: number;
@@ -77,7 +77,7 @@ export type GridAreaType = number[][];
 
 export type ChocoStyleDefType = {
     //* Style
-    //? background color background-color
+    //? background | color | background-color | background-image
     bg?: Sizes<string>;
     clr?: Sizes<ColorsType>;
     bgClr?: Sizes<ColorsType>;
@@ -90,13 +90,16 @@ export type ChocoStyleDefType = {
     z?: Sizes<number>;
 
     //* Size
-    //? Width Height min-width min-height max-width max-height
+    //? Width | Height | width&height | min-width | min-height | min-width&min-height | max-width | max-height | max-width&max-height
     w?: Sizes;
     h?: Sizes;
+    wh?: Sizes;
     minW?: Sizes;
     minH?: Sizes;
+    minWH?: Sizes;
     maxW?: Sizes;
     maxH?: Sizes;
+    maxWH?: Sizes;
 
     //* inset
     //? all top bottom left right left&right top&bottom
@@ -139,7 +142,7 @@ export type ChocoStyleDefType = {
     gapY?: Sizes;
 
     //* FontSize
-    size?: number;
+    sz?: number;
     fontS?: Sizes;
 
     //* Grids
@@ -319,36 +322,3 @@ export type ChocoStylePropsType = ChocoStyleDefType & {
     usT?: boolean;
     usAll?: boolean;
 };
-
-export type KeyStylesAndKoronTypes =
-    | ':root'
-    | ':hover'
-    | ':focus'
-    | ':active'
-    | ':target'
-    | ':checked'
-    | ':disabled';
-
-export type KeyStylesAndKoronsTypes =
-    | '::-webkit-scrollbar'
-    | '::-webkit-scrollbar-track'
-    | '::-webkit-scrollbar-thumb';
-
-export type KeyStylesAndKoronType = `${
-    | ''
-    | KeyStylesAndKoronTypes
-    | KeyStylesAndKoronsTypes
-    | `${KeyStylesAndKoronsTypes}${KeyStylesAndKoronTypes}`}`;
-
-export type KeyStylesStartAndType = '' | '&' | '& ' | '$';
-
-export type KeyStylesAndTypes =
-    | `${KeyStylesStartAndType}${
-          | `.${string}`
-          | `#${string}`
-          | `${KeyStylesAndKoronType}`}`
-    | `${keyof React.JSX.IntrinsicElements | '*'}${
-          | ''
-          | `${KeyStylesAndKoronType}`}`;
-
-export type KeyStylesAndType = `&${KeyStylesAndTypes}`;

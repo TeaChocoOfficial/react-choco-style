@@ -5,7 +5,15 @@ import { ColorHexType } from './color';
 
 export type ModesKeyType = 'dark' | 'light';
 
-export type RootThemeType = { zIndex: { backdrop: number } };
+export type RootThemeType = {
+    zIndex: { backdrop: number };
+    size: {
+        box: number;
+        text: number;
+        border: number;
+        padding: number;
+    };
+};
 
 export type ThemeFontsType = {
     family: string;

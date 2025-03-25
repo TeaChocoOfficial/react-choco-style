@@ -2,6 +2,7 @@
 import { SizeKey } from './size';
 import { SxProps, Theme } from '@mui/material';
 import { SystemCssProperties } from '@mui/system';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
@@ -28,3 +29,9 @@ export type CSSType = {
 
 export type SxProp = SxProps<Theme>;
 export type SxType = SystemCssProperties<Theme>;
+
+export type ReactTagType =
+    | keyof React.JSX.IntrinsicElements
+    | React.ComponentType<any>
+    | OverridableComponent<any>
+    | React.ForwardRefExoticComponent<any>;

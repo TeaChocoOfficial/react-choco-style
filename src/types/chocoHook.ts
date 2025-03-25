@@ -1,7 +1,8 @@
 //-Path: "react-choco-style/src/types/chocoHook.ts"
+import { ReactTagType } from './style';
 import { UseChocoThemeType } from './theme';
 import { Size, SizeKey, SizeValue } from './size';
-import { ChocoStylePropsType, StyleTypes } from './choco';
+import { ChocoStyledType, StyleTypes } from './choco';
 
 export type FormatSizeType = <S = SizeValue>(
     max: number,
@@ -15,8 +16,17 @@ export type CallbackSizeType = <MaxSize, Vlaue, Return>(
 ) => Size<Return>;
 
 export type ChocoStyledProps<
-    TagType extends keyof React.JSX.IntrinsicElements,
-> = React.ComponentPropsWithoutRef<TagType> & ChocoStylePropsType;
+    TagType extends ReactTagType,
+    Props extends { [key in string]?: any } = {},
+> = Omit<React.ComponentPropsWithoutRef<TagType>, 'sx'> &
+    ChocoStyledType &
+    Props;
+
+export type CustomStylesTypeProp = {
+    theme: UseChocoThemeType;
+    formatSize: FormatSizeType;
+    callbackSize: CallbackSizeType;
+};
 
 export type CustomStylesType<
     Papram extends object = {},
@@ -25,8 +35,4 @@ export type CustomStylesType<
     theme,
     formatSize,
     callbackSize,
-}: {
-    theme: UseChocoThemeType;
-    formatSize: FormatSizeType;
-    callbackSize: CallbackSizeType;
-} & Papram) => ReturnType;
+}: CustomStylesTypeProp & Papram) => ReturnType;

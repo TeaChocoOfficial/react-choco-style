@@ -4,23 +4,8 @@ import { Icon, IconProp } from '../custom/Icon';
 
 export type CIconProps = CTextProps & IconProp;
 
-export function CIcon<Props extends CIconProps>(prop: Props) {
-    const props = { ...prop } as Props;
-    const iconProps = {
-        fa: props.fa,
-        solid: props.solid,
-        brand: props.brand,
-        regular: props.regular,
-    } as IconProp;
-
-    delete props.fa;
-    delete props.solid;
-    delete props.brand;
-    delete props.regular;
-    delete props.children;
-
-    const textProps = { ...props } as CTextProps;
-
+export function CIcon({ fa, solid, brand, regular, ...textProps }: CIconProps) {
+    const iconProps: IconProp = { fa, solid, brand, regular };
     return (
         <CText {...textProps}>
             <Icon {...iconProps} />

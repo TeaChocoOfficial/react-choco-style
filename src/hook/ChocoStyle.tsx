@@ -1,17 +1,24 @@
 //-Path: "react-choco-style/src/hook/ChocoStyle.tsx"
+import {
+    ColorType,
+    ColorsType,
+    SetColorType,
+    ColorHexType,
+    ColorDefaultType,
+} from '../types/color';
 import { styled } from '@mui/material';
-import { SxType } from '../types/style';
+import { motion } from 'framer-motion';
 import { SizeValue } from '../types/size';
 import { ChocoProps } from './ChocoProps';
 import { ChocoFormat } from './ChocoFormat';
 import { ChocoResponse } from './ChocoResponse';
 import { CustomStylesType } from '../types/chocoHook';
+import { ReactTagType, SxType } from '../types/style';
 import { themeAtom, themeModeAtom } from '../theme/theme';
-import { ColorDefaultType, ColorsType } from '../types/color';
 import { keysChocoStyleProps } from '../data/reservedKeywords';
-import { PaletteType, UseChocoThemeType } from '../types/theme';
 import React, { forwardRef, useCallback, useMemo } from 'react';
-import { StyleTypes, StyledType, ChocoStylePropsType } from '../types/choco';
+import { StyleTypes, StyledType, ChocoStyledType } from '../types/choco';
+import { PaletteType, ThemeFontsType, UseChocoThemeType } from '../types/theme';
 
 export class ChocoStyle {
     static useTheme(): UseChocoThemeType {
@@ -35,7 +42,7 @@ export class ChocoStyle {
         );
     }
 
-    static styled<TagType extends keyof React.JSX.IntrinsicElements>(
+    static styled<TagType extends ReactTagType>(
         tag: TagType,
         nameTag?: string,
     ) {
@@ -51,19 +58,26 @@ export class ChocoStyle {
                       )
                     : chocoStyle(customStyles ?? {});
             };
-            const create = styled(tag, { name: nameTag });
+            const create = styled(
+                tag as unknown as keyof React.JSX.IntrinsicElements,
+                { name: nameTag },
+            );
             const Component = create(() => getStyles());
+            const MotionComponent = motion(Component);
             return forwardRef<
                 HTMLElement,
-                ChocoStylePropsType & React.ComponentPropsWithoutRef<TagType>
-            >((prop, ref) => {
+                ChocoStyledType & React.ComponentPropsWithoutRef<TagType>
+            >((prop, ref) => {  
                 const { cs } = prop;
                 const chocoStyle = ChocoResponse.useChocoStyle<SxType>();
                 const propChocoStyle = ChocoResponse.usePropChocoStyle();
                 const { sx, props } = useMemo(() => {
                     const chocoStyleProps = propChocoStyle(prop);
                     return {
-                        sx: chocoStyle({ ...cs, ...chocoStyleProps }),
+                        sx: chocoStyle({
+                            ...cs,
+                            ...chocoStyleProps,
+                        } as StyleTypes),
                         props: ChocoProps.removeReservedProps(
                             [...keysChocoStyleProps, 'sx'],
                             prop,
@@ -71,9 +85,11 @@ export class ChocoStyle {
                     };
                 }, [prop, chocoStyle, propChocoStyle]);
                 const componentProps = props as React.ComponentProps<
-                    typeof Component
+                    typeof MotionComponent
                 >;
-                return <Component {...componentProps} sx={sx} ref={ref} />;
+                return (
+                    <MotionComponent {...componentProps} sx={sx} ref={ref} />
+                );
             });
         };
     }
@@ -135,5 +151,330 @@ export class ChocoStyle {
             },
             [palette],
         );
+    }
+
+    static useGetSetColor(): (
+        color?: ColorType,
+        isText?: boolean,
+    ) => SetColorType {
+        const { palette } = this.useTheme();
+
+        return useCallback(
+            (color?: ColorsType, isText: boolean = false): SetColorType => {
+                switch (`${color ?? 'secondary'}${isText ? 'Text' : ''}`) {
+                    //*common
+                    case 'paper':
+                        return {
+                            color: palette.text.primary,
+                            action: palette.text.disabled,
+                            borColor: palette.text.primary,
+                            bgColor: palette.background.paper,
+                            bgHover: palette.background.default,
+                        };
+                    case 'inherit':
+                        return {
+                            bgColor: null,
+                            action: palette.text.primary,
+                            bgHover: palette.text.disabled,
+                            color: palette.background.default,
+                            borColor: palette.background.default,
+                        };
+                    //*text
+                    case 'disabled':
+                        return {
+                            color: palette.text.disabled,
+                            action: palette.shadow.light ?? palette.shadow.main,
+                            bgColor: palette.shadow.main,
+                            borColor: palette.text.disabled,
+                            bgHover: `${
+                                palette.primary.textDisabled ??
+                                palette.primary.disabled
+                            }66`,
+                        };
+                    case 'disabledText':
+                        return {
+                            bgColor: null,
+                            color: palette.text.disabled,
+                            action: palette.text.primary,
+                            borColor: palette.text.disabled,
+                            bgHover: `${
+                                palette.primary.textDisabled ??
+                                palette.primary.disabled ??
+                                palette.text.disabled
+                            }66`,
+                        };
+                    case 'text':
+                        return {
+                            bgColor: null,
+                            color: palette.text.primary,
+                            bgHover: palette.text.disabled,
+                            borColor: palette.text.primary,
+                            action:
+                                palette.primary.textDisabled ??
+                                palette.text.disabled,
+                        };
+                    //*primary
+                    case 'primary':
+                        return {
+                            color: palette.primary.text,
+                            bgColor: palette.primary.main,
+                            borColor: palette.primary.text,
+                            bgHover:
+                                palette.primary.dark ?? palette.primary.main,
+                            action:
+                                palette.primary.textDisabled ??
+                                palette.text.disabled,
+                        };
+                    case 'primaryText':
+                        return {
+                            bgColor: null,
+                            color: palette.primary.main,
+                            borColor: palette.primary.main,
+                            action:
+                                palette.primary.dark ?? palette.primary.main,
+                            bgHover: `${
+                                palette.primary.dark ?? palette.primary.main
+                            }66`,
+                        };
+                    //*secondary
+                    case 'secondary':
+                        return {
+                            color: palette.secondary.text,
+                            bgColor: palette.secondary.main,
+                            borColor: palette.secondary.text,
+                            bgHover:
+                                palette.secondary.dark ??
+                                palette.secondary.main,
+                            action:
+                                palette.secondary.textDisabled ??
+                                palette.text.disabled,
+                        };
+                    case 'secondaryText':
+                        return {
+                            bgColor: null,
+                            color: palette.secondary.main,
+                            borColor: palette.secondary.main,
+                            action:
+                                palette.secondary.dark ??
+                                palette.secondary.main,
+                            bgHover: `${
+                                palette.secondary.dark ?? palette.secondary.main
+                            }66`,
+                        };
+                    //*error
+                    case 'error':
+                        return {
+                            color: palette.error.text,
+                            bgColor: palette.error.main,
+                            borColor: palette.error.text,
+                            bgHover: palette.error.dark ?? palette.error.main,
+                            action:
+                                palette.error.textDisabled ??
+                                palette.text.disabled,
+                        };
+                    case 'errorText':
+                        return {
+                            bgColor: null,
+                            color: palette.error.main,
+                            borColor: palette.error.main,
+                            action: palette.error.dark ?? palette.error.main,
+                            bgHover: `${
+                                palette.error.dark ?? palette.error.main
+                            }66`,
+                        };
+
+                    //*warning
+                    case 'warning':
+                        return {
+                            color: palette.warning.text,
+                            bgColor: palette.warning.main,
+                            borColor: palette.warning.text,
+                            bgHover:
+                                palette.warning.dark ?? palette.warning.main,
+                            action:
+                                palette.warning.textDisabled ??
+                                palette.text.disabled,
+                        };
+                    case 'warningText':
+                        return {
+                            bgColor: null,
+                            color: palette.warning.main,
+                            borColor: palette.warning.main,
+                            action:
+                                palette.warning.dark ?? palette.warning.main,
+                            bgHover: `${
+                                palette.warning.dark ?? palette.warning.main
+                            }66`,
+                        };
+
+                    //*info
+                    case 'info':
+                        return {
+                            color: palette.info.text,
+                            bgColor: palette.info.main,
+                            borColor: palette.info.text,
+                            bgHover: palette.info.dark ?? palette.info.main,
+                            action:
+                                palette.info.textDisabled ??
+                                palette.text.disabled,
+                        };
+                    case 'infoText':
+                        return {
+                            bgColor: null,
+                            color: palette.info.main,
+                            borColor: palette.info.main,
+                            action: palette.info.dark ?? palette.info.main,
+                            bgHover: `${
+                                palette.info.dark ?? palette.info.main
+                            }66`,
+                        };
+
+                    //*success
+                    case 'success':
+                        return {
+                            color: palette.success.text,
+                            bgColor: palette.success.main,
+                            borColor: palette.success.text,
+                            bgHover:
+                                palette.success.dark ?? palette.success.main,
+                            action:
+                                palette.success.textDisabled ??
+                                palette.success.text,
+                        };
+                    case 'successText':
+                        return {
+                            bgColor: null,
+                            color: palette.success.main,
+                            borColor: palette.success.main,
+                            action:
+                                palette.success.dark ?? palette.success.main,
+                            bgHover: `${
+                                palette.success.dark ?? palette.success.main
+                            }66`,
+                        };
+
+                    default:
+                        const colors = palette[color as ColorDefaultType];
+                        return {
+                            color: colors ? colors.text : color ?? null,
+                            action: colors
+                                ? colors.dark ?? colors.main
+                                : color ?? null,
+                            bgColor: colors ? colors.main : null,
+                            bgHover: colors
+                                ? `${colors.dark ?? colors.main}66`
+                                : null,
+                            borColor: colors ? colors.text : color ?? null,
+                        };
+                }
+            },
+            [palette],
+        );
+    }
+
+    static useGetSetColorProps(defaultColor: ColorType = 'secondary') {
+        const getSetColor = this.useGetSetColor();
+
+        return useCallback(
+            ({
+                text,
+                outline,
+                disabled,
+                setColor,
+            }: {
+                text?: boolean;
+                outline?: boolean;
+                disabled?: boolean;
+                setColor?: ColorType;
+            }): {
+                styles: StyleTypes;
+                setColors?: SetColorType;
+            } => {
+                let styles: StyleTypes = {};
+                const setColors = getSetColor(setColor ?? defaultColor, text);
+
+                const disabledColor = 88;
+                const getColor = (
+                    clr?: ColorsType,
+                    disabled: number = disabledColor,
+                ): ColorsType | undefined =>
+                    typeof clr !== 'string'
+                        ? clr
+                        : (clr?.length ?? 0) > 7
+                        ? clr
+                        : clr.startsWith('#')
+                        ? `${clr as ColorHexType}${disabled}`
+                        : clr;
+
+                const defStyle: StyleTypes = {
+                    '&:focus': {
+                        outlines: {
+                            size: 4,
+                            color: getColor(setColors?.borColor),
+                        },
+                        bgClr: disabled
+                            ? undefined
+                            : outline
+                            ? getColor(setColors?.bgHover, disabledColor / 2)
+                            : setColors?.bgHover,
+                    },
+                };
+                if (outline) {
+                    styles = {
+                        bgClr: null,
+                        borders: {
+                            size: 2,
+                            style: 'solid',
+                            color: setColors?.bgColor ?? defaultColor,
+                        },
+                        clr: (disabled
+                            ? getColor(setColors?.bgColor)
+                            : setColors?.bgColor ?? defaultColor) as ColorType,
+                        '&:hover': {
+                            bgClr: disabled
+                                ? undefined
+                                : getColor(
+                                      setColors?.bgHover,
+                                      disabledColor / 2,
+                                  ),
+                        },
+                        ...defStyle,
+                    };
+                } else {
+                    styles = {
+                        border: 'none',
+                        clr: (disabled
+                            ? getColor(setColors?.color)
+                            : setColors?.color ?? defaultColor) as ColorType,
+                        bgClr: disabled
+                            ? getColor(setColors?.bgColor)
+                            : setColors?.bgColor,
+                        '&:hover': {
+                            bgClr: disabled ? undefined : setColors?.bgHover,
+                        },
+                        ...defStyle,
+                    };
+                }
+                return { styles, setColors };
+            },
+            [defaultColor, getSetColor],
+        );
+    }
+
+    static useFont() {
+        const { fonts } = this.useTheme();
+
+        return {
+            getFont: useCallback(
+                (size?: keyof ThemeFontsType['weight']): StyleTypes => {
+                    const css: StyleTypes = {
+                        fontFamily: fonts.family,
+                        fontWeight: fonts.weight[size ?? 'regular'],
+                    };
+                    return css;
+                },
+                [fonts],
+            ),
+        };
     }
 }
