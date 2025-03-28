@@ -6,8 +6,10 @@ import {
     CPaper,
     CButton,
     CDialog,
+    CSelect,
     CSkeleton,
     ChocoStyle,
+    CDialogChildrenProps,
 } from '@teachoco-official/react-choco-style';
 import { CIconButton } from '../../components/CIconButton';
 
@@ -18,8 +20,27 @@ export default function Choco() {
 
     return (
         <CBox>
-            <CDialog open={open} />
-            <CPaper dFlex gaps={4} column p={16} m={16} elevation={1}>
+            <CDialog open={open}>
+                {({
+                    Title,
+                    Content,
+                    Actions,
+                    ContextText,
+                }: CDialogChildrenProps) => (
+                    <>
+                        <Title>Dialog Title</Title>
+                        <Content>
+                            <ContextText>This is the content</ContextText>
+                        </Content>
+                        <Actions>
+                            <CButton onClick={() => setOpen(false)}>
+                                Close
+                            </CButton>
+                        </Actions>
+                    </>
+                )}
+            </CDialog>
+            <CPaper dFlex gaps={4} column m={16} elevation={1}>
                 <Text>choco styled</Text>
                 <Text
                     animate={{
@@ -31,18 +52,36 @@ export default function Choco() {
                 <CText dFlex cs={{ clr: 'error' }}>
                     CText
                 </CText>
-                <CText dFlex clr="warning">
+                <CText dFlex clr="warning" sz={26}>
                     CText
                 </CText>
+                <CSelect
+                    label="option select"
+                    outline
+                    w={300}
+                    options={[
+                        'option 1',
+                        'option 2',
+                        'option 3',
+                        'option 4',
+                        'option 5',
+                        'option 6',
+                    ]}
+                />
                 <CText skeleton>skeleton</CText>
                 <CSkeleton />
                 <CSkeleton variant="rounded" />
                 <CSkeleton variant="rectangular" />
-                <CButton setColor="success">button</CButton>
-                <CButton outline setColor="secondary">
+                <CButton
+                    setClr="success"
+                    onClick={() => setOpen((prev) => !prev)}
+                >
+                    button
+                </CButton>
+                <CButton outline setClr="secondary">
                     button outline secondary
                 </CButton>
-                <CButton lowcase setColor="primary">
+                <CButton lowcase setClr="primary">
                     button lowcase primary
                 </CButton>
                 <CButton text>button text</CButton>

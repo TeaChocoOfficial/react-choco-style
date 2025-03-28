@@ -8,24 +8,25 @@ import {
     ChocoStyleDefType,
     ChocoStylePropsType,
 } from '../types/choco';
+import {
+    keysChocoStyle,
+    KeywordsChocoStyleDef,
+} from '../data/reservedKeywords';
 import { SxType } from '../types/style';
 import { ChocoStyle } from './ChocoStyle';
 import { ChocoFormat } from './ChocoFormat';
 import { ColorsType } from '../types/color';
 import { useCallback, useMemo } from 'react';
-import {
-    keysChocoStyle,
-    KeywordsChocoStyleDef,
-} from '../data/reservedKeywords';
-import { Size, SizeKey, Sizes, SizeValue } from '../types/size';
+import { Sizes, SizeValue } from '../types/size';
 
 export class ChocoResponse {
     static useChocoStyle<Styles extends StyledType | SxType>(): (
         styles: StyleTypes,
     ) => Styles {
+        const { root } = ChocoStyle.useTheme();
         const getColor = ChocoStyle.useGetColor();
-        const { breakpoint, root } = ChocoStyle.useTheme();
-        const { callbackSize, formatSize } = ChocoFormat.useFormatSize();
+        const { callbackSize, formatSize, isSize } =
+            ChocoFormat.useFormatSize();
 
         return useMemo(() => {
             const chocoStyle = (styles: StyleTypes = {}): Styles => {
@@ -161,19 +162,6 @@ export class ChocoResponse {
                         );
                 };
 
-                const isSize = (size: unknown): boolean => {
-                    const breakpointKeys = Object.keys(
-                        breakpoint.size,
-                    ) as SizeKey[];
-                    if (size && typeof size === 'object') {
-                        const sizeKeys = Object.keys(size) as (keyof Size)[];
-                        return sizeKeys.every((key) =>
-                            breakpointKeys.includes(key),
-                        );
-                    }
-                    return false;
-                };
-
                 //* Style
                 //? background color background-color
                 setCss('background', toSize(styles.bg));
@@ -264,7 +252,11 @@ export class ChocoResponse {
                 setCss(
                     'fontSize',
                     toSize(
-                        styles.sz ? formatSize(styles.sz) : undefined,
+                        styles.sz
+                            ? isSize(styles.sz)
+                                ? styles.sz
+                                : formatSize(styles.sz)
+                            : undefined,
                         timeText,
                         fontUnit,
                     ),
@@ -568,6 +560,7 @@ export class ChocoResponse {
                     if (value === undefined) continue;
                     // Size props
                     if (KeywordsChocoStyleDef.includes(key)) {
+                        // console.log(key, value);
                         styleMap[key as keyof ChocoStyleType] =
                             typeof value === 'number'
                                 ? formatSize(value)

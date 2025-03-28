@@ -10,7 +10,6 @@ import { styled } from '@mui/material';
 import { motion } from 'framer-motion';
 import { SizeValue } from '../types/size';
 import { ChocoProps } from './ChocoProps';
-import { ChocoFormat } from './ChocoFormat';
 import { ChocoResponse } from './ChocoResponse';
 import { CustomStylesType } from '../types/chocoHook';
 import { ReactTagType, SxType } from '../types/style';
@@ -50,12 +49,8 @@ export class ChocoStyle {
             const getStyles = (): Record<string, SizeValue> => {
                 const theme = this.useTheme();
                 const chocoStyle = ChocoResponse.useChocoStyle<StyledType>();
-                const { formatSize, callbackSize } =
-                    ChocoFormat.useFormatSize();
                 return typeof customStyles === 'function'
-                    ? chocoStyle(
-                          customStyles({ theme, formatSize, callbackSize }),
-                      )
+                    ? chocoStyle(customStyles({ theme }))
                     : chocoStyle(customStyles ?? {});
             };
             const create = styled(
@@ -67,7 +62,7 @@ export class ChocoStyle {
             return forwardRef<
                 HTMLElement,
                 ChocoStyledType & React.ComponentPropsWithoutRef<TagType>
-            >((prop, ref) => {  
+            >((prop, ref) => {
                 const { cs } = prop;
                 const chocoStyle = ChocoResponse.useChocoStyle<SxType>();
                 const propChocoStyle = ChocoResponse.usePropChocoStyle();
@@ -153,7 +148,7 @@ export class ChocoStyle {
         );
     }
 
-    static useGetSetColor(): (
+    static useGetsetClr(): (
         color?: ColorType,
         isText?: boolean,
     ) => SetColorType {
@@ -372,26 +367,29 @@ export class ChocoStyle {
         );
     }
 
-    static useGetSetColorProps(defaultColor: ColorType = 'secondary') {
-        const getSetColor = this.useGetSetColor();
+    static useGetsetClrProps(defaultColor: ColorType = 'secondary') {
+        const getSetClr = this.useGetsetClr();
 
         return useCallback(
             ({
                 text,
+                focus = true,
+                setClr,
                 outline,
                 disabled,
-                setColor,
             }: {
                 text?: boolean;
+                focus?: boolean;
+                setClr?: ColorType;
                 outline?: boolean;
+                borders?: boolean;
                 disabled?: boolean;
-                setColor?: ColorType;
             }): {
                 styles: StyleTypes;
-                setColors?: SetColorType;
+                setClrs?: SetColorType;
             } => {
                 let styles: StyleTypes = {};
-                const setColors = getSetColor(setColor ?? defaultColor, text);
+                const setClrs = getSetClr(setClr ?? defaultColor, text);
 
                 const disabledColor = 88;
                 const getColor = (
@@ -406,58 +404,57 @@ export class ChocoStyle {
                         ? `${clr as ColorHexType}${disabled}`
                         : clr;
 
-                const defStyle: StyleTypes = {
+                const focusStyle: StyleTypes = {
                     '&:focus': {
                         outlines: {
                             size: 4,
-                            color: getColor(setColors?.borColor),
+                            color: getColor(setClrs?.borColor),
                         },
                         bgClr: disabled
                             ? undefined
                             : outline
-                            ? getColor(setColors?.bgHover, disabledColor / 2)
-                            : setColors?.bgHover,
+                            ? getColor(setClrs?.bgHover, disabledColor / 2)
+                            : setClrs?.bgHover,
                     },
                 };
+
                 if (outline) {
                     styles = {
                         bgClr: null,
                         borders: {
                             size: 2,
                             style: 'solid',
-                            color: setColors?.bgColor ?? defaultColor,
+                            color: setClrs?.bgColor ?? defaultColor,
                         },
                         clr: (disabled
-                            ? getColor(setColors?.bgColor)
-                            : setColors?.bgColor ?? defaultColor) as ColorType,
+                            ? getColor(setClrs?.bgColor)
+                            : setClrs?.bgColor ?? defaultColor) as ColorType,
                         '&:hover': {
                             bgClr: disabled
                                 ? undefined
-                                : getColor(
-                                      setColors?.bgHover,
-                                      disabledColor / 2,
-                                  ),
+                                : getColor(setClrs?.bgHover, disabledColor / 2),
                         },
-                        ...defStyle,
                     };
                 } else {
                     styles = {
                         border: 'none',
                         clr: (disabled
-                            ? getColor(setColors?.color)
-                            : setColors?.color ?? defaultColor) as ColorType,
+                            ? getColor(setClrs?.color)
+                            : setClrs?.color ?? defaultColor) as ColorType,
                         bgClr: disabled
-                            ? getColor(setColors?.bgColor)
-                            : setColors?.bgColor,
+                            ? getColor(setClrs?.bgColor)
+                            : setClrs?.bgColor,
                         '&:hover': {
-                            bgClr: disabled ? undefined : setColors?.bgHover,
+                            bgClr: disabled ? undefined : setClrs?.bgHover,
                         },
-                        ...defStyle,
                     };
+                    if (focus) {
+                        styles = { ...styles, ...focusStyle };
+                    }
                 }
-                return { styles, setColors };
+                return { styles, setClrs };
             },
-            [defaultColor, getSetColor],
+            [defaultColor, getSetClr],
         );
     }
 

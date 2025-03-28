@@ -8,23 +8,13 @@ import { ChocoStyledProps } from '../types/chocoHook';
 import useNavigate, { ToType } from '../custom/ReactRoute';
 import { IconButton as MuiIconButton } from '@mui/material';
 
-const IconButton = ChocoStyle.styled(
-    MuiIconButton,
-    'CIconButton',
-)({
-    a: 'c',
-    j: 'c',
-    of: 'h',
-    dp: 'if',
-    pos: 'r',
-    borR: '50%',
-});
+const IconButton = ChocoStyle.styled(MuiIconButton, 'CIconButton')();
 
 export type CIconButtonProps = ChocoStyledProps<
     typeof IconButton,
     {
         to?: ToType;
-        setColor?: ColorType;
+        setClr?: ColorType;
         color?: StyleTypes['color'];
     } & IconProp
 >;
@@ -32,7 +22,7 @@ export type CIconButtonProps = ChocoStyledProps<
 export function CIconButton<Props extends CIconButtonProps>(prop: Props) {
     const navigate = useNavigate();
     const { getFont } = ChocoStyle.useFont();
-    const getSetColorProps = ChocoStyle.useGetSetColorProps('primaryText');
+    const getSetClrProps = ChocoStyle.useGetsetClrProps('primaryText');
     const { to, onClick, fa, solid, brand, regular, props, children } = prop;
 
     return (
@@ -41,11 +31,11 @@ export function CIconButton<Props extends CIconButtonProps>(prop: Props) {
                 prop,
                 ({ formatSize, theme }) => {
                     const fontStyle = getFont('medium');
-                    const { sz, color, disabled, setColor } = prop;
+                    const { sz, color, disabled, setClr } = prop;
 
-                    const { styles } = getSetColorProps({
+                    const { styles } = getSetClrProps({
                         disabled,
-                        setColor,
+                        setClr,
                     });
 
                     return {
@@ -69,7 +59,7 @@ export function CIconButton<Props extends CIconButtonProps>(prop: Props) {
                     'color',
                     'onClick',
                     'disabled',
-                    'setColor',
+                    'setClr',
                     'fa',
                     'solid',
                     'brand',

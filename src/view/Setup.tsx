@@ -4,8 +4,10 @@ import { InitChoco } from '@teachoco-official/react-choco-style';
 
 export default function Setup() {
     return (
-        <InitChoco createTheme={(theme) => ({ ...theme })}>
-            <App />
-        </InitChoco>
+        <>
+            {/* <InitChoco createTheme={(theme) => ({ ...theme })}> */}
+                <App />
+            {/* </InitChoco> */}
+        </>
     );
 }

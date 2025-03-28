@@ -7,28 +7,17 @@ import { Button as MuiButton } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
 import useNavigate, { ToType } from '../custom/ReactRoute';
 
-const Button = ChocoStyle.styled(
-    MuiButton,
-    'CButton',
-)(({ formatSize }) => ({
-    a: 'c',
-    j: 'c',
-    of: 'h',
-    dp: 'if',
-    pos: 'r',
-    gaps: formatSize(4),
-    borR: formatSize(2),
-}));
+const Button = ChocoStyle.styled(MuiButton, 'CButton')();
 
 export type CButtonProps = ChocoStyledProps<
-    typeof Button,
+    typeof MuiButton,
     {
         to?: ToType;
         text?: boolean;
         lowcase?: boolean;
         outline?: boolean;
+        setClr?: ColorType;
         container?: boolean;
-        setColor?: ColorType;
         color?: StyleTypes['color'];
     }
 >;
@@ -37,7 +26,7 @@ export function CButton<Props extends CButtonProps>(prop: Props) {
     const { to, onClick } = prop;
     const navigate = useNavigate();
     const { getFont } = ChocoStyle.useFont();
-    const getSetColorProps = ChocoStyle.useGetSetColorProps();
+    const getSetClrProps = ChocoStyle.useGetsetClrProps();
 
     return (
         <Button
@@ -49,10 +38,10 @@ export function CButton<Props extends CButtonProps>(prop: Props) {
                         sz,
                         text,
                         color,
+                        setClr,
                         lowcase,
                         outline,
                         disabled,
-                        setColor,
                         container,
                     } = prop;
 
@@ -94,11 +83,11 @@ export function CButton<Props extends CButtonProps>(prop: Props) {
                         };
                     }
 
-                    const { styles } = getSetColorProps({
+                    const { styles } = getSetClrProps({
                         text,
+                        setClr,
                         outline,
                         disabled,
-                        setColor,
                     });
 
                     return {
@@ -114,11 +103,11 @@ export function CButton<Props extends CButtonProps>(prop: Props) {
                     'to',
                     'text',
                     'color',
+                    'setClr',
                     'lowcase',
                     'outline',
                     'onClick',
                     'disabled',
-                    'setColor',
                     'container',
                 ],
             )}

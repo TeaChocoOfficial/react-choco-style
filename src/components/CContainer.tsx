@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/components/CContainner.tsx"
+//-Path: "react-choco-style/src/components/CContainer.tsx"
 import { CBox } from './CBox';
 import { Icon } from '../custom/Icon';
 import { CIconButton } from './CIconButton';
@@ -11,13 +11,9 @@ import { Container as ContainerMui } from '@mui/material';
 const Container = ChocoStyle.styled(
     ContainerMui,
     'CContainer',
-)(({ formatSize }) => ({
-    borR: 2,
-    pos: 'r',
-    px: '5%',
-    py: formatSize(6),
+)({
     w: { v: '100%', l: 1024 },
-}));
+});
 
 export type CContainerContents = 'main' | 'header' | 'content';
 
@@ -38,12 +34,12 @@ export type CContainerContentProps = {
 };
 
 export type CContainerProp = ChocoStyledProps<
-    typeof Container,
+    typeof ContainerMui,
     CContainerMainProps | CContainerHeaderProps | CContainerContentProps
 >;
 
 export type CContainerProps<Content extends CContainerContents = 'content'> =
-    ChocoStyledProps<'div'> &
+    ChocoStyledProps<typeof ContainerMui> &
         (Content extends 'main'
             ? CContainerMainProps
             : Content extends 'header'

@@ -18,9 +18,9 @@ export type CallbackSizeType = <MaxSize, Vlaue, Return>(
 export type ChocoStyledProps<
     TagType extends ReactTagType,
     Props extends { [key in string]?: any } = {},
-> = Omit<React.ComponentPropsWithoutRef<TagType>, 'sx'> &
+> = Props &
     ChocoStyledType &
-    Props;
+    Omit<React.ComponentPropsWithoutRef<TagType>, 'sx'>;
 
 export type CustomStylesTypeProp = {
     theme: UseChocoThemeType;
@@ -31,8 +31,4 @@ export type CustomStylesTypeProp = {
 export type CustomStylesType<
     Papram extends object = {},
     ReturnType = StyleTypes,
-> = ({
-    theme,
-    formatSize,
-    callbackSize,
-}: CustomStylesTypeProp & Papram) => ReturnType;
+> = ({ theme }: { theme: UseChocoThemeType } & Papram) => ReturnType;

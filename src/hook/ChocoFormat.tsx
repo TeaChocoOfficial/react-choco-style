@@ -6,6 +6,7 @@ import { CallbackSizeType, FormatSizeType } from '../types/chocoHook';
 
 export class ChocoFormat {
     static useFormatSize(): {
+        isSize: (size: unknown) => boolean
         formatSize: FormatSizeType;
         callbackSize: CallbackSizeType;
     } {
@@ -32,6 +33,18 @@ export class ChocoFormat {
             }
             return {
                 formatSize,
+                isSize: (size: unknown): boolean => {
+                    const breakpointKeys = Object.keys(
+                        breakpoint.size,
+                    ) as SizeKey[];
+                    if (size && typeof size === 'object') {
+                        const sizeKeys = Object.keys(size) as (keyof Size)[];
+                        return sizeKeys.every((key) =>
+                            breakpointKeys.includes(key),
+                        );
+                    }
+                    return false;
+                },
                 callbackSize: <MaxSize, Vlaue, Return>(
                     size: MaxSize,
                     callback: (value: Vlaue, key: SizeKey) => Return,

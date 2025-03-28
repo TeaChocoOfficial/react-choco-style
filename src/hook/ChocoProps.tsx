@@ -2,6 +2,7 @@
 import { useMemo } from 'react';
 import { ChocoStyle } from './ChocoStyle';
 import { ChocoFormat } from './ChocoFormat';
+import { ReactTagType } from '../types/style';
 import { CustomStylesTypeProp, ChocoStyledProps } from '../types/chocoHook';
 
 export class ChocoProps {
@@ -24,7 +25,7 @@ export class ChocoProps {
     }
 
     static useChocoProps<
-        TagType extends keyof React.JSX.IntrinsicElements,
+        TagType extends ReactTagType,
         Props extends ChocoStyledProps<TagType>,
     >(
         prop: Props,
@@ -34,6 +35,7 @@ export class ChocoProps {
             callbackSize,
         }: CustomStylesTypeProp) => Partial<any>,
         removes: (keyof Props)[] = [],
+        deps: React.DependencyList = [],
     ): Partial<Props> {
         const theme = ChocoStyle.useTheme();
         const { formatSize, callbackSize } = ChocoFormat.useFormatSize();
@@ -43,6 +45,6 @@ export class ChocoProps {
             const mergedCs = { ...(prop.cs || {}), ...(newProps.cs || {}) };
             const combinedProps = { ...prop, ...newProps, cs: mergedCs };
             return this.removeProps(combinedProps, removes) as Partial<Props>;
-        }, [prop, method, removes]);
+        }, [prop, method, removes, ...deps]);
     }
 }
