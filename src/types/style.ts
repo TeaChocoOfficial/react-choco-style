@@ -1,5 +1,4 @@
 //-Path: "react-choco-style/src/types/style.ts"
-import { SizeKey } from './size';
 import { SxProps, Theme } from '@mui/material';
 import { SystemCssProperties } from '@mui/system';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
@@ -21,17 +20,10 @@ declare module '@mui/material/styles' {
     }
 }
 
-export type ResponsiveCSSType = { [key in SizeKey]?: CSSType };
-
-export type CSSType = {
-    [key in keyof React.CSSProperties]?: React.CSSProperties[key];
-};
-
 export type SxProp = SxProps<Theme>;
 export type SxType = SystemCssProperties<Theme>;
 
 export type ReactTagType =
     | keyof React.JSX.IntrinsicElements
     | React.ComponentType<any>
-    | OverridableComponent<any>
-    | React.ForwardRefExoticComponent<any>;
+    | OverridableComponent<any>;

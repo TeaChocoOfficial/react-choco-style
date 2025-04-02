@@ -1,8 +1,11 @@
 //-Path: "react-choco-style/src/types/choco.ts"
-import React from 'react';
+import { To } from 'react-router';
 import { ColorsType } from './color';
 import { Sizes, SizeValue } from './size';
 import { MotionProps } from 'framer-motion';
+import { CustomStylesType } from './chocoHook';
+
+export type ToType = To;
 
 export type KeysStyleTypes =
     | keyof ChocoStyleType
@@ -10,29 +13,31 @@ export type KeysStyleTypes =
     | `&${string}`
     | `@${string}`;
 
-export type StyleTypes = {
-    [key in KeysStyleTypes]?: key extends keyof ChocoStyleType
-        ? ChocoStyleType[key]
-        : key extends keyof React.CSSProperties
-        ? Sizes<React.CSSProperties[key]>
-        : SizeValue | StyleTypes;
+export type NestedStyleTypes = {
+    [key in `&${string}` | `@${string}`]?: {
+        [key in keyof ChocoStyleType]?: ChocoStyleType[key];
+    } & {
+        [key in keyof React.CSSProperties]?: Sizes<React.CSSProperties[key]>;
+    };
 };
 
-export type StyledTypes = {
-    [key in KeysStyleTypes]?: key extends keyof React.CSSProperties
-        ? React.CSSProperties[key]
-        : SizeValue | StyledTypes;
-};
+export type StyleTypes = {
+    [key in keyof ChocoStyleType]?: ChocoStyleType[key];
+} & {
+    [key in keyof React.CSSProperties]?: Sizes<React.CSSProperties[key]>;
+} & NestedStyleTypes;
 
 export type StyledType = { [key in keyof React.CSSProperties]?: SizeValue };
 
-export type ChocoStyleTypes = {
-    [key in keyof ChocoStyleType]?: ChocoStyleType[key];
-};
+export type CsType = CustomStylesType | StyleTypes;
 
-export type ChocoStylePropsTypes = {
-    [key in keyof ChocoStylePropsType]?: ChocoStylePropsType[key];
-};
+export type CssKeyType =
+    | keyof React.JSX.IntrinsicElements
+    | `.${string}`
+    | `&${string}`
+    | `@${string}`;
+
+export type CssType = { [key in CssKeyType]?: CsType };
 
 export type ChocoStyledType = ChocoStylePropsType & MotionProps;
 
@@ -142,7 +147,6 @@ export type ChocoStyleDefType = {
     gapY?: Sizes;
 
     //* FontSize
-    sz?: number;
     fontS?: Sizes;
 
     //* Grids
@@ -225,7 +229,7 @@ export type ChocoStyleType = ChocoStyleDefType & {
 export type ChocoStylePropsType = ChocoStyleDefType & {
     //* Keywords
     //? width&height:100% width&height:100view
-    cs?: StyleTypes;
+    cs?: CsType;
     full?: boolean;
     fullV?: boolean;
 

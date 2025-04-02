@@ -1,11 +1,9 @@
 //-Path: "react-choco-style/src/custom/ReactRoute.tsx"
 import {
-    To,
     NavigateOptions,
     useNavigate as useNavigateReactRoute,
 } from 'react-router';
-
-export type ToType = To;
+import { ToType } from '../types/choco';
 
 export default function useNavigate(): (
     to?: ToType,

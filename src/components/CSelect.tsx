@@ -8,21 +8,20 @@ import {
     FormHelperText,
 } from '@mui/material';
 import { ColorType } from '../types/color';
-import { ChocoStyle } from '../hook/ChocoStyle';
-import { ChocoProps } from '../hook/ChocoProps';
 import { ChocoStyleType } from '../types/choco';
+import { useChocoProps } from '../hook/ChocoProps';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { useGetsetClrProps } from '../hook/ChocoColor';
+import { createStyled, useFont } from '../hook/ChocoStyle';
 
-const Select = ChocoStyle.styled(MuiSelect, 'CSelect')();
-const MenuItem = ChocoStyle.styled(MuiMenuItem, 'CSelectItem')();
-const InputLabel = ChocoStyle.styled(MuiInputLabel, 'CSelectLabel')();
-const HelperText = ChocoStyle.styled(FormHelperText, 'CHelperText')();
-const FormControl = ChocoStyle.styled(
+const Select = createStyled(MuiSelect, 'CSelect')();
+const MenuItem = createStyled(MuiMenuItem, 'CSelectItem')();
+const InputLabel = createStyled(MuiInputLabel, 'CSelectLabel')();
+const HelperText = createStyled(FormHelperText, 'CHelperText')();
+const FormControl = createStyled(
     MuiFormControl,
     'CSelectControl',
-)(({ theme }) => ({
-    sx: theme.root.size.text,
-}));
+)(({ theme }) => ({ sx: theme.root.size.text }));
 
 export type CSelectValue = string | number | string[] | undefined;
 
@@ -34,10 +33,12 @@ export type CSelectOptions<Value extends CSelectValue> =
           boxCs?: ChocoStyleType;
           label?: React.ReactNode;
           setClr?: ColorType;
+          callback?: () => Value | void;
       };
+
 export type CSelectRender<
     Value extends CSelectValue,
-    Option extends CSelectOptions<Value> = CSelectOptions<Value>,
+    Option extends CSelectOptions<Value>,
 > = (prop: {
     index: number;
     option: Option;
@@ -46,52 +47,50 @@ export type CSelectRender<
 
 export type CSelectProps<
     Value extends CSelectValue,
-    Option extends CSelectOptions<Value> = CSelectOptions<Value>,
+    Option extends CSelectOptions<Value>,
 > = ChocoStyledProps<
     typeof MuiSelect,
     {
-        value?: Value;
+        value: Value;
         helper?: string;
         setClr?: ColorType;
         outline?: boolean;
         options?: Option[];
         disabled?: boolean;
+        setValue?: (value: Value) => void;
         render?: CSelectRender<Value, Option>;
         onChange?: (
             event: SelectChangeEvent<unknown>,
             child: React.ReactNode,
-        ) => void; // กำหนด onChange ให้ชัดเจน
+        ) => void;
         props?: {
             label?: CSelectLabelProps;
+            helper?: CSelectHelperProps;
             control?: CSelectControlProps;
         };
     }
 >;
 
 export type CSelectLabelProps = ChocoStyledProps<typeof MuiInputLabel>;
+export type CSelectHelperProps = ChocoStyledProps<typeof FormHelperText>;
 export type CSelectControlProps = ChocoStyledProps<typeof MuiFormControl>;
-
 export type CSelectItemProps = ChocoStyledProps<
     typeof MuiMenuItem,
-    {
-        setClr?: ColorType;
-        outline?: boolean;
-        disabled?: boolean;
-    }
+    { setClr?: ColorType; outline?: boolean; disabled?: boolean }
 >;
 
-export function CSelectItem<Props extends CSelectItemProps>({
+export function CSelectItem({
     setClr,
     outline,
     disabled,
     ...props
-}: Props) {
-    const { getFont } = ChocoStyle.useFont();
-    const getSetClrProps = ChocoStyle.useGetsetClrProps();
+}: CSelectItemProps) {
+    const { getFont } = useFont();
+    const getSetClrProps = useGetsetClrProps();
 
     return (
         <MenuItem
-            {...ChocoProps.useChocoProps(
+            {...useChocoProps(
                 props,
                 () => {
                     const fontStyle = getFont();
@@ -124,7 +123,6 @@ export function CSelectItem<Props extends CSelectItemProps>({
                         },
                     };
                 },
-                [],
                 [getSetClrProps],
             )}
         />
@@ -133,78 +131,83 @@ export function CSelectItem<Props extends CSelectItemProps>({
 
 export function CSelect<
     Value extends CSelectValue,
-    Option extends CSelectOptions<Value> = CSelectOptions<Value>,
-    Props extends CSelectProps<Value, Option> = CSelectProps<Value, Option>,
+    Option extends CSelectOptions<Value>,
 >({
     id,
+    value,
     props,
     label,
+    setValue,
     render,
     helper,
     setClr,
     outline,
-    options,
+    options = [],
     disabled,
+    onChange,
+    defaultValue,
     ...prop
-}: Props) {
-    const { getFont } = ChocoStyle.useFont();
-    const getSetClrProps = ChocoStyle.useGetsetClrProps();
+}: CSelectProps<Value, Option>) {
+    const { getFont } = useFont();
+    const getSetClrProps = useGetsetClrProps();
+
+    const labelProps = useChocoProps(
+        props?.label ?? {},
+        ({ theme }) => {
+            const fontStyle = getFont('medium');
+            const { setClrs } = getSetClrProps({
+                setClr,
+                outline,
+                disabled,
+            });
+
+            return {
+                cs: {
+                    ...fontStyle,
+                    clr: setClrs?.bgHover,
+                    borR: theme.root.size.border,
+                    px: theme.root.size.padding / 2,
+                    '&.Mui-focused': {
+                        clr: setClrs?.bgColor,
+                    },
+                    '&[data-shrink=true]': {
+                        bgClr: setClrs?.borColor,
+                    },
+                },
+            };
+        },
+        [],
+    );
+
+    const selectProps = useChocoProps(prop, () => {
+        const fontStyle = getFont('medium');
+        const { styles } = getSetClrProps({
+            setClr,
+            outline,
+            disabled,
+        });
+        return { cs: { ...fontStyle, ...styles } };
+    });
 
     return (
         <FormControl {...props?.control}>
             {(props?.label || label) && (
-                <InputLabel
-                    id={id}
-                    {...ChocoProps.useChocoProps(
-                        props?.label ?? {},
-                        ({ theme }) => {
-                            const fontStyle = getFont('medium');
-                            const { setClrs } = getSetClrProps({
-                                setClr,
-                                outline,
-                                disabled,
-                            });
-
-                            return {
-                                cs: {
-                                    ...fontStyle,
-                                    px: theme.root.size.padding / 2,
-                                    borR: theme.root.size.border,
-                                    clr: setClrs?.bgHover,
-                                    '&.Mui-focused': {
-                                        clr: setClrs?.bgColor,
-                                    },
-                                    '&[data-shrink=true]': {
-                                        bgClr: setClrs?.borColor,
-                                    },
-                                },
-                            };
-                        },
-                        [],
-                    )}
-                >
+                <InputLabel id={id} {...labelProps}>
                     {label}
                 </InputLabel>
             )}
             <Select
                 labelId={id}
                 variant="outlined"
-                {...ChocoProps.useChocoProps(prop, () => {
-                    const fontStyle = getFont('medium');
-                    const { styles } = getSetClrProps({
-                        setClr,
-                        outline,
-                        disabled,
-                    });
-                    return {
-                        cs: {
-                            ...fontStyle,
-                            ...styles,
-                        },
-                    };
-                })}
+                value={value ?? defaultValue ?? ''}
+                onChange={(pointerEvent, component) => {
+                    onChange?.(pointerEvent, component);
+                    const newValue = pointerEvent.target?.value as Value;
+                    setValue?.(newValue);
+                }}
+                {...selectProps}
             >
-                {options?.map((option, index) =>
+                {options.map((option, index) =>
                     render ? (
                         render({ index, option, Item: CSelectItem })
                     ) : typeof option === 'object' && !Array.isArray(option) ? (
@@ -213,19 +216,26 @@ export function CSelect<
                             cs={option.cs}
                             outline={outline}
                             disabled={disabled}
-                            value={option.value}
+                            value={option.value ?? ''}
                             setClr={option.setClr ?? setClr}
+                            onClick={() => option.callback?.()}
                         >
                             {option.label ?? option.value}
                         </CSelectItem>
                     ) : (
-                        <CSelectItem key={index} value={option} setClr={setClr}>
+                        <CSelectItem
+                            key={index}
+                            value={option ?? ''}
+                            setClr={setClr}
+                            outline={outline}
+                            disabled={disabled}
+                        >
                             {option}
                         </CSelectItem>
                     ),
                 )}
             </Select>
-            <HelperText>{helper}</HelperText>
+            <HelperText {...props?.helper}>{helper}</HelperText>
         </FormControl>
     );
 }

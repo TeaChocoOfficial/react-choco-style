@@ -1,12 +1,12 @@
 //-Path: "react-choco-style/src/components/CBox.tsx"
 import { Box as MuiBox } from '@mui/material';
-import { ChocoStyle } from '../hook/ChocoStyle';
+import { createStyled } from '../hook/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 
-const Box = ChocoStyle.styled(MuiBox, 'CBox')();
+const Box = createStyled(MuiBox, 'CBox')();
 
-export type CBoxProps = ChocoStyledProps<typeof Box>;
+export type CBoxProps = ChocoStyledProps<typeof MuiBox>;
 
-export function CBox<Props extends CBoxProps>(prop: Props) {
+export function CBox(prop: CBoxProps) {
     return <Box {...prop} />;
 }

@@ -1,31 +1,37 @@
 //-Path: "react-choco-style/src/components/CText.tsx"
-import { CSkeleton } from './CSkeleton';
 import { Typography } from '@mui/material';
-import { ChocoProps } from '../hook/ChocoProps';
-import { ChocoStyle } from '../hook/ChocoStyle';
+import { createStyled } from '../hook/ChocoStyle';
+import { useChocoProps } from '../hook/ChocoProps';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { CSkeleton, CSkeletonProps } from './CSkeleton';
 
-const Text = ChocoStyle.styled(Typography, 'CText')({ sz: 16 });
+const Text = createStyled(Typography, 'CText')();
 
-export type CTextProps = ChocoStyledProps<typeof Text, { skeleton?: boolean }>;
+export type CTextProps = ChocoStyledProps<
+    typeof Typography,
+    { skeleton?: boolean | CSkeletonProps }
+>;
 
-export function CText<Props extends CTextProps>(prop: Props) {
-    return (
-        <Text
-            {...ChocoProps.useChocoProps(
-                prop,
-                () => {
-                    const { skeleton } = prop;
-                    if (skeleton) {
-                        return {
-                            cs: { w: '100%', h: '1.2em' },
-                            children: <CSkeleton />,
-                        };
-                    }
-                    return {};
-                },
-                ['skeleton'],
+export function CText({ skeleton, variant, ...prop }: CTextProps) {
+    return skeleton ? (
+        <CSkeleton
+            {...useChocoProps(
+                { ...(typeof skeleton === 'object' ? skeleton : {}) },
+                ({ theme }) => ({
+                    variant: 'text',
+                    cs: {
+                        w: '100%',
+                        h: -(theme.root.size.text * 2),
+                    },
+                }),
             )}
+        />
+    ) : (
+        <Text
+            {...useChocoProps(prop, ({ theme }) => ({
+                variant: variant ?? 'inherit',
+                cs: { fontS: -theme.root.size.text },
+            }))}
         />
     );
 }

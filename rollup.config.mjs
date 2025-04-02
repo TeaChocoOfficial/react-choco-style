@@ -24,15 +24,8 @@ export default {
         commonjs(),
         typescript({
             tsconfig: './tsconfig.json',
+            sourceMap: true,
+            exclude: ['**/*.stories.ts', './src/view/**', './src/stories/**'], // ข้ามไฟล์ .stories.ts ทุกตั
         }),
-        {
-            name: 'ignore-use-client',
-            transform(code) {
-                if (code.startsWith('"use client";')) {
-                    return code.replace('"use client";', '');
-                }
-                return code;
-            },
-        },
     ],
 };

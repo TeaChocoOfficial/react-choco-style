@@ -41,9 +41,8 @@ export type PaletteColorType = `palette.${string}`;
 export type ColorType = ColorDefaultType | ColorTextType | ColorCommonType;
 
 export type ColorsType =
-    | ColorDefaultType
-    | ColorTextType
-    | ColorCommonType
+    | React.CSSProperties['color']
+    | ColorType
     | PaletteColorType
     | ColorHexType
     | null;

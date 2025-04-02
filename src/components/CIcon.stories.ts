@@ -3,7 +3,7 @@ import { CIcon } from './CIcon';
 import type { Meta, StoryObj } from '@storybook/react';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
-const meta = {
+const meta: Meta<typeof CIcon> = {
     title: 'choco components/CIcon',
     component: CIcon,
     parameters: {
@@ -16,7 +16,7 @@ const meta = {
     argTypes: {
         // backgroundColor: { control: 'color' },
     },
-} satisfies Meta<typeof CIcon>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

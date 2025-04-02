@@ -3,7 +3,7 @@ import { CText } from './CText';
 import type { Meta, StoryObj } from '@storybook/react';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
-const meta = {
+const meta: Meta<typeof CText> = {
     title: 'choco components/CText',
     component: CText,
     parameters: {
@@ -16,7 +16,7 @@ const meta = {
     argTypes: {
         // backgroundColor: { control: 'color' },
     },
-} satisfies Meta<typeof CText>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

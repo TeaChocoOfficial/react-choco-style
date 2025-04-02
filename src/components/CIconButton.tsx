@@ -1,17 +1,18 @@
 //-Path: "react-choco-style/src/components/CIconButton.tsx"
 import { ColorType } from '../types/color';
-import { StyleTypes } from '../types/choco';
-import { ChocoProps } from '../hook/ChocoProps';
-import { ChocoStyle } from '../hook/ChocoStyle';
+import useNavigate from '../custom/ReactRoute';
 import { Icon, IconProp } from '../custom/Icon';
+import { createStyled } from '../hook/ChocoStyle';
+import { useChocoProps } from '../hook/ChocoProps';
+import { StyleTypes, ToType } from '../types/choco';
 import { ChocoStyledProps } from '../types/chocoHook';
-import useNavigate, { ToType } from '../custom/ReactRoute';
+import { useGetsetClrProps } from '../hook/ChocoColor';
 import { IconButton as MuiIconButton } from '@mui/material';
 
-const IconButton = ChocoStyle.styled(MuiIconButton, 'CIconButton')();
+const IconButton = createStyled(MuiIconButton, 'CIconButton')();
 
 export type CIconButtonProps = ChocoStyledProps<
-    typeof IconButton,
+    typeof MuiIconButton,
     {
         to?: ToType;
         setClr?: ColorType;
@@ -19,55 +20,49 @@ export type CIconButtonProps = ChocoStyledProps<
     } & IconProp
 >;
 
-export function CIconButton<Props extends CIconButtonProps>(prop: Props) {
+export function CIconButton({
+    to,
+    fa,
+    color,
+    solid,
+    brand,
+    props,
+    setClr,
+    regular,
+    onClick,
+    disabled,
+    children,
+    ...prop
+}: CIconButtonProps) {
     const navigate = useNavigate();
-    const { getFont } = ChocoStyle.useFont();
-    const getSetClrProps = ChocoStyle.useGetsetClrProps('primaryText');
-    const { to, onClick, fa, solid, brand, regular, props, children } = prop;
+    const getSetClrProps = useGetsetClrProps('primaryText');
+
+    const buttonProps = useChocoProps(prop, ({ getFont, getSize, theme }) => {
+        const size = getSize(prop);
+        const fontStyle = getFont('medium');
+        const { styles } = getSetClrProps({ disabled, setClr });
+
+        return {
+            cs: {
+                ...styles,
+                ...{
+                    ...fontStyle,
+                    color,
+                    fontS: -size,
+                    p:
+                        -(size ?? theme.root.size.padding) /
+                        theme.root.size.padding,
+                },
+            },
+        };
+    });
 
     return (
         <IconButton
-            {...ChocoProps.useChocoProps(
-                prop,
-                ({ formatSize, theme }) => {
-                    const fontStyle = getFont('medium');
-                    const { sz, color, disabled, setClr } = prop;
-
-                    const { styles } = getSetClrProps({
-                        disabled,
-                        setClr,
-                    });
-
-                    return {
-                        cs: {
-                            ...styles,
-                            ...{
-                                ...fontStyle,
-                                color,
-                                sz: sz ?? theme.root.size.text,
-                                p: formatSize(
-                                    ((sz ?? theme.root.size.padding) /
-                                        theme.root.size.padding) *
-                                        2,
-                                ),
-                            },
-                        },
-                    };
-                },
-                [
-                    'to',
-                    'color',
-                    'onClick',
-                    'disabled',
-                    'setClr',
-                    'fa',
-                    'solid',
-                    'brand',
-                    'regular',
-                    'props',
-                ],
-            )}
+            {...buttonProps}
+            tabIndex={disabled ? -1 : undefined}
             onClick={(event) => {
+                if (disabled) return;
                 onClick?.(event);
                 navigate(to);
             }}
@@ -75,10 +70,10 @@ export function CIconButton<Props extends CIconButtonProps>(prop: Props) {
             {fa || solid || brand || regular || props ? (
                 <Icon
                     fa={fa}
+                    props={props}
                     solid={solid}
                     brand={brand}
                     regular={regular}
-                    props={props}
                 />
             ) : (
                 children

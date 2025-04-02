@@ -1,14 +1,19 @@
 //-Path: "react-choco-style/src/types/theme.ts"
 import { SizeKey } from './size';
 import { StyleTypes } from './choco';
-import { ColorHexType } from './color';
+import { Transitions } from '@mui/material';
+import { ColorHexType, ColorsType, ColorType } from './color';
 
 export type ModesKeyType = 'dark' | 'light';
 
 export type RootThemeType = {
-    zIndex: { backdrop: number };
+    unit: {
+        text: string;
+        padding: string;
+    };
     size: {
         box: number;
+        borR: number;
         text: number;
         border: number;
         padding: number;
@@ -68,6 +73,13 @@ export type PaletteType = {
     };
 };
 
+export type ChocoThemeMethodType = {
+    alpha: (color: ColorsType, value: number) => ColorType;
+    spacing: (...factor: (number | string)[]) => string;
+    setMode: (mode: ModesKeyType) => void;
+    transitions: Transitions;
+};
+
 export type DefChocoThemeType = {
     mode: ModesKeyType;
     root: RootThemeType;
@@ -85,7 +97,5 @@ export type ChocoThemeType = DefChocoThemeType & {
 
 export type UseChocoThemeType = DefChocoThemeType & {
     palette: PaletteType;
-    method: {
-        setMode: (mode: ModesKeyType) => void;
-    };
+    method: ChocoThemeMethodType;
 };

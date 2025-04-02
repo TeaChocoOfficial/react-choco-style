@@ -1,8 +1,8 @@
 //-Path: "react-choco-style/src/types/chocoHook.ts"
 import { ReactTagType } from './style';
-import { UseChocoThemeType } from './theme';
 import { Size, SizeKey, SizeValue } from './size';
 import { ChocoStyledType, StyleTypes } from './choco';
+import { ThemeFontsType, UseChocoThemeType } from './theme';
 
 export type FormatSizeType = <S = SizeValue>(
     max: number,
@@ -17,12 +17,18 @@ export type CallbackSizeType = <MaxSize, Vlaue, Return>(
 
 export type ChocoStyledProps<
     TagType extends ReactTagType,
-    Props extends { [key in string]?: any } = {},
-> = Props &
-    ChocoStyledType &
-    Omit<React.ComponentPropsWithoutRef<TagType>, 'sx'>;
+    Props extends { [key in string]?: unknown } = {},
+> = Omit<React.ComponentProps<TagType>, 'sx'> & ChocoStyledType & Props;
+
+export type UseGetSizeType = (prop: ChocoStyledProps<any>) => number;
+export type UseGetFontType = (
+    prop?: keyof ThemeFontsType['weight'],
+) => StyleTypes;
 
 export type CustomStylesTypeProp = {
+    style?: StyleTypes;
+    getSize: UseGetSizeType;
+    getFont: UseGetFontType;
     theme: UseChocoThemeType;
     formatSize: FormatSizeType;
     callbackSize: CallbackSizeType;

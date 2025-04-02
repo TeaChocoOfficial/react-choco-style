@@ -1,0 +1,6 @@
+package:$ pnpm build
+package:$ pnpm link
+project:$ pnpm link package
+project: in package.json change "link:../ to "file:../
+project:$ pnpm i
+

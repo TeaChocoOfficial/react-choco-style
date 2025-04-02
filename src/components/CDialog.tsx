@@ -7,15 +7,15 @@ import {
     DialogContentText as MuiDialogContentText,
 } from '@mui/material';
 import React from 'react';
-import { ChocoProps } from '../hook/ChocoProps';
-import { ChocoStyle } from '../hook/ChocoStyle';
+import { createStyled } from '../hook/ChocoStyle';
+import { useChocoProps } from '../hook/ChocoProps';
 import { ChocoStyledProps } from '../types/chocoHook';
 
-const Dialog = ChocoStyle.styled(MuiDialog, 'CDialog')();
-const DialogTitle = ChocoStyle.styled(MuiDialogTitle, 'CDialogTitle')();
-const DialogContent = ChocoStyle.styled(MuiDialogContent, 'CDialogContent')();
-const DialogActions = ChocoStyle.styled(MuiDialogActions, 'CDialogActions')();
-const DialogContentText = ChocoStyle.styled(
+const Dialog = createStyled(MuiDialog, 'CDialog')();
+const DialogTitle = createStyled(MuiDialogTitle, 'CDialogTitle')();
+const DialogContent = createStyled(MuiDialogContent, 'CDialogContent')();
+const DialogActions = createStyled(MuiDialogActions, 'CDialogActions')();
+const DialogContentText = createStyled(
     MuiDialogContentText,
     'CDialogContentText',
 )();
@@ -31,34 +31,29 @@ export type CDialogChildrenFunction = (
     props: CDialogChildrenProps,
 ) => React.ReactNode;
 
-export type CDialogProps = Omit<ChocoStyledProps<typeof Dialog>, 'children'> & {
+export type CDialogProps = Omit<
+    ChocoStyledProps<typeof MuiDialog>,
+    'children'
+> & {
     children?: CDialogChildrenFunction | React.ReactNode;
 };
 
-export function CDialog<Props extends CDialogProps>({
+export function CDialog({
     open = false,
     children,
-    ...props
-}: Props) {
+    ...prop
+}: CDialogProps) {
     const DialogChildren: CDialogChildrenProps = {
         Title: DialogTitle,
         Content: DialogContent,
         Actions: DialogActions,
         ContextText: DialogContentText,
     };
-    return (
-        <Dialog
-            open={open}
-            {...ChocoProps.useChocoProps(
-                props as ChocoStyledProps<typeof Dialog>,
-                () => ({
-                    children:
-                        typeof children === 'function'
-                            ? children(DialogChildren)
-                            : children,
-                }),
-                ['open'],
-            )}
-        />
-    );
+    const props = useChocoProps(prop, () => ({
+        children:
+            typeof children === 'function'
+                ? children(DialogChildren)
+                : children,
+    }));
+    return <Dialog open={open} {...props} />;
 }

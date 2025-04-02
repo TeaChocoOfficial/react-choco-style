@@ -21,11 +21,13 @@ export const getThemeMode = () => {
 export const ChocoTheme: ChocoThemeType = {
     mode: getThemeMode() ?? 'dark',
     root: {
-        zIndex: {
-            backdrop: 10000,
+        unit: {
+            text:"em",
+            padding: 'px',
         },
         size: {
             box: 64,
+            borR: 2,
             text: 16,
             border: 8,
             padding: 4,
@@ -67,7 +69,7 @@ export const ChocoTheme: ChocoThemeType = {
         },
     },
     styleSheets: (theme: ChocoThemeType) => {
-        const size = 8;
+        const size = theme.root.size.border;
         const palette = theme.modes[theme.mode];
         return {
             '&*': {
@@ -81,7 +83,7 @@ export const ChocoTheme: ChocoThemeType = {
                 pos: 'f',
                 w: '100dvw',
                 h: '100dvh',
-                color: palette.text?.primary,
+                clr: palette.text?.primary,
                 bgClr: palette.background?.body,
             },
             '&#root': {
@@ -93,7 +95,6 @@ export const ChocoTheme: ChocoThemeType = {
                 textDecoration: 'none',
             },
             '&*::-webkit-scrollbar': {
-                z: 10000,
                 w: size,
                 h: size,
             },
@@ -160,12 +161,12 @@ export const ChocoTheme: ChocoThemeType = {
                 textDisabled: '#aaddff',
             },
             success: {
-                main: '#33dd00',
-                dark: '#229900',
-                light: '#88ee55',
+                main: '#33ee33',
+                dark: '#338833',
+                light: '#88ff88',
                 text: '#000000',
-                disabled: '#338800',
-                textDisabled: '#ccee99',
+                disabled: '#006600',
+                textDisabled: '#ccffcc',
             },
             shadow: {
                 main: '#0000001a',
