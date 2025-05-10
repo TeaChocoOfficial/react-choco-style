@@ -1,12 +1,13 @@
 //-Path: "react-choco-style/src/components/CButton.tsx"
+import { renderIcon } from './CIcon';
+import { TypeIcon } from '../custom/Icon';
 import { ColorType } from '../types/color';
-import useNavigate from '../custom/ReactRoute';
+import { useNavigate } from '../hook/ReactRoute';
 import { createStyled } from '../hook/ChocoStyle';
 import { useChocoProps } from '../hook/ChocoProps';
 import { StyleTypes, ToType } from '../types/choco';
 import { Button as MuiButton } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
-import { useGetsetClrProps } from '../hook/ChocoColor';
 
 const Button = createStyled(MuiButton, 'CButton')();
 
@@ -20,6 +21,8 @@ export type CButtonProps = ChocoStyledProps<
         setClr?: ColorType;
         container?: boolean;
         color?: StyleTypes['color'];
+        leftIcon?: React.ReactNode | TypeIcon;
+        rightIcon?: React.ReactNode | TypeIcon;
     }
 >;
 
@@ -29,60 +32,61 @@ export function CButton({
     setClr,
     lowcase,
     outline,
+    endIcon,
     onClick,
+    leftIcon,
     disabled,
     container,
+    startIcon,
+    rightIcon,
     ...prop
 }: CButtonProps) {
     const navigate = useNavigate();
-    const getSetClrProps = useGetsetClrProps();
-
-    const props = useChocoProps(prop, ({ getFont, getSize, theme }) => {
-        const size = getSize(prop);
-        const fontStyle = getFont('medium');
-        let cs: StyleTypes = {
-            ...fontStyle,
-            borR: -theme.root.size.borR,
-            fontS: -size,
-        };
-        const padding =
-            (size ?? theme.root.size.padding) / theme.root.size.padding;
-        if (container) {
-            cs = {
-                p: -padding,
-                ...cs,
-            };
-        } else {
-            cs = {
-                py: -padding,
-                px: -padding * 2,
-                ...cs,
-            };
-        }
-
-        if (lowcase || container) {
-            cs = {
-                textTransform: 'none',
-                ...cs,
-            };
-        }
-
-        const { styles } = getSetClrProps({
-            text,
-            setClr,
-            outline,
-            disabled,
-        });
-
-        return {
-            cs: { ...styles, ...cs },
-            variant: text ? 'text' : outline ? 'outlined' : 'contained',
-        };
-    });
 
     return (
         <Button
-            {...props}
+            endIcon={renderIcon(rightIcon ?? endIcon)}
+            startIcon={renderIcon(leftIcon ?? startIcon)}
+            variant={text ? 'text' : outline ? 'outlined' : 'contained'}
+            {...useChocoProps(
+                prop,
+                ({ getFont, size, theme, getSetClrProps }) => {
+                    const fontStyle = getFont('medium');
+                    const { padding, borR } = theme.root.size;
+                    const { styles } = getSetClrProps({
+                        text,
+                        setClr,
+                        outline,
+                        disabled,
+                    });
+
+                    let cs: StyleTypes = {
+                        ...styles,
+                        ...fontStyle,
+                        fontS: size(),
+                        borR: size((size) => size, borR),
+                        '& .MuiButton-icon': {
+                            mr: size((size) => size / 2, padding),
+                            '& *': {
+                                fontS: size((size) => `${size * 2}px`),
+                            },
+                        },
+                    };
+                    const p = size((size) => (size / padding) * 2, padding);
+                    const px = size((size) => (size / padding) * 4, padding);
+
+                    if (container) {
+                        cs = { p, ...cs };
+                    } else {
+                        cs = { py: p, px, ...cs };
+                    }
+
+                    if (lowcase || container) {
+                        cs = { textTransform: 'none', ...cs };
+                    }
+                    return { cs };
+                },
+            )}
             tabIndex={disabled ? -1 : undefined}
             onClick={(event) => {
                 if (disabled) return;

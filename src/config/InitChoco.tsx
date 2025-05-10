@@ -1,19 +1,26 @@
 //-Path: "react-choco-style/src/config/InitChoco.tsx"
 import {
+    PaletteColor,
     ThemeOptions,
     ThemeProvider,
+    useTheme as useMuiTheme,
     createTheme as createMuiTheme,
 } from '@mui/material';
 import { Obj } from '../custom/obj';
 import { ChocoDebug } from '../data/debug';
 import { useEffect, useMemo } from 'react';
+import useInnerWidth from './useInnerWidth';
 import { GlobalCss } from '../data/globalCss';
+import { ChocoThemeType } from '../types/theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ChocoProviderProps } from './ChocoProvider';
 import { useChocoStyle } from '../hook/ChocoResponse';
-import { ChocoTheme, themeAtom } from '../theme/theme';
+import { getUseChocoStyle } from '../hook/ChocoStyle';
 import { StyledType, StyleTypes } from '../types/choco';
+import { ChocoColor, newChocoColor } from '../theme/color';
 import { CGlobalStyles } from '../components/CGlobalStyles';
+import { ColorHex, ShadeColors } from '../types/chocoColor';
+import { ChocoTheme, themeAtom, themeModeAtom } from '../theme/theme';
 
 export function InitChoco({
     debug,
@@ -21,9 +28,12 @@ export function InitChoco({
     children,
     createTheme,
 }: ChocoProviderProps) {
+    const muiTheme = useMuiTheme();
     const globalCss = GlobalCss.get();
     const setDebug = ChocoDebug.set();
+    const innerWidth = useInnerWidth();
     const [theme, setTheme] = themeAtom.use();
+    const [mode, setMode] = themeModeAtom.use();
     const chocoStyle = useChocoStyle<StyledType>();
 
     useEffect(() => {
@@ -32,52 +42,92 @@ export function InitChoco({
 
     useEffect(() => {
         if (createTheme !== undefined) {
-            const theme = createTheme(ChocoTheme);
-            setTheme({ ...ChocoTheme, ...theme });
+            const theme = createTheme({
+                newChocoColor,
+                theme: ChocoTheme(),
+                ChocoColor: new ChocoColor(),
+            });
+            const newTheme = Obj.mix<ChocoThemeType>(ChocoTheme(), theme);
+            setTheme(newTheme);
         } else {
-            setTheme(ChocoTheme);
+            setTheme(ChocoTheme());
         }
     }, [createTheme]);
 
+    const chocoTheme = useMemo(
+        () => getUseChocoStyle({ mode, theme, muiTheme, setMode }),
+        [mode, theme, muiTheme, setMode],
+    );
+
+    const styleOverrides = useMemo(() => {
+        const styleOverride = theme.styleSheets(chocoTheme);
+        const styleOverrides = Obj.reduce<Record<string, StyledType>>(
+            styleOverride,
+            (acc, componentName, styles) => ({
+                ...acc,
+                [componentName]: chocoStyle(styles as StyleTypes, innerWidth),
+            }),
+            {},
+        );
+        // console.log(styleOverride, styleOverrides);
+        return styleOverrides;
+    }, [theme, innerWidth, chocoStyle]);
+
     const MuiTheme = useMemo(() => {
-        const styleOverride = theme.styleSheets(theme);
-        const styleOverrides = Object.entries(styleOverride).reduce<
-            Record<string, StyledType>
-        >((acc, [componentName, styles]) => {
-            acc[componentName] = chocoStyle(styles as StyleTypes);
-            return acc;
-        }, {});
-        const myTheme = { ...theme.modes.default, ...theme.modes[theme.mode] };
+        const pallette = chocoTheme.palette;
+        const paletteColor = (colors?: ShadeColors): PaletteColor => {
+            if (colors) {
+                return {
+                    dark: colors[7].toString(),
+                    main: colors[5].toString(),
+                    light: colors[7].toString(),
+                    contrastText: colors[10].toString(),
+                };
+            }
+            throw new Error('No colors provided');
+        };
+        const paletteColors = (colors: { [key: string]: ShadeColors }) =>
+            Obj.keys(colors).reduce(
+                (acc, key) => ({
+                    ...acc,
+                    [key]: paletteColor(colors[key]).main,
+                }),
+                {},
+            ) as {
+                [key: string]: ColorHex;
+            };
+
         return {
             components: { MuiCssBaseline: { styleOverrides } },
-            palette: {
-                mode: theme.mode,
-                info: myTheme.info,
-                text: myTheme.text,
-                error: myTheme.error,
-                common: myTheme.common,
-                success: myTheme.success,
-                warning: myTheme.warning,
-                primary: myTheme.primary,
-                secondary: myTheme.secondary,
-                background: myTheme.background,
-            },
             breakpoints: {
                 keys: Obj.keys(theme.breakpoint.size),
                 values: theme.breakpoint.size,
             },
-            shape: { borderRadius: theme.root.size.border },
+            palette: {
+                mode,
+                common: paletteColors(pallette.common),
+                primary: paletteColor(pallette.main.primary),
+                secondary: paletteColor(pallette.main.secondary),
+                error: paletteColor(pallette.main.error),
+                warning: paletteColor(pallette.main.warning),
+                info: paletteColor(pallette.main.info),
+                success: paletteColor(pallette.main.success),
+                text: paletteColors(pallette.text),
+                background: {
+                    paper: pallette.main.primary[2].hex(),
+                    default: pallette.main.inherit[5].hex(),
+                },
+            },
+            shape: {
+                borderRadius: theme.root.size.borR * theme.root.response.borR,
+            },
         } as ThemeOptions;
-    }, [theme, chocoStyle]);
-
-    useEffect(() => {
-        console.log(globalCss, globalCss.entries());
-    }, [globalCss]);
+    }, [mode, theme, chocoTheme, styleOverrides]);
 
     return (
         <ThemeProvider theme={createMuiTheme(MuiTheme)}>
             {cssBase && <CssBaseline />}
-            {globalCss.entries().map(([key, css]) => (
+            {[...globalCss.entries()].map(([key, css]) => (
                 <CGlobalStyles key={key} css={css} />
             ))}
             {children}

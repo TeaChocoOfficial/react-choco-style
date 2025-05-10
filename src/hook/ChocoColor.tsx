@@ -1,67 +1,90 @@
+//-Path: "react-choco-style/src/hook/ChocoColor.tsx"
 import {
+    ColorMain,
     ColorType,
     ColorsType,
-    SetColorType,
-    ColorHexType,
-    ColorDefaultType,
+    SetColorsType,
+    ColorMainType,
+    GetsetClrType,
+    SetShadesColorType,
 } from '../types/color';
+import {
+    SetClrPropsType,
+    UseGetsetClrPropType,
+    UseGetsetClrPropsType,
+} from '../types/chocoHook';
 import { useCallback } from 'react';
 import { useTheme } from './ChocoStyle';
+import { ChocoColor } from '../theme/color';
 import { StyleTypes } from '../types/choco';
+import { ColorHex } from '../types/chocoColor';
 
-export function useGetColor(): (color?: ColorsType) => string | undefined {
+export function useGetColor(): (color?: ColorsType) => ChocoColor {
     const { palette } = useTheme();
 
     return useCallback(
-        (color?: ColorsType): string | undefined => {
-            if (color === undefined) return undefined;
-            const colorMap: Record<string, string | undefined> = {
-                //*common
-                paper: palette.background.paper,
-                inherit: palette.background.default,
+        (color?: ColorsType): ChocoColor => {
+            if (color === undefined) return new ChocoColor();
+            const colorMap: Record<ColorType, ChocoColor> = {
+                main: palette.main.inherit[5],
+                text: palette.text.inherit[5],
 
-                //*text
-                disabled: palette.text.disabled,
-                disabledText: palette.primary.textDisabled,
-                text: palette.text.primary,
+                //*inherit
+                inherit: palette.main.inherit[5],
+                inheritText: palette.text.inherit[5],
 
                 //*primary
-                primary: palette.primary.main,
-                primaryText: palette.primary.text,
+                primary: palette.main.primary[5],
+                primaryText: palette.text.primary[5],
+
+                //*disabled
+                disabled: palette.main.disabled[5],
+                disabledText: palette.text.disabled[5],
 
                 //*secondary
-                secondary: palette.secondary.main,
-                secondaryText: palette.secondary.text,
+                secondary: palette.main.secondary[5],
+                secondaryText: palette.text.secondary[5],
 
                 //*error
-                error: palette.error.main,
-                errorText: palette.error.text,
+                error: palette.main.error[5],
+                errorText: palette.text.error[5],
 
                 //*warning
-                warning: palette.warning.main,
-                warningText: palette.warning.text,
+                warning: palette.main.warning[5],
+                warningText: palette.text.warning[5],
 
                 //*info
-                info: palette.info.main,
-                infoText: palette.info.text,
+                info: palette.main.info[5],
+                infoText: palette.text.info[5],
 
                 //*success
-                success: palette.success.main,
-                successText: palette.success.text,
+                success: palette.main.success[5],
+                successText: palette.text.success[5],
             };
-            if (color === null) return '#00000000';
-            if (color in colorMap) return colorMap[color];
-            if (typeof color === 'string' && color.startsWith('palette.')) {
+            if (color === null) return new ChocoColor(null);
+            if (
+                typeof color === 'string' &&
+                (color as ColorHex).startsWith('#')
+            )
+                return new ChocoColor(color);
+            if ((color as ColorType) in colorMap)
+                return colorMap[color as ColorType];
+            if (typeof color === 'string' && color.startsWith('common.')) {
                 const path = color.split('.').slice(1);
-                let result: any = palette;
+                let result: any = palette.common;
                 for (const key of path) {
                     result = result?.[key];
-                    if (!result) return undefined;
+                    if (!result) return new ChocoColor();
                 }
-                return typeof result === 'string' ? result : undefined;
+                return result instanceof ChocoColor
+                    ? result
+                    : typeof result === 'string' && result.startsWith('#')
+                    ? new ChocoColor(color)
+                    : result;
             }
-            const defaultColor = palette[color as ColorDefaultType];
-            return defaultColor?.main ?? color;
+            if (color instanceof ChocoColor) return color;
+            const defaultColor = palette.main[color as ColorMainType];
+            return defaultColor?.[5] ?? color;
         },
         [palette],
     );
@@ -69,300 +92,205 @@ export function useGetColor(): (color?: ColorsType) => string | undefined {
 
 export function useGetsetClr(): (
     color?: ColorType,
-    isText?: boolean,
-) => SetColorType {
+    option?: { text?: boolean },
+) => GetsetClrType {
+    const getColor = useGetColor();
     const { palette } = useTheme();
 
     return useCallback(
-        (color?: ColorsType, isText: boolean = false): SetColorType => {
-            switch (`${color ?? 'secondary'}${isText ? 'Text' : ''}`) {
-                //*common
-                case 'paper':
-                    return {
-                        color: palette.text.primary,
-                        action: palette.text.disabled,
-                        borColor: palette.text.primary,
-                        bgColor: palette.background.paper,
-                        bgHover: palette.background.default,
-                    };
-                case 'inherit':
-                    return {
-                        bgColor: null,
-                        action: palette.text.primary,
-                        bgHover: palette.text.disabled,
-                        color: palette.background.default,
-                        borColor: palette.background.default,
-                    };
-                //*text
-                case 'disabled':
-                    return {
-                        color: palette.text.disabled,
-                        action: palette.shadow.light ?? palette.shadow.main,
-                        bgColor: palette.shadow.main,
-                        borColor: palette.text.disabled,
-                        bgHover: `${
-                            palette.primary.textDisabled ??
-                            palette.primary.disabled
-                        }66`,
-                    };
-                case 'disabledText':
-                    return {
-                        bgColor: null,
-                        color: palette.text.disabled,
-                        action: palette.text.primary,
-                        borColor: palette.text.disabled,
-                        bgHover: `${
-                            palette.primary.textDisabled ??
-                            palette.primary.disabled ??
-                            palette.text.disabled
-                        }66`,
-                    };
-                case 'text':
-                    return {
-                        bgColor: null,
-                        color: palette.text.primary,
-                        bgHover: palette.text.disabled,
-                        borColor: palette.text.primary,
-                        action:
-                            palette.primary.textDisabled ??
-                            palette.text.disabled,
-                    };
-                //*primary
-                case 'primary':
-                    return {
-                        color: palette.primary.text,
-                        bgColor: palette.primary.main,
-                        borColor: palette.primary.text,
-                        bgHover: palette.primary.dark ?? palette.primary.main,
-                        action:
-                            palette.primary.textDisabled ??
-                            palette.text.disabled,
-                    };
-                case 'primaryText':
-                    return {
-                        bgColor: null,
-                        color: palette.primary.main,
-                        borColor: palette.primary.main,
-                        action: palette.primary.dark ?? palette.primary.main,
-                        bgHover: `${
-                            palette.primary.dark ?? palette.primary.main
-                        }66`,
-                    };
-                //*secondary
-                case 'secondary':
-                    return {
-                        color: palette.secondary.text,
-                        bgColor: palette.secondary.main,
-                        borColor: palette.secondary.text,
-                        bgHover:
-                            palette.secondary.dark ?? palette.secondary.main,
-                        action:
-                            palette.secondary.textDisabled ??
-                            palette.text.disabled,
-                    };
-                case 'secondaryText':
-                    return {
-                        bgColor: null,
-                        color: palette.secondary.main,
-                        borColor: palette.secondary.main,
-                        action:
-                            palette.secondary.dark ?? palette.secondary.main,
-                        bgHover: `${
-                            palette.secondary.dark ?? palette.secondary.main
-                        }66`,
-                    };
-                //*error
-                case 'error':
-                    return {
-                        color: palette.error.text,
-                        bgColor: palette.error.main,
-                        borColor: palette.error.text,
-                        bgHover: palette.error.dark ?? palette.error.main,
-                        action:
-                            palette.error.textDisabled ?? palette.text.disabled,
-                    };
-                case 'errorText':
-                    return {
-                        bgColor: null,
-                        color: palette.error.main,
-                        borColor: palette.error.main,
-                        action: palette.error.dark ?? palette.error.main,
-                        bgHover: `${
-                            palette.error.dark ?? palette.error.main
-                        }66`,
-                    };
+        (
+            color: ColorType = 'secondary',
+            option: { text?: boolean } = { text: false },
+        ): GetsetClrType => {
+            const getSetClor = (setColors: SetColorsType): GetsetClrType => {
+                const isContrast = color.toLocaleLowerCase().includes('text');
+                const shadesColor: SetShadesColorType = {
+                    text: getColor(
+                        setColors[isContrast ? 'main' : 'text'],
+                    ).shades(),
+                    main: getColor(
+                        setColors[isContrast ? 'text' : 'main'],
+                    ).shades(),
+                };
 
-                //*warning
-                case 'warning':
-                    return {
-                        color: palette.warning.text,
-                        bgColor: palette.warning.main,
-                        borColor: palette.warning.text,
-                        bgHover: palette.warning.dark ?? palette.warning.main,
-                        action:
-                            palette.warning.textDisabled ??
-                            palette.text.disabled,
-                    };
-                case 'warningText':
-                    return {
-                        bgColor: null,
-                        color: palette.warning.main,
-                        borColor: palette.warning.main,
-                        action: palette.warning.dark ?? palette.warning.main,
-                        bgHover: `${
-                            palette.warning.dark ?? palette.warning.main
-                        }66`,
-                    };
+                const { text, main } = shadesColor;
+                const { text: isText } = option;
 
-                //*info
-                case 'info':
+                if (isText) {
                     return {
-                        color: palette.info.text,
-                        bgColor: palette.info.main,
-                        borColor: palette.info.text,
-                        bgHover: palette.info.dark ?? palette.info.main,
-                        action:
-                            palette.info.textDisabled ?? palette.text.disabled,
+                        shadesColor,
+                        setColor: {
+                            bgClr: null,
+                            clr: main[5],
+                            bor: main[5],
+                            hover: main[4],
+                            bgActive: null,
+                            active: main[3],
+                            action: main[5],
+                            bgDisabled: null,
+                            borHover: main[4],
+                            borActive: main[3],
+                            focus: main[4].alpha(0.6),
+                            bgHover: main[4].alpha(0.2),
+                            disabled: main[6].alpha(0.7),
+                            borDisabled: main[6].alpha(0.7),
+                            disabledHover: main[4].alpha(0.9),
+                            bgDisabledHover: main[4].alpha(0.2),
+                            borDisabledHover: main[4].alpha(0.9),
+                        },
                     };
-                case 'infoText':
-                    return {
-                        bgColor: null,
-                        color: palette.info.main,
-                        borColor: palette.info.main,
-                        action: palette.info.dark ?? palette.info.main,
-                        bgHover: `${palette.info.dark ?? palette.info.main}66`,
-                    };
+                }
 
-                //*success
-                case 'success':
-                    return {
-                        color: palette.success.text,
-                        bgColor: palette.success.main,
-                        borColor: palette.success.text,
-                        bgHover: palette.success.dark ?? palette.success.main,
-                        action:
-                            palette.success.textDisabled ??
-                            palette.success.text,
-                    };
-                case 'successText':
-                    return {
-                        bgColor: null,
-                        color: palette.success.main,
-                        borColor: palette.success.main,
-                        action: palette.success.dark ?? palette.success.main,
-                        bgHover: `${
-                            palette.success.dark ?? palette.success.main
-                        }66`,
-                    };
+                return {
+                    shadesColor,
+                    setColor: {
+                        bor: null,
+                        clr: text[5],
+                        hover: text[4],
+                        bgClr: main[5],
+                        borHover: null,
+                        active: text[3],
+                        action: main[5],
+                        borActive: null,
+                        bgHover: main[4],
+                        bgActive: main[3],
+                        borDisabled: null,
+                        borDisabledHover: null,
+                        focus: main[4].alpha(0.6),
+                        disabled: text[6].alpha(0.7),
+                        bgDisabled: main[6].alpha(0.7),
+                        disabledHover: text[4].alpha(0.9),
+                        bgDisabledHover: main[4].alpha(0.6),
+                    },
+                };
+            };
 
-                default:
-                    const colors = palette[color as ColorDefaultType];
-                    return {
-                        color: colors ? colors.text : color ?? null,
-                        action: colors
-                            ? colors.dark ?? colors.main
-                            : color ?? null,
-                        bgColor: colors ? colors.main : null,
-                        bgHover: colors
-                            ? `${colors.dark ?? colors.main}66`
-                            : null,
-                        borColor: colors ? colors.text : color ?? null,
-                    };
-            }
+            const index = ColorMain.findIndex((clr) => color.startsWith(clr));
+            const clr = ColorMain[index];
+            const setColors: SetColorsType = color.startsWith(clr)
+                ? { main: clr, text: `${clr}Text` }
+                : { main: 'main', text: 'text' };
+
+            return getSetClor(setColors);
         },
         [palette],
     );
 }
 
-export function useGetsetClrProps(defaultColor: ColorType = 'secondary') {
+export function useGetsetClrProps(): UseGetsetClrPropsType {
+    const theme = useTheme();
     const getSetClr = useGetsetClr();
 
     return useCallback(
         ({
             text,
-            focus = true,
             setClr,
             outline,
-            disabled,
-        }: {
-            text?: boolean;
-            focus?: boolean;
-            setClr?: ColorType;
-            outline?: boolean;
-            borders?: boolean;
-            disabled?: boolean;
-        }): {
-            styles: StyleTypes;
-            setClrs?: SetColorType;
-        } => {
+            isFocus = true,
+            isBorder = true,
+            defaultColor = 'secondary',
+            disabled: isDisabled = false,
+        }: UseGetsetClrPropType): SetClrPropsType => {
             let styles: StyleTypes = {};
-            const setClrs = getSetClr(setClr ?? defaultColor, text);
+            const { border } = theme.root.size;
+            const { setColor: setClrs, shadesColor } = getSetClr(
+                setClr ?? defaultColor,
+                { text: text || outline },
+            );
 
-            const disabledColor = 88;
-            const getColor = (
-                clr?: ColorsType,
-                disabled: number = disabledColor,
-            ): ColorsType | undefined =>
-                typeof clr !== 'string'
-                    ? clr
-                    : (clr?.length ?? 0) > 7
-                    ? clr
-                    : clr.startsWith('#')
-                    ? `${clr as ColorHexType}${disabled}`
-                    : clr;
-
-            const focusStyle: StyleTypes = {
-                '&:focus': {
-                    outlines: {
-                        size: 4,
-                        color: getColor(setClrs?.borColor),
-                    },
-                    bgClr: disabled
-                        ? undefined
-                        : outline
-                        ? getColor(setClrs?.bgHover, disabledColor / 2)
-                        : setClrs?.bgHover,
-                },
-            };
+            const {
+                clr,
+                bor,
+                hover,
+                focus,
+                bgClr,
+                active,
+                bgHover,
+                borHover,
+                disabled,
+                bgActive,
+                borActive,
+                bgDisabled,
+                borDisabled,
+                disabledHover,
+                bgDisabledHover,
+                borDisabledHover,
+            } = setClrs;
 
             if (outline) {
                 styles = {
+                    clr,
                     bgClr: null,
-                    borders: {
-                        size: 2,
-                        style: 'solid',
-                        color: setClrs?.bgColor ?? defaultColor,
-                    },
-                    clr: (disabled
-                        ? getColor(setClrs?.bgColor)
-                        : setClrs?.bgColor ?? defaultColor) as ColorType,
+                    borders: isBorder ? { width: -border, color: bor } : null,
                     '&:hover': {
-                        bgClr: disabled
-                            ? undefined
-                            : getColor(setClrs?.bgHover, disabledColor / 2),
+                        clr: hover,
+                        bgClr: bgHover,
+                        borders: { width: -border, color: borHover },
+                    },
+                    '&:active': {
+                        clr: active,
+                        bgClr: bgActive,
+                        borders: { width: -border, color: borActive },
                     },
                 };
             } else {
                 styles = {
-                    border: 'none',
-                    clr: (disabled
-                        ? getColor(setClrs?.color)
-                        : setClrs?.color ?? defaultColor) as ColorType,
-                    bgClr: disabled
-                        ? getColor(setClrs?.bgColor)
-                        : setClrs?.bgColor,
+                    clr,
+                    bgClr,
+                    borders: null,
                     '&:hover': {
-                        bgClr: disabled ? undefined : setClrs?.bgHover,
+                        bgClr: bgHover,
+                    },
+                    '&:active': {
+                        clr: active,
+                        bgClr: bgActive,
                     },
                 };
-                if (disabled) {
-                    styles = { ...styles, event: 'n' };
-                } else if (focus) {
-                    styles = { ...styles, ...focusStyle };
-                }
             }
-            return { styles, setClrs };
+            const disableds: StyleTypes = {
+                clr: disabled,
+                bgClr: outline ? null : bgDisabled,
+                borders:
+                    outline && isBorder
+                        ? { width: -border, color: borDisabled }
+                        : null,
+                '&:hover': {
+                    clr: disabledHover,
+                    bgClr: bgDisabledHover,
+                    borders:
+                        outline && isBorder
+                            ? { width: -border, color: borDisabledHover }
+                            : null,
+                },
+            };
+            if (isDisabled) {
+                styles = {
+                    ...styles,
+                    event: 'n',
+                    ...disableds,
+                };
+            }
+            const focusStyles: StyleTypes = {
+                '&:focus': {
+                    outlines: { width: -border, color: focus },
+                },
+            };
+            if (isFocus) {
+                styles = { ...styles, ...focusStyles };
+            }
+
+            const setClrProps: SetClrPropsType = {
+                styles,
+                setClrs,
+                disableds,
+                shadesColor,
+                hover: styles['&:hover'] as StyleTypes,
+                active: styles['&:active'] as StyleTypes,
+                focus: focusStyles['&:focus'] as StyleTypes,
+            };
+
+            return setClrProps;
         },
-        [defaultColor, getSetClr],
+        [getSetClr],
     );
 }

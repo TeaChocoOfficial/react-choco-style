@@ -1,4 +1,5 @@
 //-Path: "react-choco-style/src/custom/Icon.tsx"
+import { Obj } from './obj';
 import {
     FontAwesomeIcon,
     FontAwesomeIconProps,
@@ -11,7 +12,15 @@ import { IconProp as IconPropType } from '@fortawesome/fontawesome-svg-core';
 export type TypeIconSolids = keyof typeof solids;
 export type TypeIconBrands = keyof typeof brands;
 export type TypeIconRegulars = keyof typeof regulars;
+export const typeIconSolids: TypeIconSolids[] = Obj.keys(solids);
+export const typeIconBrands: TypeIconBrands[] = Obj.keys(brands);
+export const typeIconRegulars: TypeIconRegulars[] = Obj.keys(regulars);
 export type TypeIcon = TypeIconSolids | TypeIconBrands | TypeIconRegulars;
+export const typeIcons: TypeIcon[] = [
+    ...typeIconSolids,
+    ...typeIconBrands,
+    ...typeIconRegulars,
+];
 export type IconProps = Omit<FontAwesomeIconProps, 'icon'>;
 export type IconPropFa = IconPropType;
 export type TypeSolids =

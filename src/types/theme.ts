@@ -1,8 +1,9 @@
 //-Path: "react-choco-style/src/types/theme.ts"
 import { SizeKey } from './size';
 import { StyleTypes } from './choco';
+import { ColorMainType } from './color';
+import { ShadeColors } from './chocoColor';
 import { Transitions } from '@mui/material';
-import { ColorHexType, ColorsType, ColorType } from './color';
 
 export type ModesKeyType = 'dark' | 'light';
 
@@ -12,6 +13,13 @@ export type RootThemeType = {
         padding: string;
     };
     size: {
+        box: number;
+        borR: number;
+        text: number;
+        border: number;
+        padding: number;
+    };
+    response: {
         box: number;
         borR: number;
         text: number;
@@ -34,47 +42,16 @@ export type BreakpointType = {
     size: Record<SizeKey, number>;
 };
 
-export type CommonColorsTypes = {
-    text?: ColorHexType;
-    main: ColorHexType;
-    dark?: ColorHexType;
-    light?: ColorHexType;
-    disabled?: ColorHexType;
-    textDisabled?: ColorHexType;
-};
+export type PaletteType = { [key in ColorMainType]: ShadeColors };
+export type DeepPaletteType = { [key in ColorMainType]?: ShadeColors };
 
-export type ColorsTypes = {
-    text: ColorHexType;
-    main: ColorHexType;
-    dark?: ColorHexType;
-    light?: ColorHexType;
-    disabled: ColorHexType;
-    textDisabled?: ColorHexType;
-};
-
-export type PaletteType = {
-    common: Record<string, CommonColorsTypes>;
-    primary: ColorsTypes;
-    secondary: ColorsTypes;
-    error: ColorsTypes;
-    warning: ColorsTypes;
-    info: ColorsTypes;
-    success: ColorsTypes;
-    shadow: CommonColorsTypes;
-    background: {
-        body: ColorHexType;
-        paper: ColorHexType;
-        default: ColorHexType;
-    };
-    text: {
-        primary: ColorHexType;
-        secondary: ColorHexType;
-        disabled: ColorHexType;
-    };
+export type PalettesType<Colors extends DeepPaletteType> = {
+    common: Record<string, ShadeColors>;
+    main: Colors;
+    text: Colors;
 };
 
 export type ChocoThemeMethodType = {
-    alpha: (color: ColorsType, value: number) => ColorType;
     spacing: (...factor: (number | string)[]) => string;
     setMode: (mode: ModesKeyType) => void;
     transitions: Transitions;
@@ -85,17 +62,19 @@ export type DefChocoThemeType = {
     root: RootThemeType;
     fonts: ThemeFontsType;
     breakpoint: BreakpointType;
-    styleSheets: (theme: ChocoThemeType) => StyleTypes;
 };
 
 export type ChocoThemeType = DefChocoThemeType & {
     modes: Record<
         ModesKeyType | 'default',
-        { [key in keyof PaletteType]?: PaletteType[key] }
+        {
+            [key in keyof PalettesType<DeepPaletteType>]?: PalettesType<DeepPaletteType>[key];
+        }
     >;
+    styleSheets: (theme: UseChocoThemeType) => StyleTypes;
 };
 
 export type UseChocoThemeType = DefChocoThemeType & {
-    palette: PaletteType;
+    palette: PalettesType<PaletteType>;
     method: ChocoThemeMethodType;
 };

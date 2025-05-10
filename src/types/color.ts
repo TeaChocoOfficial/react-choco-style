@@ -1,56 +1,77 @@
 //-Path: "react-choco-style/src/types/color.ts"
+import { ChocoColor } from '../theme/color';
+import { ColorHex, ShadeColors } from './chocoColor';
 
-type KeyConst<Const extends Record<string, unknown>> = Const[keyof Const];
+export const ColorMain = [
+    'info',
+    'error',
+    'warning',
+    'success',
+    'inherit',
+    'primary',
+    'disabled',
+    'secondary',
+] as const;
 
-const ColorDefault = {
-    INFO: 'info',
-    ERROR: 'error',
-    PRIMARY: 'primary',
-    WARNING: 'warning',
-    SUCCESS: 'success',
-    SECONDARY: 'secondary',
-} as const;
+export type ColorMainType = (typeof ColorMain)[number];
 
-export type ColorDefaultType = KeyConst<typeof ColorDefault>;
+export const ColorText = [
+    'infoText',
+    'errorText',
+    'warningText',
+    'successText',
+    'inheritText',
+    'primaryText',
+    'disabledText',
+    'secondaryText',
+] as const;
 
-const ColorText = {
-    INFO: 'infoText',
-    ERROR: 'errorText',
-    PRIMARY: 'primaryText',
-    WARNING: 'warningText',
-    SUCCESS: 'successText',
-    SECONDARY: 'secondaryText',
-} as const;
+export type ColorTextType = (typeof ColorText)[number];
 
-export type ColorTextType = (typeof ColorText)[keyof typeof ColorText];
+export const ColorInherit = ['main', 'text'] as const;
 
-const ColorCommon = {
-    TEXT: 'text',
-    PAPER: 'paper',
-    INHERIT: 'inherit',
-    DISABLED: 'disabled',
-    DISABLEDTEXT: 'disabledText',
-} as const;
+export type ColorInheritType = (typeof ColorInherit)[number];
 
-export type ColorCommonType = (typeof ColorCommon)[keyof typeof ColorCommon];
-
-export type ColorHexType = `#${string}`;
-
-export type PaletteColorType = `palette.${string}`;
-
-export type ColorType = ColorDefaultType | ColorTextType | ColorCommonType;
+export type ColorType = ColorMainType | ColorTextType | ColorInheritType;
 
 export type ColorsType =
     | React.CSSProperties['color']
+    | `common.${string}`
+    | ChocoColor
     | ColorType
-    | PaletteColorType
-    | ColorHexType
+    | ColorHex
     | null;
 
 export type SetColorType = {
-    color: ColorsType;
-    action: ColorsType;
-    bgColor: ColorsType;
-    bgHover: ColorsType;
-    borColor: ColorsType;
+    clr: ChocoColor | null; //สีข้อความ
+    bor: ChocoColor | null; //สีขอบ
+    hover: ChocoColor | null; //สีข้อความตอนชี้
+    bgClr: ChocoColor | null; //สีพื้นหลัง
+    focus: ChocoColor | null; //สีข้อความตอนโฟกัส
+    active: ChocoColor | null; //สีข้อความตอนใช้งาน
+    action: ChocoColor | null; //สีข้อความตอนทำงาน
+    bgHover: ChocoColor | null; //สีพื้นหลังตอนชี้
+    disabled: ChocoColor | null; //สีข้อความตอนปิด
+    bgActive: ChocoColor | null; //สีพื้นหลังตอนใช้งาน
+    borHover: ChocoColor | null; //สีขอบตอนชี้
+    borActive: ChocoColor | null; //สีขอบตอนใช้งาน
+    bgDisabled: ChocoColor | null; //สีพื้นหลังตอนปิด
+    borDisabled: ChocoColor | null; //สีขอบตอนปิด
+    disabledHover: ChocoColor | null; //สีข้อความตอนปิดตอนชี้
+    bgDisabledHover: ChocoColor | null; //สีพื้นหลังตอนปิดตอนชี้
+    borDisabledHover: ChocoColor | null; //สีขอบตอนปิดตอนชี้
+};
+
+export type SetColorsType = {
+    text: ColorType;
+    main: ColorType;
+};
+export type SetShadesColorType = {
+    text: ShadeColors;
+    main: ShadeColors;
+};
+
+export type GetsetClrType = {
+    setColor: SetColorType;
+    shadesColor: SetShadesColorType;
 };

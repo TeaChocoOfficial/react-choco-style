@@ -4,27 +4,33 @@ import {
     CBox,
     CText,
     CPaper,
+    CTabs,
     CButton,
+    CInput,
     CDialog,
-    CSelect,
+    CDrawer,
     CNavbar,
     CSkeleton,
     CContainer,
+    CNavigation,
     CIconButton,
     createStyled,
     CGlobalStyles,
     useMixCsProps,
-    CDialogChildrenProps,
     useGlobalStyles,
+    CDialogChildrenProps,
 } from '@teachoco-official/react-choco-style';
 
 const Text = createStyled('span')({ clr: 'info' });
 
 export default function ChocoAll() {
     const mixCsProps = useMixCsProps();
+    const [page, setPage] = useState('');
+    const [tabs, setTabs] = useState('1');
     const globalStyles = useGlobalStyles();
     const [open, setOpen] = useState(false);
     const [option, setOption] = useState('');
+    const [openDrawer, setOpenDrawer] = useState(false);
 
     useEffect(() => {
         const CsProps = mixCsProps(
@@ -33,10 +39,10 @@ export default function ChocoAll() {
             { '&:hover': { bgClr: 'black' } },
             { '&:hover': { clr: 'blue' } },
             ({ theme }) => ({
-                bgClr: theme.palette.info.dark,
+                bgClr: theme.palette.main.info[7],
             }),
             ({ theme }) => ({
-                bgClr: theme.palette.error.dark,
+                bgClr: theme.palette.main.error[7],
             }),
         );
         console.log('ผลลัพ', CsProps);
@@ -44,12 +50,16 @@ export default function ChocoAll() {
 
     useEffect(() => {
         console.log('option: ', option);
-        globalStyles('set bg', {
+        globalStyles('chocoall set bg', {
             body: {
                 bgClr: option,
             },
         });
     }, [option]);
+
+    useEffect(() => {
+        console.log('page: ', page);
+    }, [page]);
 
     return (
         <>
@@ -58,11 +68,71 @@ export default function ChocoAll() {
                     body: {
                         p: 0,
                         m: 0,
-                        bgClr: 'red',
+                        bgClr: 'gray',
                     },
                 }}
             />
-            <CNavbar>Choco Navbar</CNavbar>
+            <CDrawer
+                open={openDrawer}
+                onClose={() => setOpenDrawer(false)}
+                paperCs={({ theme }) => {
+                    return { bgClr: theme.palette.main.error[5] };
+                }}
+            >
+                <CText>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                </CText>
+                <CText>
+                    Nulla repellat iste quasi recusandae iure illum odit nam.
+                </CText>
+                <CText>
+                    Sed fugit tempora, cum magni iste minus praesentium. A in
+                </CText>
+                <CText>numquam ea velit.</CText>
+            </CDrawer>
+            <CNavbar
+                cs={({ theme }) => ({
+                    backgroundImage: `linear-gradient(
+                        1deg,
+                        ${theme.palette.main.primary[7].alpha(0.5)},
+                        ${theme.palette.text.primary[5]}
+                    )`,
+                })}
+            >
+                Choco Navbar
+                <CNavigation
+                    showLabels
+                    value={page}
+                    setClr="primary"
+                    setValue={setPage}
+                    options={[
+                        {
+                            // to: '/mui',
+                            label: 'Mui',
+                            value: 'mui',
+                            fa: 'faCoffee',
+                        },
+                        'choco',
+                        'tea',
+                    ]}
+                />
+                <CNavigation
+                    showLabels
+                    value={page}
+                    setClr="error"
+                    setValue={setPage}
+                    options={[
+                        {
+                            // to: '/mui',
+                            label: 'Mui',
+                            value: 'mui',
+                            fa: 'faCoffee',
+                        },
+                        'choco',
+                        'tea',
+                    ]}
+                />
+            </CNavbar>
             <CDialog open={open}>
                 {({
                     Title,
@@ -88,11 +158,29 @@ export default function ChocoAll() {
                     chocoStyles
                 </CContainer>
                 <CContainer>
-                    <CBox
-                        bgClr={null}
-                        wh={80}
-                        cs={{ dp: { v: null, l: 'f' } }}
+                    <CTabs
+                        scrollButtons
+                        value={tabs}
+                        setClr="errorText"
+                        setValue={setTabs}
+                        options={[
+                            { value: '1', label: 'item 1' },
+                            'item 2',
+                            'item 3',
+                        ]}
                     />
+                    <CBox
+                        bgClr="red"
+                        wh={80}
+                        cs={() => ({
+                            dp: { v: null, l: 'f' },
+                            '& .box-in-box': {
+                                m: -1,
+                            },
+                        })}
+                    >
+                        <CBox bgClr="info" wh={60} className="box-in-box" />
+                    </CBox>
                     <Text>choco styled</Text>
                     <Text trans={10} animate={{ rotate: [0, 360] }}>
                         text animate rotate
@@ -115,14 +203,14 @@ export default function ChocoAll() {
                         CText use theme
                     </CText>
 
-                    <CSelect
+                    <CInput
                         w={300}
                         value={option}
                         label="option select"
                         setValue={(value) => {
                             setOption(value);
                         }}
-                        options={[
+                        selects={[
                             undefined,
                             'red',
                             'blue',
@@ -142,11 +230,15 @@ export default function ChocoAll() {
                     >
                         button
                     </CButton>
-                    <CButton outline setClr="secondary">
+                    <CButton outline setClr="secondary" to="/test/mui">
                         button outline secondary
                     </CButton>
-                    <CButton lowcase setClr="primary">
-                        button lowcase primary
+                    <CButton
+                        lowcase
+                        setClr="primary"
+                        onClick={() => setOpenDrawer(true)}
+                    >
+                        button lowcase primary open OpenDrawer
                     </CButton>
                     <CButton text>button text</CButton>
                     <CButton disabled onClick={() => console.log('click')}>
@@ -154,7 +246,7 @@ export default function ChocoAll() {
                     </CButton>
 
                     <CPaper>
-                        <CIconButton dFlex fa="faPen" />
+                        <CIconButton dFlex fa="faPen" p={0} />
                     </CPaper>
                 </CContainer>
             </CContainer>

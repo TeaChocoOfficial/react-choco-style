@@ -6,21 +6,17 @@ export default function Setup() {
     return (
         <ChocoProvider
             cssBase
-            createTheme={(theme) => ({
+            createTheme={({ ChocoColor }) => ({
                 modes: {
-                    ...theme.modes,
                     default: {
-                        ...theme.modes.default,
-                        secondary: {
-                            main: '#cc0033',
-                            dark: '#990022',
-                            light: '#ff00b1',
-                            text: '#FFFFFF',
-                            disabled: '#660033',
-                            textDisabled: '#BDBDBD',
+                        main: {
+                            secondary: ChocoColor.shades(0xcc0033),
                         },
                     },
                 },
+                // styleSheets() {
+                //     return {}
+                // },
             })}
         >
             <App />

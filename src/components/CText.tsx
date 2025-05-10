@@ -12,26 +12,17 @@ export type CTextProps = ChocoStyledProps<
     { skeleton?: boolean | CSkeletonProps }
 >;
 
-export function CText({ skeleton, variant, ...prop }: CTextProps) {
+export function CText({ skeleton, variant = 'inherit', ...prop }: CTextProps) {
+    const skeletonProps = typeof skeleton === 'object' ? skeleton : {};
     return skeleton ? (
         <CSkeleton
-            {...useChocoProps(
-                { ...(typeof skeleton === 'object' ? skeleton : {}) },
-                ({ theme }) => ({
-                    variant: 'text',
-                    cs: {
-                        w: '100%',
-                        h: -(theme.root.size.text * 2),
-                    },
-                }),
-            )}
-        />
-    ) : (
-        <Text
-            {...useChocoProps(prop, ({ theme }) => ({
-                variant: variant ?? 'inherit',
-                cs: { fontS: -theme.root.size.text },
+            text
+            {...useChocoProps(skeletonProps, ({ size, theme }) => ({
+                w: '100%',
+                h: size((size) => size * 2, theme.root.size.text),
             }))}
         />
+    ) : (
+        <Text variant={variant} {...prop} />
     );
 }

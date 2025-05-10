@@ -3,8 +3,9 @@ import {
     CsType,
     StyleTypes,
     StyledType,
-    ChocoStyleType,
+    GridAreaType,
     LinesStyleType,
+    ChocoStyleType,
     NestedStyleTypes,
     GridTemplateType,
     ChocoStyleDefType,
@@ -14,17 +15,51 @@ import {
     keysChocoStyle,
     KeywordsChocoStyleDef,
 } from '../data/reservedKeywords';
+import { Obj } from '../custom/obj';
+import { Ary } from '../custom/ary';
 import { SxType } from '../types/style';
-import { useTheme } from './ChocoStyle';
 import { useFormat } from './ChocoFormat';
-import { useGetColor } from './ChocoColor';
+import { ChocoColor } from '../theme/color';
 import { ColorsType } from '../types/color';
 import { useCallback, useMemo } from 'react';
+import { useFont, useTheme } from './ChocoStyle';
 import { Sizes, SizeValue } from '../types/size';
+import { CustomStylesPropsType } from '../types/chocoHook';
+import { useGetColor, useGetsetClrProps } from './ChocoColor';
 
 // export class ChocoResponse {}
 
-function mergeNestedStyles(style1: StyleTypes, style2: StyleTypes): StyleTypes {
+export function useResponseCs() {
+    const theme = useTheme();
+    const { getFont } = useFont();
+    const getSetClrProps = useGetsetClrProps();
+    const { formatSize, callbackSize } = useFormat();
+
+    const CustomStylesProps: CustomStylesPropsType = {
+        theme,
+        getFont,
+        formatSize,
+        callbackSize,
+        getSetClrProps,
+    };
+
+    return useCallback(
+        (cs?: CsType): StyleTypes => {
+            if (typeof cs === 'function') {
+                const styles = cs(CustomStylesProps);
+                return styles || {};
+            }
+            const styles = cs || {};
+            return styles;
+        },
+        [theme, getFont, formatSize, callbackSize, getSetClrProps],
+    );
+}
+
+export function mergeNestedStyles(
+    style1: StyleTypes,
+    style2: StyleTypes,
+): StyleTypes {
     const result: StyleTypes = { ...style1 };
     for (const keyStyle in style2) {
         const key = keyStyle as keyof StyleTypes;
@@ -33,14 +68,7 @@ function mergeNestedStyles(style1: StyleTypes, style2: StyleTypes): StyleTypes {
             const value2 = style2[key];
 
             if (key.startsWith('&') || key.startsWith('@')) {
-                if (
-                    value1 &&
-                    value2 &&
-                    typeof value1 === 'object' &&
-                    typeof value2 === 'object' &&
-                    !Array.isArray(value1) &&
-                    !Array.isArray(value2)
-                ) {
+                if (Obj.isObject(value1) && Obj.isObject(value2)) {
                     result[key as keyof NestedStyleTypes] = {
                         ...(value1 as object),
                         ...(value2 as object),
@@ -49,11 +77,9 @@ function mergeNestedStyles(style1: StyleTypes, style2: StyleTypes): StyleTypes {
                     result[key as keyof NestedStyleTypes] =
                         value2 as NestedStyleTypes;
                 }
-            } else {
-                if (value2 !== undefined) {
-                    result[key as keyof NestedStyleTypes] =
-                        value2 as NestedStyleTypes;
-                }
+            } else if (value2 !== undefined) {
+                result[key as keyof NestedStyleTypes] =
+                    value2 as NestedStyleTypes;
             }
         }
     }
@@ -62,14 +88,12 @@ function mergeNestedStyles(style1: StyleTypes, style2: StyleTypes): StyleTypes {
 }
 
 export function useMixCsProps() {
-    const theme = useTheme();
+    const responseCs = useResponseCs();
 
     return useCallback((...chocoStyles: (CsType | undefined)[]): StyleTypes => {
         const validStyles = chocoStyles
             .filter((style) => style !== undefined)
-            .map((style) =>
-                typeof style === 'function' ? style({ theme }) : style,
-            );
+            .map((style) => responseCs(style));
         if (validStyles.length === 0) {
             return {};
         }
@@ -82,17 +106,19 @@ export function useMixCsProps() {
 
 export function useChocoStyle<Styles extends StyledType | SxType>(): (
     styles: CsType,
+    innerWidth?: number,
 ) => Styles {
     const theme = useTheme();
     const getColor = useGetColor();
+    const responseCs = useResponseCs();
     const { callbackSize, formatSize, isSize } = useFormat();
 
     return useMemo(() => {
-        const chocoStyle = (chocostyle: CsType = {}): Styles => {
-            let styles =
-                typeof chocostyle === 'function'
-                    ? chocostyle({ theme })
-                    : chocostyle ?? {};
+        const chocoStyle = (
+            chocostyle: CsType = {},
+            innerWidth?: number,
+        ): Styles => {
+            const styles = responseCs(chocostyle);
 
             const keysChocostyle = Object.keys(
                 styles,
@@ -107,45 +133,110 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 if (key.startsWith('&')) {
                     acc[key] = chocoStyle(
                         styles[key] as StyleTypes,
+                        innerWidth,
                     ) as SizeValue;
                 }
                 return acc;
             }, {});
 
             const {
-                timePadding = theme.root.size.padding,
-                timeBorder = theme.root.size.border,
-                timeText = 1 / theme.root.size.text,
+                timePadding = theme.root.response.padding,
+                timeBorder = theme.root.response.border,
+                timeText = 1 / theme.root.response.text,
+                timeBorR = theme.root.response.borR,
                 textUnit = theme.root.unit.text,
             } = {};
 
-            // ฟังก์ชันช่วยแปลง size
-            const toSize = (
-                value?: Sizes,
-                time = 1,
-                unit = 'px',
-                autoFormat = true,
-            ): Sizes | undefined => {
+            // ฟังก์ชันช่วยแปลง sizes
+            const toSizes = <Value, NewValue extends string = 'none'>(
+                value?: Sizes<Value>,
+                option: {
+                    none?: boolean | NewValue;
+                    time?: number;
+                    unit?: string;
+                    autoFormat?: boolean;
+                } = {
+                    time: 1,
+                    unit: 'px',
+                    autoFormat: true,
+                },
+            ): Sizes<NewValue> | undefined => {
+                const {
+                    none,
+                    time = 1,
+                    unit = 'px',
+                    autoFormat = true,
+                } = option;
+                const Null = none === true ? 'none' : none;
                 if (value === undefined) return undefined;
-                if (typeof value === 'string') return value;
+                if (value === null && none !== undefined)
+                    return Null as NewValue;
+                if (typeof value === 'string')
+                    return value as unknown as NewValue;
                 if (typeof value === 'number')
                     return autoFormat && value < 0
                         ? (callbackSize(-value, (v) =>
                               typeof v === 'number' ? `${v * time}${unit}` : v,
-                          ) as Sizes)
-                        : `${value * time}${unit}`;
+                          ) as Sizes<NewValue>)
+                        : (`${value * time}${unit}` as NewValue);
                 if (isSize(value)) {
                     return callbackSize(value, (v) =>
-                        typeof v === 'number' ? `${v * time}${unit}` : v,
-                    ) as Sizes;
+                        v === null && none !== undefined
+                            ? Null
+                            : typeof v === 'number'
+                            ? `${v * time}${unit}`
+                            : v,
+                    ) as Sizes<NewValue>;
+                }
+            };
+            // ฟังก์ชันช่วยแปลง size
+            const toSize = <Value, NewValue extends string = 'none'>(
+                value?: Sizes<Value>,
+                option: {
+                    none?: boolean | NewValue;
+                    time?: number;
+                    unit?: string;
+                    autoFormat?: boolean;
+                } = {
+                    time: 1,
+                    unit: 'px',
+                    autoFormat: true,
+                },
+            ): Sizes<NewValue> | undefined => {
+                const sizes = toSizes(value, option);
+                if (innerWidth !== undefined && isSize(sizes)) {
+                    const { size } = theme.breakpoint;
+                    const breakpoints = Obj.entries(size).sort(
+                        ([, a], [, b]) => b - a,
+                    );
+                    for (const [key, value] of breakpoints)
+                        if (innerWidth > value) return sizes[key];
+
+                    const high = sizes[breakpoints[0][0]];
+                    const low = sizes[Ary.last(breakpoints)[0]];
+                    return high === undefined ? low : high;
+                } else {
+                    return sizes;
                 }
             };
 
             // ฟังก์ชันช่วยแปลง color
             const toColor = (color?: Sizes<ColorsType>) => {
                 if (color === undefined) return undefined;
-                if (isSize(color)) return callbackSize(color, getColor);
-                return getColor(color as ColorsType);
+                const toHex = (chocoColor: ColorsType) =>
+                    chocoColor instanceof ChocoColor
+                        ? chocoColor.hex()
+                        : chocoColor;
+                if (isSize(color))
+                    return callbackSize(color, (color: ColorsType) =>
+                        toHex(getColor(color)),
+                    );
+                // console.log(
+                //     color,
+                //     getColor(color as ColorsType),
+                //     toHex(getColor(color as ColorsType)),
+                // );
+                return toHex(getColor(color as ColorsType));
             };
 
             // ฟังก์ชันตั้งค่า CSS
@@ -160,60 +251,73 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 key: keyof SxType,
                 value: Sizes,
                 sides: Record<string, [keyof SxType, Sizes]>,
-                time = 1,
-                autoFormat?: boolean,
+                option: {
+                    time?: number;
+                    autoFormat?: boolean;
+                } = { time: 1, autoFormat: true },
             ) => {
-                if (value) setCss(key, toSize(value, time));
-                else
-                    Object.entries(sides).forEach(([_, [sideKey, sideVal]]) => {
-                        if (sideVal !== undefined)
-                            setCss(
-                                sideKey,
-                                toSize(sideVal, time, undefined, autoFormat),
-                            );
-                    });
+                const { time = 1, autoFormat = true } = option;
+                if (value) setCss(key, toSize(value, { time }));
+                Object.entries(sides).forEach(([_, [sideKey, sideVal]]) => {
+                    if (sideVal !== undefined)
+                        setCss(sideKey, toSize(sideVal, { time, autoFormat }));
+                });
             };
 
             // Border
-            const toBorder = (border: LinesStyleType | string | undefined) => {
+            const toBorder = (
+                border: LinesStyleType | string | null | undefined,
+            ): Sizes<string> | undefined => {
+                if (border === null) return 'none';
                 if (typeof border === 'string') return border;
                 if (border) {
-                    const { size, width, style, color } = border;
+                    const {
+                        width,
+                        style = 'solid',
+                        color = 'secondary',
+                    } = border;
                     const borderWidth =
-                        size !== undefined
-                            ? formatSize(size)
+                        typeof width === 'number' && width < 0
+                            ? formatSize(-width)
                             : width ?? theme.root.size.border;
-                    const borderSize = toSize(borderWidth);
+                    const borderSize = toSize(borderWidth, {
+                        time: timeBorder,
+                    });
                     if (typeof borderSize === 'string') {
-                        return `${borderSize} ${style ?? 'solid'} ${getColor(
-                            color ?? 'secondary',
-                        )}`;
+                        return `${borderSize} ${style} ${getColor(color)}`;
                     }
                     return callbackSize(
                         borderSize,
-                        (s) =>
-                            `${s} ${style ?? 'solid'} ${getColor(
-                                color ?? 'secondary',
-                            )}`,
+                        (s) => `${s} ${style} ${getColor(color)}`,
                     );
                 }
             };
 
             // Grid Template
-            const toGridTemplate = (template?: Sizes<GridTemplateType>) => {
-                if (!template) return undefined;
-                return callbackSize(template, (size: GridTemplateType) =>
-                    (Array.isArray(size) ? size : size)
-                        ?.map((row) =>
-                            row
-                                .map((col) =>
-                                    typeof col === 'number' ? `${col}fr` : col,
-                                )
-                                .join(' '),
-                        )
-                        .join(' / '),
-                );
+            const toGridTemplate = (template: GridTemplateType): string => {
+                return !Array.isArray(template)
+                    ? template
+                    : template
+                          ?.map((row) =>
+                              row
+                                  .map((col) =>
+                                      typeof col === 'number'
+                                          ? `${col}fr`
+                                          : col,
+                                  )
+                                  .join(' '),
+                          )
+                          .join(' / ');
             };
+
+            const toGridArea = (area: GridAreaType): string =>
+                area
+                    ?.map((area, index) =>
+                        (index > 0 ? area.map((a) => `span ${a}`) : area).join(
+                            ' / ',
+                        ),
+                    )
+                    ?.join(' / ');
 
             // Switch
             const setSwitch = (
@@ -244,11 +348,16 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
             setCss('background', toSize(styles.bg));
             setCss('color', toColor(styles.clr));
             setCss('backgroundColor', toColor(styles.bgClr));
-            setCss('backgroundImage', toSize(styles.bgImg));
+            setCss('backgroundImage', toSize(styles.bgImg, { none: true }));
+            setCss('boxShadow', toSize(styles.bShadow, { none: true }));
+            setCss('textShadow', toSize(styles.tShadow, { none: true }));
             //* Opacity
-            setCss('opacity', toSize(styles.op, 1, ''));
+            setCss('opacity', toSize(styles.op, { time: 1, unit: '' }));
             //* z-index
-            setCss('zIndex', toSize(styles.z, 1, '', false));
+            setCss(
+                'zIndex',
+                toSize(styles.z, { time: 1, unit: '', autoFormat: false }),
+            );
             //* Width and Height
             setCss('width', toSize(styles.wh) ?? toSize(styles.w));
             setCss('height', toSize(styles.wh) ?? toSize(styles.h));
@@ -271,8 +380,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                     t: ['top', styles.t],
                     b: ['bottom', styles.b],
                 },
-                undefined,
-                true,
+                { autoFormat: false },
             );
             //* Padding
             //? all top bottom left right left&right top&bottom
@@ -289,7 +397,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                     t: ['paddingTop', styles.pt],
                     b: ['paddingBottom', styles.pb],
                 },
-                timePadding,
+                { time: timePadding },
             );
             //* Margin
             //? all top bottom left right left&right top&bottom
@@ -306,7 +414,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                     t: ['marginTop', styles.mt],
                     b: ['marginBottom', styles.mb],
                 },
-                timePadding,
+                { time: timePadding },
             );
             //* Gap
             //? all top bottom left right left&right top&bottom
@@ -323,34 +431,48 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                     t: ['columnGap', styles.gapT],
                     b: ['rowGap', styles.gapB],
                 },
-                timePadding,
+                { time: timePadding },
             );
             //* FontSize
-            setCss('fontSize', toSize(styles.fontS, timeText, textUnit));
+            setCss(
+                'fontSize',
+                toSize(styles.sz, { time: timeText, unit: textUnit }),
+            );
+            setCss(
+                'fontSize',
+                toSize(styles.fontS, { time: timeText, unit: textUnit }),
+            );
             //* Grids
             //? grid-template grid-area
             if (styles.gridT !== undefined) {
-                setCss('gridTemplate', toGridTemplate(styles.gridT));
+                if (isSize(styles.gridT)) {
+                    setCss(
+                        'gridTemplate',
+                        callbackSize(styles.gridT, toGridTemplate),
+                    );
+                } else {
+                    setCss(
+                        'gridTemplate',
+                        toGridTemplate(styles.gridT as GridTemplateType),
+                    );
+                }
             }
             if (styles.gridA !== undefined) {
-                const gridArea = callbackSize(
-                    styles.gridA,
-                    (grid: GridTemplateType) => {
-                        const template = grid as GridTemplateType;
-                        return template
-                            ?.map((area, index) =>
-                                (index > 0
-                                    ? area.map((a) => `span ${a}`)
-                                    : area
-                                ).join(' / '),
-                            )
-                            ?.join(' / ');
-                    },
-                );
-                setCss('gridArea', gridArea);
+                if (isSize(styles.gridA)) {
+                    setCss('gridArea', callbackSize(styles.gridA, toGridArea));
+                } else {
+                    setCss(
+                        'gridArea',
+                        toGridArea(styles.gridA as GridAreaType),
+                    );
+                }
             }
             //* Border
-            setCss('borderRadius', toSize(styles.borR, timeBorder));
+            setCss('borderWidth', toSize(styles.borW, { time: timeBorder }));
+            setCss('borderRadius', toSize(styles.borR, { time: timeBorR }));
+            setCss('borderStyle', toSize(styles.borS));
+            setCss('borderColor', toColor(styles.borClr));
+            // if (styles.borders) console.log(toBorder(styles.borders));
             setCss('border', toBorder(styles.borders));
             ['borderTop', 'borderBottom'].forEach((k) =>
                 setCss(
@@ -389,7 +511,10 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
             );
 
             //* Transform
-            setCss('transform', styles.transform);
+            setCss(
+                'transform',
+                toSize(styles.from, { unit: '', autoFormat: false }),
+            );
             if (styles.transformCenter) {
                 const centers = {
                     all: ['50%', '50%', 'translate(-50%, -50%)'],
@@ -454,16 +579,27 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 st: 'stretch',
             });
             //* Justify content
-            //? flex-end flex-start center space-around space-between space-evenly
+            //? unset flex-end flex-start center space-evenly space-around space-between
             setSwitch('justifyContent', styles.j, {
                 null: 'unset',
                 e: 'flex-end',
                 s: 'flex-start',
                 c: 'center',
-                b: 'space-between',
-                a: 'space-around',
                 ev: 'space-evenly',
+                a: 'space-around',
+                b: 'space-between',
             });
+
+            //* Justify items
+            //? unset end start center stretch
+            setSwitch('justifyItems', styles.ji, {
+                null: 'unset',
+                e: 'end',
+                s: 'start',
+                c: 'center',
+                st: 'stretch',
+            });
+
             //* Text align
             //? unset end left start right center justify
             setSwitch('textAlign', styles.text, {
@@ -547,6 +683,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
 
 export function usePropChocoStyle() {
     const theme = useTheme();
+    const responseCs = useResponseCs();
     const { formatSize } = useFormat();
 
     return useCallback(
@@ -580,13 +717,19 @@ export function usePropChocoStyle() {
                 between: 'b',
                 stretch: 'st',
             } as const;
-            const justifyMap = {
-                start: 's',
+            const justifyContentMap = {
                 end: 'e',
+                start: 's',
                 center: 'c',
                 around: 'a',
                 between: 'b',
                 evenly: 'ev',
+            } as const;
+            const justifyItemsMap = {
+                end: 'e',
+                start: 's',
+                center: 'c',
+                stretch: 'st',
             } as const;
             const textMap = {
                 end: 'e',
@@ -630,16 +773,9 @@ export function usePropChocoStyle() {
                     styleMap[typedKey as keyof ChocoStyleDefType] =
                         value as Sizes<any>;
                 }
-
                 // Special cases
                 else if (key === 'cs') {
-                    const cs = value as CsType;
-                    if (typeof cs === 'function')
-                        Object.assign(
-                            styleMap,
-                            cs({ theme }) as Partial<ChocoStyleType>,
-                        );
-                    else Object.assign(styleMap, cs as Partial<ChocoStyleType>);
+                    Object.assign(styleMap, responseCs(value as CsType));
                 } else if (key === 'full') {
                     styleMap.w = '100%';
                     styleMap.h = '100%';
@@ -666,14 +802,22 @@ export function usePropChocoStyle() {
                             key.slice(1).toLowerCase() as keyof typeof alignMap
                         ];
                     styleMap.a = align;
+                } else if (key.startsWith('ji')) {
+                    const justifyItems =
+                        justifyItemsMap[
+                            key
+                                .slice(2)
+                                .toLowerCase() as keyof typeof justifyItemsMap
+                        ];
+                    styleMap.ji = justifyItems;
                 } else if (key.startsWith('j')) {
-                    const justify =
-                        justifyMap[
+                    const justifyContent =
+                        justifyContentMap[
                             key
                                 .slice(1)
-                                .toLowerCase() as keyof typeof justifyMap
+                                .toLowerCase() as keyof typeof justifyContentMap
                         ];
-                    styleMap.j = justify;
+                    styleMap.j = justifyContent;
                 } else if (key.startsWith('t')) {
                     const text =
                         textMap[

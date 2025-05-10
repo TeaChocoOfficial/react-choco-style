@@ -1,8 +1,23 @@
-//-Path: "react-choco-style/src/view/test/Mui.tsx"
-import { AppBar, Box, Button, GlobalStyles, Toolbar } from '@mui/material';
+//-Path: "react-choco-style/src/view/test/mui/Mui.tsx"
+import {
+    AppBar,
+    Box,
+    Button,
+    FormControl,
+    GlobalStyles,
+    Input,
+    InputLabel,
+    MenuItem,
+    Select,
+    Slider,
+    TextField,
+    Toolbar,
+} from '@mui/material';
 import { useState } from 'react';
 
 export default function Mui() {
+    const [input, setInput] = useState('');
+    const [sliderValue, setSliderValue] = useState(0);
     const [bodyColor, setBodyColor] = useState('#ffffff'); // ค่าเริ่มต้นเป็นสีขาว
 
     return (
@@ -10,7 +25,7 @@ export default function Mui() {
             <Box className="redText">this text is Red</Box>
             <GlobalStyles
                 styles={(theme) => {
-                    console.log(theme);
+                    // console.log(theme);
                     return {
                         '.redText': {
                             color: 'red',
@@ -63,6 +78,53 @@ export default function Mui() {
                 <Toolbar>material UI</Toolbar>
             </AppBar>
             <Box>mui</Box>
+            <FormControl>
+                <InputLabel>mui select</InputLabel>
+                <Select sx={{ width: 500 }}>
+                    <MenuItem></MenuItem>
+                    <MenuItem value="test1">test1</MenuItem>
+                    <MenuItem value="test2">test2</MenuItem>
+                    <MenuItem value="test3">test3</MenuItem>
+                    <MenuItem value="test4">test4</MenuItem>
+                </Select>
+            </FormControl>
+            <FormControl variant="filled">
+                <InputLabel>mui select</InputLabel>
+                <Select sx={{ width: 500 }}>
+                    <MenuItem></MenuItem>
+                    <MenuItem value="test1">test1</MenuItem>
+                    <MenuItem value="test2">test2</MenuItem>
+                    <MenuItem value="test3">test3</MenuItem>
+                    <MenuItem value="test4">test4</MenuItem>
+                </Select>
+            </FormControl>
+            <FormControl variant="standard">
+                <InputLabel>mui select</InputLabel>
+                <Select sx={{ width: 500 }}>
+                    <MenuItem></MenuItem>
+                    <MenuItem value="test1">test1</MenuItem>
+                    <MenuItem value="test2">test2</MenuItem>
+                    <MenuItem value="test3">test3</MenuItem>
+                    <MenuItem value="test4">test4</MenuItem>
+                </Select>
+            </FormControl>
+            <TextField />
+            <Input
+                value={input}
+                onChange={(event) => {
+                    setInput(event.target.value);
+                }}
+            />
+            <Slider />
+            <Slider
+                value={sliderValue}
+                aria-label="Volume"
+                onChange={(_, value) => {
+                    console.log(value);                    
+                    setSliderValue(value as number);
+                }}
+            />
+            {/* <Slider value={sliderValue} /> */}
         </>
     );
 }

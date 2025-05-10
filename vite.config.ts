@@ -32,5 +32,8 @@ export default defineConfig({
     build: {
         // เปิด sourcemap ถ้าต้องการ
         sourcemap: true, // Enable sourcemaps for debugging
+        rollupOptions: {
+            input: ['src/index.ts', 'src/globalAry.ts'],
+        },
     },
 });

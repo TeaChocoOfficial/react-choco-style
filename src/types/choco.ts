@@ -1,6 +1,6 @@
 //-Path: "react-choco-style/src/types/choco.ts"
-import { To } from 'react-router';
 import { ColorsType } from './color';
+import { To } from 'react-router-dom';
 import { Sizes, SizeValue } from './size';
 import { MotionProps } from 'framer-motion';
 import { CustomStylesType } from './chocoHook';
@@ -13,12 +13,14 @@ export type KeysStyleTypes =
     | `&${string}`
     | `@${string}`;
 
+export type NestedStyleType = {
+    [key in keyof ChocoStyleType]?: ChocoStyleType[key];
+} & {
+    [key in keyof React.CSSProperties]?: Sizes<React.CSSProperties[key]>;
+};
+
 export type NestedStyleTypes = {
-    [key in `&${string}` | `@${string}`]?: {
-        [key in keyof ChocoStyleType]?: ChocoStyleType[key];
-    } & {
-        [key in keyof React.CSSProperties]?: Sizes<React.CSSProperties[key]>;
-    };
+    [key in `&${string}` | `@${string}`]?: NestedStyleType & NestedStyleTypes;
 };
 
 export type StyleTypes = {
@@ -34,15 +36,17 @@ export type CsType = CustomStylesType | StyleTypes;
 export type CssKeyType =
     | keyof React.JSX.IntrinsicElements
     | `.${string}`
+    | `#${string}`
     | `&${string}`
     | `@${string}`;
 
 export type CssType = { [key in CssKeyType]?: CsType };
 
-export type ChocoStyledType = ChocoStylePropsType & MotionProps;
+export type ChocoStyledType<
+    Component extends React.ElementType = React.ElementType,
+> = ChocoStylePropsType<Component> & MotionProps;
 
 export type LinesStyleType = {
-    size?: number;
     width?: Sizes;
     color?: ColorsType;
     style?:
@@ -81,12 +85,17 @@ export type GridTemplateType =
 export type GridAreaType = number[][];
 
 export type ChocoStyleDefType = {
+    //* Responsive size
+    sz?: Sizes<number>;
+
     //* Style
     //? background | color | background-color | background-image
-    bg?: Sizes<string>;
+    bg?: Sizes<string | null>;
     clr?: Sizes<ColorsType>;
     bgClr?: Sizes<ColorsType>;
-    bgImg?: Sizes<string>;
+    bgImg?: Sizes<string | null>;
+    bShadow?: Sizes<string | null>;
+    tShadow?: Sizes<string | null>;
 
     //* Opacity
     op?: Sizes<number>;
@@ -155,23 +164,27 @@ export type ChocoStyleDefType = {
     gridA?: Sizes<GridAreaType>;
 
     //* Border
+    //? border-width border-radius border-style border-color border border-top border-bottom border-left border-right
+    borW?: Sizes;
     borR?: Sizes;
-    borders?: LinesStyleType | string;
-    borderT?: LinesStyleType | string;
-    borderB?: LinesStyleType | string;
-    borderL?: LinesStyleType | string;
-    borderR?: LinesStyleType | string;
-    borderX?: LinesStyleType | string;
-    borderY?: LinesStyleType | string;
+    borS?: Sizes<string | null>;
+    borClr?: Sizes<ColorsType>;
+    borders?: LinesStyleType | string | null;
+    borderT?: LinesStyleType | string | null;
+    borderB?: LinesStyleType | string | null;
+    borderL?: LinesStyleType | string | null;
+    borderR?: LinesStyleType | string | null;
+    borderX?: LinesStyleType | string | null;
+    borderY?: LinesStyleType | string | null;
 
     //* Outline
-    outlines?: LinesStyleType | string;
+    outlines?: LinesStyleType | string | null;
 
     //* transition
     trans?: number | string;
 
     //* Transform
-    transform?: React.CSSProperties['transform'];
+    from?: Sizes<string>;
     transformCenter?: 'all' | 'x' | 'y';
 
     //* Pointer events
@@ -200,8 +213,12 @@ export type ChocoStyleType = ChocoStyleDefType & {
     a?: Sizes<null | 'e' | 's' | 'c' | 'a' | 'b' | 'st'>;
 
     //* Justify content
-    //? flex-end flex-start center space-around space-between space-evenly
+    //? unset flex-end flex-start center space-around space-between space-evenly
     j?: Sizes<null | 'e' | 's' | 'c' | 'a' | 'b' | 'ev'>;
+
+    //* Justify items
+    //? unset end start center
+    ji?: Sizes<null | 'e' | 's' | 'c' | 'st'>;
 
     //* Text align
     //? unset end left start right center justify
@@ -226,7 +243,10 @@ export type ChocoStyleType = ChocoStyleDefType & {
     us?: Sizes<null | 'n' | 'a' | 't' | 'al'>;
 };
 
-export type ChocoStylePropsType = ChocoStyleDefType & {
+export type ChocoStylePropsType<
+    Component extends React.ElementType = React.ElementType,
+> = ChocoStyleDefType & {
+    component?: Component;
     //* Keywords
     //? width&height:100% width&height:100view
     cs?: CsType;
@@ -275,13 +295,20 @@ export type ChocoStylePropsType = ChocoStyleDefType & {
     aStretch?: boolean;
 
     //* Justify content
-    //? flex-end flex-start center space-around space-between space-evenly
+    //? unset flex-end flex-start center space-evenly space-around space-between
     jEnd?: boolean;
     jStart?: boolean;
     jCenter?: boolean;
     jEvenly?: boolean;
     jAround?: boolean;
     jBetween?: boolean;
+
+    //* Justify items
+    //? unset end start center stretch
+    jiEnd?: boolean;
+    jiStart?: boolean;
+    jiCenter?: boolean;
+    jiStretch?: boolean;
 
     //* Text align
     //? end left start right center justify

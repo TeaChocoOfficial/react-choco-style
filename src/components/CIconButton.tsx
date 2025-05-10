@@ -1,21 +1,21 @@
 //-Path: "react-choco-style/src/components/CIconButton.tsx"
+import { CIcon } from './CIcon';
+import { IconProp } from '../custom/Icon';
 import { ColorType } from '../types/color';
-import useNavigate from '../custom/ReactRoute';
-import { Icon, IconProp } from '../custom/Icon';
+import { useNavigate } from '../hook/ReactRoute';
 import { createStyled } from '../hook/ChocoStyle';
 import { useChocoProps } from '../hook/ChocoProps';
 import { StyleTypes, ToType } from '../types/choco';
-import { ChocoStyledProps } from '../types/chocoHook';
-import { useGetsetClrProps } from '../hook/ChocoColor';
+import { ChocoStyledProps, ClrPropsType } from '../types/chocoHook';
 import { IconButton as MuiIconButton } from '@mui/material';
 
 const IconButton = createStyled(MuiIconButton, 'CIconButton')();
 
 export type CIconButtonProps = ChocoStyledProps<
     typeof MuiIconButton,
-    {
+    ClrPropsType & {
         to?: ToType;
-        setClr?: ColorType;
+        contained?: boolean;
         color?: StyleTypes['color'];
     } & IconProp
 >;
@@ -23,6 +23,7 @@ export type CIconButtonProps = ChocoStyledProps<
 export function CIconButton({
     to,
     fa,
+    sz,
     color,
     solid,
     brand,
@@ -30,36 +31,41 @@ export function CIconButton({
     setClr,
     regular,
     onClick,
+    outline,
     disabled,
     children,
+    contained,
     ...prop
 }: CIconButtonProps) {
     const navigate = useNavigate();
-    const getSetClrProps = useGetsetClrProps('primaryText');
-
-    const buttonProps = useChocoProps(prop, ({ getFont, getSize, theme }) => {
-        const size = getSize(prop);
-        const fontStyle = getFont('medium');
-        const { styles } = getSetClrProps({ disabled, setClr });
-
-        return {
-            cs: {
-                ...styles,
-                ...{
-                    ...fontStyle,
-                    color,
-                    fontS: -size,
-                    p:
-                        -(size ?? theme.root.size.padding) /
-                        theme.root.size.padding,
-                },
-            },
-        };
-    });
 
     return (
         <IconButton
-            {...buttonProps}
+            sz={sz}
+            {...useChocoProps(
+                prop,
+                ({ getSetClrProps, getFont, size, theme }) => {
+                    const fontStyle = getFont('medium');
+                    const { padding } = theme.root.size;
+                    const { styles } = getSetClrProps({
+                        setClr,
+                        outline,
+                        disabled,
+                        text: !contained,
+                        defaultColor: 'main',
+                    });
+
+                    return {
+                        cs: {
+                            ...styles,
+                            ...fontStyle,
+                            color,
+                            fontS: size(),
+                            p: size(padding),
+                        },
+                    };
+                },
+            )}
             tabIndex={disabled ? -1 : undefined}
             onClick={(event) => {
                 if (disabled) return;
@@ -68,7 +74,8 @@ export function CIconButton({
             }}
         >
             {fa || solid || brand || regular || props ? (
-                <Icon
+                <CIcon
+                    sz={sz}
                     fa={fa}
                     props={props}
                     solid={solid}

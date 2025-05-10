@@ -1,58 +1,80 @@
 //-Path: "react-choco-style/src/hook/ChocoStyle.tsx"
+import {
+    styled,
+    Theme as MuiTheme,
+    useTheme as useMuiTheme,
+} from '@mui/material';
+import {
+    PaletteType,
+    PalettesType,
+    ModesKeyType,
+    ThemeFontsType,
+    ChocoThemeType,
+    UseChocoThemeType,
+} from '../types/theme';
+import {
+    useChocoStyle,
+    useResponseCs,
+    usePropChocoStyle,
+} from './ChocoResponse';
+import { Obj } from '../custom/obj';
 import { motion } from 'framer-motion';
 import { SizeValue } from '../types/size';
-import { ColorType } from '../types/color';
 import { useCallback, useMemo } from 'react';
 import { ReactTagType } from '../types/style';
 import { GlobalCss } from '../data/globalCss';
 import { removeReservedProps } from './ChocoProps';
-import { CssType, StyleTypes } from '../types/choco';
-import { themeAtom, themeModeAtom } from '../theme/theme';
+import { ChocoStyledProps } from '../types/chocoHook';
+import { CssType, CsType, StyleTypes } from '../types/choco';
 import { keysChocoStyleProps } from '../data/reservedKeywords';
-import { useChocoStyle, usePropChocoStyle } from './ChocoResponse';
-import { alpha, styled, useTheme as useMuiTheme } from '@mui/material';
-import { ChocoStyledProps, CustomStylesType } from '../types/chocoHook';
-import { PaletteType, ThemeFontsType, UseChocoThemeType } from '../types/theme';
+import { getThemeMode, themeAtom, themeModeAtom } from '../theme/theme';
 
 // export class ChocoStyle {}
 
+export function getUseChocoStyle({
+    mode,
+    theme,
+    setMode,
+    muiTheme,
+}: {
+    mode: ModesKeyType;
+    muiTheme: MuiTheme;
+    theme: ChocoThemeType;
+    setMode: React.Dispatch<React.SetStateAction<ModesKeyType>>;
+}): UseChocoThemeType {
+    return {
+        mode,
+        root: theme.root,
+        fonts: theme.fonts,
+        breakpoint: theme.breakpoint,
+        palette: Obj.mix<PalettesType<PaletteType>>(theme.modes.default, theme.modes[mode]),
+        method: {
+            transitions: muiTheme.transitions,
+            setMode: (mode) => {
+                setMode(mode);
+                getThemeMode(mode);
+            },
+            spacing: (...factor) =>
+                factor
+                    .map(
+                        (f) =>
+                            (typeof f === 'number'
+                                ? f * theme.root.size.padding
+                                : f) + theme.root.unit.padding,
+                    )
+                    .join(' '),
+        },
+    };
+}
+
 export function useTheme(): UseChocoThemeType {
-    const muiTheme = useMuiTheme();
     const theme = themeAtom.get();
+    const muiTheme = useMuiTheme();
     const [mode, setMode] = themeModeAtom.use();
 
     return useMemo(
-        () => ({
-            mode,
-            root: theme.root,
-            fonts: theme.fonts,
-            breakpoint: theme.breakpoint,
-            styleSheets: theme.styleSheets,
-            palette: {
-                ...theme.modes.default,
-                ...theme.modes[mode],
-            } as PaletteType,
-            method: {
-                transitions: muiTheme.transitions,
-                setMode: (mode) => setMode(mode),
-                spacing: (...factor) =>
-                    factor
-                        .map(
-                            (f) =>
-                                (typeof f === 'number'
-                                    ? f * theme.root.size.padding
-                                    : f) + theme.root.unit.padding,
-                        )
-                        .join(' '),
-                alpha: (color, value) => {
-                    if (color === null) {
-                        return alpha('#00000000', value) as ColorType;
-                    }
-                    return alpha(color as string, value) as ColorType;
-                },
-            },
-        }),
-        [mode, theme],
+        () => getUseChocoStyle({ theme, muiTheme, mode, setMode }),
+        [mode, theme, muiTheme],
     );
 }
 
@@ -60,41 +82,39 @@ export function createStyled<TagType extends ReactTagType>(
     tag: TagType,
     nameTag?: string,
 ) {
-    return (customStyles?: StyleTypes | CustomStylesType) => {
+    return (customStyles?: CsType) => {
         // สร้าง styled component
         const StyledBase = styled(
             tag as unknown as keyof React.JSX.IntrinsicElements,
             { name: nameTag },
         )(() => {
-            const theme = useTheme();
+            const responseCs = useResponseCs();
             const chocoStyle = useChocoStyle<StyleTypes>();
-            return (
-                typeof customStyles === 'function'
-                    ? chocoStyle(customStyles({ theme }))
-                    : chocoStyle(customStyles ?? {})
-            ) as Record<string, SizeValue>;
+            return chocoStyle(responseCs(customStyles)) as Record<
+                string,
+                SizeValue
+            >;
         });
 
         // ห่อด้วย motion
         const MotionComponent = motion.create(StyledBase);
 
         // Component ที่จะ return
-        return <Props extends ChocoStyledProps<TagType>>(props: Props) => {
-            const sxStyle = useChocoStyle<StyleTypes>();
+        return (props: ChocoStyledProps<TagType>) => {
+            const responseCs = useResponseCs();
             const propChocoStyle = usePropChocoStyle();
+            const sxStyle = useChocoStyle<StyleTypes>();
 
             const { sx, componentProps } = useMemo(() => {
-                const { cs, sx: sxProp, ...restProps } = props;
+                const { cs, ...restProps } = props;
                 const chocoStyleProps = propChocoStyle(restProps);
-                const combinedStyles = {
-                    ...cs,
-                    ...chocoStyleProps,
-                } as StyleTypes;
+                const combinedStyles = Obj.mix<StyleTypes>(
+                    responseCs(cs),
+                    chocoStyleProps,
+                );
 
                 return {
-                    sx: sxProp
-                        ? [sxStyle(combinedStyles), sxProp]
-                        : sxStyle(combinedStyles),
+                    sx: sxStyle(combinedStyles),
                     componentProps: removeReservedProps(
                         [...keysChocoStyleProps, 'sx'],
                         restProps,
@@ -118,32 +138,15 @@ export function useFont() {
     const theme = useTheme();
 
     return {
-        getSize: useCallback(
-            (prop: ChocoStyledProps<any>) => {
-                const { cs, fontS } = prop;
-                let chocoStyles: StyleTypes = {};
-                if (typeof cs === 'function') {
-                    chocoStyles = cs({ theme });
-                } else {
-                    chocoStyles = { ...cs };
-                }
-                const size =
-                    typeof fontS === 'number'
-                        ? fontS
-                        : typeof chocoStyles.fontS === 'number'
-                        ? chocoStyles.fontS
-                        : theme.root.size.text;
-                return size;
-            },
-            [theme],
-        ),
         getFont: useCallback(
-            (size?: keyof ThemeFontsType['weight']): StyleTypes => {
+            <Style extends StyleTypes | CsType>(
+                size?: keyof ThemeFontsType['weight'],
+            ) => {
                 const css: StyleTypes = {
                     fontFamily: theme.fonts.family,
                     fontWeight: theme.fonts.weight[size ?? 'regular'],
                 };
-                return css;
+                return css as Style;
             },
             [theme],
         ),

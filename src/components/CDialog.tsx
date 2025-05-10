@@ -34,26 +34,25 @@ export type CDialogChildrenFunction = (
 export type CDialogProps = Omit<
     ChocoStyledProps<typeof MuiDialog>,
     'children'
-> & {
-    children?: CDialogChildrenFunction | React.ReactNode;
-};
+> & { children?: CDialogChildrenFunction | React.ReactNode };
 
-export function CDialog({
-    open = false,
-    children,
-    ...prop
-}: CDialogProps) {
+export function CDialog({ open = false, children, ...prop }: CDialogProps) {
     const DialogChildren: CDialogChildrenProps = {
         Title: DialogTitle,
         Content: DialogContent,
         Actions: DialogActions,
         ContextText: DialogContentText,
     };
-    const props = useChocoProps(prop, () => ({
-        children:
-            typeof children === 'function'
-                ? children(DialogChildren)
-                : children,
-    }));
-    return <Dialog open={open} {...props} />;
+
+    return (
+        <Dialog
+            open={open}
+            {...useChocoProps(prop, () => ({
+                children:
+                    typeof children === 'function'
+                        ? children(DialogChildren)
+                        : children,
+            }))}
+        />
+    );
 }

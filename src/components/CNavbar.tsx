@@ -15,9 +15,10 @@ export type CNavbarProps = ChocoStyledProps<
 
 export function CNavbar({ children, toolbarProps, ...prop }: CNavbarProps) {
     return (
-        <Navbar component="nav" {...prop}>
-            <Toolbar {...toolbarProps}>{children}</Toolbar>
+        <Navbar jCenter component="nav" {...prop}>
+            <Toolbar cs={{ minH: "unset" }} {...toolbarProps}>
+                {children}
+            </Toolbar>
         </Navbar>
     );
 }
-

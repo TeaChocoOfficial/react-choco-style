@@ -1,21 +1,25 @@
 //-Path: "react-choco-style/src/hook/ChocoFormat.tsx"
+import {
+    IsSizeType,
+    FormatSizeType,
+    CallbackSizeType,
+} from '../types/chocoHook';
 import { useMemo } from 'react';
 import { useTheme } from './ChocoStyle';
 import { Size, SizeKey, SizeValue } from '../types/size';
-import { CallbackSizeType, FormatSizeType } from '../types/chocoHook';
 
 // export class ChocoFormat {
 //     static use = useFormat;
 // }
 export function useFormat(): {
-    isSize: (size: unknown) => boolean;
+    isSize: IsSizeType;
     formatSize: FormatSizeType;
     callbackSize: CallbackSizeType;
 } {
     const { breakpoint } = useTheme();
 
     return useMemo(() => {
-        function isSize(size: unknown): boolean {
+        function isSize(size: unknown): size is Size {
             const breakpointKeys = Object.keys(breakpoint.size) as SizeKey[];
             if (size && typeof size === 'object') {
                 const sizeKeys = Object.keys(size) as (keyof Size)[];

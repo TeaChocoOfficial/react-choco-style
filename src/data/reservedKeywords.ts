@@ -6,10 +6,13 @@ import {
 } from '../types/choco';
 
 export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
+    'sz',
     'bg',
     'clr',
     'bgClr',
     'bgImg',
+    'bShadow',
+    'tShadow',
     'op',
     'z',
     'w',
@@ -53,7 +56,10 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'event',
     'gridT',
     'gridA',
+    'borW',
     'borR',
+    'borS',
+    'borClr',
     'borders',
     'borderT',
     'borderB',
@@ -63,7 +69,7 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'borderY',
     'outlines',
     'trans',
-    'transform',
+    'from',
     'transformCenter',
 ];
 
@@ -73,6 +79,7 @@ export const KeywordsChocoStyle: (keyof ChocoStyleType)[] = [
     'fw',
     'a',
     'j',
+    'ji',
     'text',
     'pos',
     'of',
@@ -119,6 +126,10 @@ export const KeywordsChocoStyleProps: (keyof ChocoStylePropsType)[] = [
     'jEvenly',
     'jAround',
     'jBetween',
+    'jiEnd',
+    'jiStart',
+    'jiCenter',
+    'jiStretch',
     'tEnd',
     'tLeft',
     'tStart',

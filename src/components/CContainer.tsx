@@ -2,41 +2,59 @@
 import { CBox } from './CBox';
 import { Icon } from '../custom/Icon';
 import { CIconButton } from './CIconButton';
-import { StyleTypes } from '../types/choco';
 import { CPaper, CPaperProps } from './CPaper';
+import { createStyled } from '../hook/ChocoStyle';
 import { useChocoProps } from '../hook/ChocoProps';
+import { CsType, StyleTypes } from '../types/choco';
 import { ChocoStyledProps } from '../types/chocoHook';
 import { Container as ContainerMui } from '@mui/material';
-import { createStyled, useFont } from '../hook/ChocoStyle';
 
 const Container = createStyled(ContainerMui, 'CContainer')({ px: 0 });
 
-export type CContainerProps = ChocoStyledProps<
+export type CContainerPortion = 'main' | 'header' | 'content';
+
+export type CContainerProp = ChocoStyledProps<
     typeof ContainerMui,
-    {
-        back?: string;
-        hiddle?: boolean;
-        fullWidth?: boolean;
-        leftContent?: React.ReactNode;
-        rightContent?: React.ReactNode;
-        paperProp?: CPaperProps;
-        portion?: 'main' | 'header' | 'content';
-    }
+    { portion?: 'main' | 'header' | 'content' }
 >;
+
+export type CContainerMainProps = CContainerProp & {
+    fullWidth?: boolean;
+};
+
+export type CContainerHeaderProps = CContainerProp & {
+    back?: string;
+    hiddle?: boolean;
+    paperProp?: CPaperProps;
+    leftContent?: React.ReactNode;
+    rightContent?: React.ReactNode;
+};
+
+export type CContainerContentProps = CContainerProp & {
+    hiddle?: boolean;
+    paperProp?: CPaperProps;
+};
+
+export type CContainerProps<Portion extends CContainerPortion> =
+    Portion extends 'main'
+        ? CContainerMainProps
+        : Portion extends 'header'
+        ? CContainerHeaderProps
+        : CContainerContentProps;
 
 export function CContainerMain({
     maxWidth,
     fullWidth,
     ...prop
-}: CContainerProps) {
-    const props = useChocoProps(prop, ({ formatSize, theme }) => {
+}: CContainerMainProps) {
+    const props = useChocoProps(prop, ({ size, theme }) => {
         const cs: StyleTypes = {
             px: 0,
             a: 'c',
             j: 'c',
             dp: 'f',
             fd: 'c',
-            gaps: formatSize(1),
+            gaps: size((size) => size / theme.root.size.text),
         };
         if (fullWidth) {
             cs.w = '100%';
@@ -61,37 +79,40 @@ export function CContainerHeader({
     rightContent,
     paperProp = {},
     ...prop
-}: CContainerProps) {
-    const { getFont } = useFont();
-    const paperProps = useChocoProps(paperProp, ({ theme }) => {
-        const styleFontHeader = getFont('medium');
-
-        return {
-            cs: {
-                ...styleFontHeader,
-                a: 'c',
-                dp: 'f',
-                text: 'c',
-                p: theme.root.size.padding,
-                borR: theme.root.size.borR,
-                textTransform: 'capitalize',
-                fontS: -(theme.root.size.text * 2),
-                bgClr: hiddle
-                    ? undefined
-                    : `${theme.palette.background.paper}99`,
-                boxShadow: hiddle
-                    ? undefined
-                    : `0px 10px 13px -6px ${theme.palette.shadow.main},0px 20px 31px 3px ${theme.palette.shadow.main} ,0px 8px 38px 7px ${theme.palette.shadow.main}`,
-            },
-        };
-    });
+}: CContainerHeaderProps) {
+    const boxProps = (key: 'l' | 'r') =>
+        useChocoProps({}, ({ size, theme }) => ({
+            [key]: size((size) => size / 4, theme.root.size.box),
+        }));
 
     return (
         <Container {...prop} jCenter={jCenter}>
-            <CPaper elevation={4} {...paperProps} jCenter={jCenter}>
+            <CPaper
+                posR
+                shade={3}
+                jCenter={jCenter}
+                {...useChocoProps(paperProp, ({ size, theme, getFont }) => {
+                    const styleFontHeader = getFont('medium');
+                    const { padding, borR, text } = theme.root.size;
+                    const cs: CsType = {
+                        ...styleFontHeader,
+                        a: 'c',
+                        dp: 'f',
+                        text: 'c',
+                        bgImg: null,
+                        textTransform: 'capitalize',
+                        p: size((size) => size, padding),
+                        borR: size((size) => size, borR),
+                        bgClr: hiddle ? null : undefined,
+                        bShadow: hiddle ? null : undefined,
+                        fontS: size((size) => size * 2, text),
+                    };
+                    return { cs };
+                })}
+            >
                 {(leftContent || back) && (
-                    <CBox posA l={50}>
-                        <CIconButton to={back} setClr="text">
+                    <CBox posA {...boxProps('l')}>
+                        <CIconButton to={back} setClr="primaryText">
                             <Icon fa="faLeftLong" />
                         </CIconButton>
                         {leftContent}
@@ -99,7 +120,7 @@ export function CContainerHeader({
                 )}
                 {children}
                 {rightContent && (
-                    <CBox posA r={50}>
+                    <CBox posA {...boxProps('r')}>
                         {rightContent}
                     </CBox>
                 )}
@@ -112,38 +133,38 @@ export function CContainerContent({
     children,
     paperProp = {},
     ...prop
-}: CContainerProps) {
-    const { getFont } = useFont();
-    const paperProps = useChocoProps(paperProp, ({ theme }) => {
-        const styleFontContent = getFont();
-        return {
-            cs: {
-                ...styleFontContent,
-                dp: 'f',
-                fd: 'c',
-                p: -theme.root.size.padding,
-                fontS: -theme.root.size.text,
-                gaps: -theme.root.size.padding,
-                bgClr: hiddle
-                    ? undefined
-                    : `${theme.palette.background.paper}99`,
-                boxShadow: hiddle
-                    ? undefined
-                    : `0px 10px 13px -6px ${theme.palette.shadow.main},0px 20px 31px 3px ${theme.palette.shadow.main}),0px 8px 38px 7px ${theme.palette.shadow.main}`,
-            },
-        };
-    });
-
+}: CContainerContentProps) {
     return (
         <Container {...prop}>
-            <CPaper elevation={20} {...paperProps}>
+            <CPaper
+                {...useChocoProps(paperProp, ({ size, theme, getFont }) => {
+                    const styleFontContent = getFont();
+                    const { padding, borR } = theme.root.size;
+                    const cs: CsType = {
+                        ...styleFontContent,
+                        dp: 'f',
+                        fd: 'c',
+                        bgImg: null,
+                        fontS: size(),
+                        p: size((size) => size, padding),
+                        borR: size((size) => size, borR),
+                        bgClr: hiddle ? null : undefined,
+                        bShadow: hiddle ? null : undefined,
+                        gaps: size((size) => size, padding),
+                    };
+                    return { cs };
+                })}
+            >
                 {children}
             </CPaper>
         </Container>
     );
 }
 
-export function CContainer({ portion, ...prop }: CContainerProps) {
+export function CContainer<Portion extends CContainerPortion>({
+    portion,
+    ...prop
+}: CContainerProps<Portion>) {
     switch (portion) {
         case 'main':
             return <CContainerMain {...prop} />;
