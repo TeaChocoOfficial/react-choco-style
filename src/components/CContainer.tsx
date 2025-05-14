@@ -54,7 +54,7 @@ export function CContainerMain({
             j: 'c',
             dp: 'f',
             fd: 'c',
-            gaps: size((size) => size / theme.root.size.text),
+            g: size((size) => size / theme.root.size.text),
         };
         if (fullWidth) {
             cs.w = '100%';
@@ -150,7 +150,7 @@ export function CContainerContent({
                         borR: size((size) => size, borR),
                         bgClr: hiddle ? null : undefined,
                         bShadow: hiddle ? null : undefined,
-                        gaps: size((size) => size, padding),
+                        g: size((size) => size, padding),
                     };
                     return { cs };
                 })}

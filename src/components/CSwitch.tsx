@@ -52,7 +52,7 @@ export function CSwitch({
                             t: 'unset',
                             p: size((size) => size, padding),
                             '&.Mui-checked': {
-                                from: callbackSize(
+                                form: callbackSize(
                                     size((size) => size, box),
                                     (value) => `translateX(${value}px)`,
                                 ),
