@@ -1,5 +1,6 @@
 //-Path: "react-choco-style/src/index.ts"
 export * from './components/CAlert';
+export * from './components/CAvatar';
 export * from './components/CBadge';
 export * from './components/CBox';
 export * from './components/CBreadcrumbs';

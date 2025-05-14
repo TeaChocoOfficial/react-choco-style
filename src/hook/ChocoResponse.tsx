@@ -417,20 +417,11 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 { time: timePadding },
             );
             //* Gap
-            //? all top bottom left right left&right top&bottom
+            //? all row column
             setInset(
                 'gap',
-                styles.gaps,
-                {
-                    x: ['columnGap', styles.gapX],
-                    ['x-r']: ['rowGap', styles.gapX],
-                    y: ['columnGap', styles.gapY],
-                    ['y-b']: ['rowGap', styles.gapY],
-                    l: ['columnGap', styles.gapL],
-                    r: ['rowGap', styles.gapR],
-                    t: ['columnGap', styles.gapT],
-                    b: ['rowGap', styles.gapB],
-                },
+                styles.g,
+                { y: ['rowGap', styles.gy], x: ['columnGap', styles.gx] },
                 { time: timePadding },
             );
             //* FontSize
@@ -513,7 +504,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
             //* Transform
             setCss(
                 'transform',
-                toSize(styles.from, { unit: '', autoFormat: false }),
+                toSize(styles.form, { unit: '', autoFormat: false }),
             );
             if (styles.transformCenter) {
                 const centers = {
@@ -779,8 +770,16 @@ export function usePropChocoStyle() {
                 } else if (key === 'full') {
                     styleMap.w = '100%';
                     styleMap.h = '100%';
+                } else if (key === 'fullW') {
+                    styleMap.w = '100%';
+                } else if (key === 'fullH') {
+                    styleMap.h = '100%';
                 } else if (key === 'fullV') {
                     styleMap.w = '100vw';
+                    styleMap.h = '100vh';
+                } else if (key === 'fullVW') {
+                    styleMap.w = '100vw';
+                } else if (key === 'fullVH') {
                     styleMap.h = '100vh';
                 } else if (key in displayMap) {
                     const display = displayMap[key as keyof typeof displayMap];

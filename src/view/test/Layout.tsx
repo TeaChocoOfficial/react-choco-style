@@ -10,17 +10,14 @@ export default function Layout() {
                 lowcase
                 selectionFollowsFocus
                 options={[
-                    {
-                        label: 'index',
-                        to: '/choco',
-                    },
+                    { label: 'index', to: '/choco' },
                     ...chocoRoutes.map((option) => ({
                         label: option,
                         to: `/choco/${option}`,
                     })),
                 ]}
             />
-            <CBox dFlex column p={-8} gaps={-4}>
+            <CBox dFlex column p={-8} g={-4}>
                 <Outlet />
             </CBox>
         </>

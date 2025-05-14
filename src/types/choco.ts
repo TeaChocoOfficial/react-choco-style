@@ -146,14 +146,10 @@ export type ChocoStyleDefType = {
     my?: Sizes;
 
     //* Gap
-    //? all top bottom left right left&right top&bottom
-    gaps?: Sizes;
-    gapT?: Sizes;
-    gapB?: Sizes;
-    gapL?: Sizes;
-    gapR?: Sizes;
-    gapX?: Sizes;
-    gapY?: Sizes;
+    //? all row column
+    g?: Sizes;
+    gx?: Sizes;
+    gy?: Sizes;
 
     //* FontSize
     fontS?: Sizes;
@@ -184,7 +180,7 @@ export type ChocoStyleDefType = {
     trans?: number | string;
 
     //* Transform
-    from?: Sizes<string>;
+    form?: Sizes<string>;
     transformCenter?: 'all' | 'x' | 'y';
 
     //* Pointer events
@@ -248,10 +244,14 @@ export type ChocoStylePropsType<
 > = ChocoStyleDefType & {
     component?: Component;
     //* Keywords
-    //? width&height:100% width&height:100view
+    //? width&height:100% width:100% height:100% width&height:100view width:100view height:100view
     cs?: CsType;
     full?: boolean;
+    fullW?: boolean;
+    fullH?: boolean;
     fullV?: boolean;
+    fullVW?: boolean;
+    fullVH?: boolean;
 
     //* Display
     //? none flex block inline inline-flex inline-block grid inline-grid table inline-table

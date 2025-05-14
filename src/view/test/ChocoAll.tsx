@@ -134,17 +134,10 @@ export default function ChocoAll() {
                 />
             </CNavbar>
             <CDialog open={open}>
-                {({
-                    Title,
-                    Content,
-                    Actions,
-                    ContextText,
-                }: CDialogChildrenProps) => (
+                {({ Title, Content, Actions }: CDialogChildrenProps) => (
                     <>
                         <Title>Dialog Title</Title>
-                        <Content>
-                            <ContextText>This is the content</ContextText>
-                        </Content>
+                        <Content>This is the content</Content>
                         <Actions>
                             <CButton onClick={() => setOpen(false)}>
                                 Close
