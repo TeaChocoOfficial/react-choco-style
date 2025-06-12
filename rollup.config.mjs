@@ -28,4 +28,5 @@ export default {
             exclude: ['**/*.stories.ts', './src/view/**', './src/stories/**'], // ข้ามไฟล์ .stories.ts ทุกตั
         }),
     ],
+    
 };

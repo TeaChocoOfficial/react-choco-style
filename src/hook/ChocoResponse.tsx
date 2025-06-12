@@ -1,13 +1,12 @@
 //-Path: "react-choco-style/src/hook/ChocoResponse.tsx"
 import {
     CsType,
+    GridType,
     StyleTypes,
     StyledType,
-    GridAreaType,
     LinesStyleType,
     ChocoStyleType,
     NestedStyleTypes,
-    GridTemplateType,
     ChocoStyleDefType,
     ChocoStylePropsType,
 } from '../types/choco';
@@ -294,7 +293,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
             };
 
             // Grid Template
-            const toGridTemplate = (template: GridTemplateType): string => {
+            const toGridTemplate = (template: GridType[]): string => {
                 return !Array.isArray(template)
                     ? template
                     : template
@@ -310,7 +309,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                           .join(' / ');
             };
 
-            const toGridArea = (area: GridAreaType): string =>
+            const toGridArea = (area: GridType[]): string =>
                 area
                     ?.map((area, index) =>
                         (index > 0 ? area.map((a) => `span ${a}`) : area).join(
@@ -335,7 +334,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 if (isSize(value)) {
                     setCss(
                         key,
-                        callbackSize(value, (sizeValue, sizekey) =>
+                        callbackSize(value, (sizeValue) =>
                             getMappedValue(sizeValue),
                         ) as Sizes,
                     );
@@ -444,7 +443,33 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 } else {
                     setCss(
                         'gridTemplate',
-                        toGridTemplate(styles.gridT as GridTemplateType),
+                        toGridTemplate(styles.gridT as GridType[]),
+                    );
+                }
+            }
+            if (styles.gridTR !== undefined) {
+                if (isSize(styles.gridTR)) {
+                    setCss(
+                        'gridTemplateRows',
+                        callbackSize(styles.gridTR, toGridTemplate),
+                    );
+                } else {
+                    setCss(
+                        'gridTemplateRows',
+                        toGridTemplate(styles.gridTR as GridType[]),
+                    );
+                }
+            }
+            if (styles.gridTC !== undefined) {
+                if (isSize(styles.gridTC)) {
+                    setCss(
+                        'gridTemplateColumns',
+                        callbackSize(styles.gridTC, toGridTemplate),
+                    );
+                } else {
+                    setCss(
+                        'gridTemplateColumns',
+                        toGridTemplate(styles.gridTC as GridType[]),
                     );
                 }
             }
@@ -452,9 +477,29 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 if (isSize(styles.gridA)) {
                     setCss('gridArea', callbackSize(styles.gridA, toGridArea));
                 } else {
+                    setCss('gridArea', toGridArea(styles.gridA as GridType[]));
+                }
+            }
+            if (styles.gridAR !== undefined) {
+                if (isSize(styles.gridAR)) {
+                    setCss('gridRow', callbackSize(styles.gridAR, toGridArea));
+                } else {
                     setCss(
-                        'gridArea',
-                        toGridArea(styles.gridA as GridAreaType),
+                        'gridRow',
+                        toGridArea([styles.gridAR] as GridType[]),
+                    );
+                }
+            }
+            if (styles.gridAC !== undefined) {
+                if (isSize(styles.gridAC)) {
+                    setCss(
+                        'gridColumn',
+                        callbackSize(styles.gridA, toGridArea),
+                    );
+                } else {
+                    setCss(
+                        'gridColumn',
+                        toGridArea([styles.gridAC] as GridType[]),
                     );
                 }
             }

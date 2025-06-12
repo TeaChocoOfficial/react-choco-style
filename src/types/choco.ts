@@ -78,11 +78,7 @@ export type LineStyleType = {
         | 'hidden';
 };
 
-export type GridTemplateType =
-    | [(string | number)[]]
-    | [(string | number)[], (string | number)[]];
-
-export type GridAreaType = number[][];
+export type GridType = (string | number)[];
 
 export type ChocoStyleDefType = {
     //* Responsive size
@@ -156,8 +152,12 @@ export type ChocoStyleDefType = {
 
     //* Grids
     //? grid-template grid-area
-    gridT?: Sizes<GridTemplateType>;
-    gridA?: Sizes<GridAreaType>;
+    gridT?: Sizes<[GridType, GridType]>;
+    gridTC?: Sizes<GridType>;
+    gridTR?: Sizes<GridType>;
+    gridA?: Sizes<GridType[]>;
+    gridAC?: Sizes<GridType>;
+    gridAR?: Sizes<GridType>;
 
     //* Border
     //? border-width border-radius border-style border-color border border-top border-bottom border-left border-right

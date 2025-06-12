@@ -10,13 +10,11 @@ import { createAtom } from '@teachoco-official/react-atom';
 
 export const getThemeMode = (mode?: ModesKeyType) => {
     if (localStorage && window) {
-        if (mode) {
-            localStorage.setItem('theme mode', mode);
-        }
+        if (mode) localStorage.setItem('theme mode', mode);
         let themeMode = localStorage.getItem('theme mode');
         if (themeMode === null) {
             const { matches } = window.matchMedia(
-                '(prefers-color-scheme: dark)',
+                '(prefers-color-scheme: dark)', 
             );
             themeMode = matches ? 'dark' : 'light';
             localStorage.setItem('theme mode', themeMode);

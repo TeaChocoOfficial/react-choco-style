@@ -1,13 +1,12 @@
 //-Path: "react-choco-style/src/components/CIconButton.tsx"
 import { CIcon } from './CIcon';
 import { IconProp } from '../custom/Icon';
-import { ColorType } from '../types/color';
 import { useNavigate } from '../hook/ReactRoute';
 import { createStyled } from '../hook/ChocoStyle';
 import { useChocoProps } from '../hook/ChocoProps';
 import { StyleTypes, ToType } from '../types/choco';
-import { ChocoStyledProps, ClrPropsType } from '../types/chocoHook';
 import { IconButton as MuiIconButton } from '@mui/material';
+import { ChocoStyledProps, ClrPropsType } from '../types/chocoHook';
 
 const IconButton = createStyled(MuiIconButton, 'CIconButton')();
 
@@ -23,7 +22,6 @@ export type CIconButtonProps = ChocoStyledProps<
 export function CIconButton({
     to,
     fa,
-    sz,
     color,
     solid,
     brand,
@@ -41,7 +39,6 @@ export function CIconButton({
 
     return (
         <IconButton
-            sz={sz}
             {...useChocoProps(
                 prop,
                 ({ getSetClrProps, getFont, size, theme }) => {
@@ -75,7 +72,7 @@ export function CIconButton({
         >
             {fa || solid || brand || regular || props ? (
                 <CIcon
-                    sz={sz}
+                    {...useChocoProps(prop, () => ({}))}
                     fa={fa}
                     props={props}
                     solid={solid}

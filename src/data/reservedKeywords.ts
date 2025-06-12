@@ -52,6 +52,8 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'event',
     'gridT',
     'gridA',
+    'gridAR',
+    'gridAC',
     'borW',
     'borR',
     'borS',

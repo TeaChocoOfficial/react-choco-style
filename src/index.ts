@@ -21,6 +21,7 @@ export * from './components/CPagination';
 export * from './components/CPaper';
 export * from './components/CProgress';
 export * from './components/CRating';
+export * from './components/CSize';
 export * from './components/CSkeleton';
 export * from './components/CSlider';
 export * from './components/CSnackbar';

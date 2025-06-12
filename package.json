@@ -1,7 +1,8 @@
 {
     "name": "@teachoco-official/react-choco-style",
-    "version": "0.2.8",
+    "version": "0.3.0",
     "private": false,
+    "description": "TeaChoco themed React styles and components library",
     "type": "module",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
@@ -45,7 +46,6 @@
         "type": "git",
         "url": "git+https://github.com/TeaChocoOfficial/react-choco-style.git"
     },
-    "description": "TeaChoco themed React styles and components library",
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
