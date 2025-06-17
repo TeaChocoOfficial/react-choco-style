@@ -9,7 +9,11 @@ const Rating = createStyled(MuiRating, 'CRating')();
 export type CRatingProps = ChocoStyledProps<typeof MuiRating>;
 
 export function CRating(prop: CRatingProps) {
-    return <Rating   {...useChocoProps(prop, () => {
-                    return {};
-                })} />;
+    return (
+        <Rating
+            {...useChocoProps(prop, () => {
+                return {};
+            })}
+        />
+    );
 }

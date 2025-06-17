@@ -293,20 +293,20 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
             };
 
             // Grid Template
-            const toGridTemplate = (template: GridType[]): string => {
+            const toGridTemplate = (template: GridType): string => {
                 return !Array.isArray(template)
                     ? template
                     : template
-                          ?.map((row) =>
-                              row
-                                  .map((col) =>
-                                      typeof col === 'number'
-                                          ? `${col}fr`
-                                          : col,
-                                  )
-                                  .join(' '),
+                          .map((col) =>
+                              typeof col === 'number' ? `${col}fr` : col,
                           )
-                          .join(' / ');
+                          .join(' ');
+            };
+            // Grid Template
+            const toGridTemplates = (template: GridType[]): string => {
+                return !Array.isArray(template)
+                    ? template
+                    : template?.map((row) => toGridTemplate(row)).join(' / ');
             };
 
             const toGridArea = (area: GridType[]): string =>
@@ -443,7 +443,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 } else {
                     setCss(
                         'gridTemplate',
-                        toGridTemplate(styles.gridT as GridType[]),
+                        toGridTemplates(styles.gridT as GridType[]),
                     );
                 }
             }
@@ -456,7 +456,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 } else {
                     setCss(
                         'gridTemplateRows',
-                        toGridTemplate(styles.gridTR as GridType[]),
+                        toGridTemplate(styles.gridTR as GridType),
                     );
                 }
             }
@@ -469,7 +469,7 @@ export function useChocoStyle<Styles extends StyledType | SxType>(): (
                 } else {
                     setCss(
                         'gridTemplateColumns',
-                        toGridTemplate(styles.gridTC as GridType[]),
+                        toGridTemplate(styles.gridTC as GridType),
                     );
                 }
             }
@@ -812,21 +812,21 @@ export function usePropChocoStyle() {
                 // Special cases
                 else if (key === 'cs') {
                     Object.assign(styleMap, responseCs(value as CsType));
-                } else if (key === 'full') {
+                }
+                if (value === false) return;
+                if (key === 'full') {
                     styleMap.w = '100%';
                     styleMap.h = '100%';
-                } else if (key === 'fullW') {
-                    styleMap.w = '100%';
-                } else if (key === 'fullH') {
-                    styleMap.h = '100%';
-                } else if (key === 'fullV') {
+                }
+                if (key === 'fullW') styleMap.w = '100%';
+                if (key === 'fullH') styleMap.h = '100%';
+                if (key === 'fullV') {
                     styleMap.w = '100vw';
                     styleMap.h = '100vh';
-                } else if (key === 'fullVW') {
-                    styleMap.w = '100vw';
-                } else if (key === 'fullVH') {
-                    styleMap.h = '100vh';
-                } else if (key in displayMap) {
+                }
+                if (key === 'fullVW') styleMap.w = '100vw';
+                if (key === 'fullVH') styleMap.h = '100vh';
+                if (key in displayMap) {
                     const display = displayMap[key as keyof typeof displayMap];
                     styleMap.dp = toSizes(display);
                 } else if (key in flexDirMap) {
@@ -834,6 +834,9 @@ export function usePropChocoStyle() {
                     styleMap.fd = toSizes(flexDir);
                 } else if (key === 'fWrap') {
                     styleMap.fw = value as ChocoStyleType['fw'];
+                } else if (key === 'center') {
+                    styleMap.a = 'c';
+                    styleMap.j = 'c';
                 } else if (key.startsWith('ac')) {
                     const align =
                         alignMap[

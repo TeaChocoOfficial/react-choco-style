@@ -1,7 +1,6 @@
 //-Path: "react-choco-style/src/components/CGlobalStyles.tsx"
 import { Obj } from '../custom/obj';
 import { SxProp } from '../types/style';
-import { useTheme } from '../hook/ChocoStyle';
 import { CssKeyType, CssType, StyledType } from '../types/choco';
 import { GlobalStyles, Interpolation, Theme } from '@mui/material';
 import { useChocoStyle, useResponseCs } from '../hook/ChocoResponse';
@@ -9,7 +8,6 @@ import { useChocoStyle, useResponseCs } from '../hook/ChocoResponse';
 type GlobalStylesType = { [key in CssKeyType]?: StyledType | SxProp };
 
 export function CGlobalStyles({ css }: { css: CssType }) {
-    const theme = useTheme();
     const responseCs = useResponseCs();
     const chocoStyle = useChocoStyle();
 

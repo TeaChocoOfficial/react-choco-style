@@ -83,14 +83,14 @@ export function useGetSizeProps<TagType extends ReactTagType = ReactTagType>() {
                     const calc = isCalcFunction
                         ? (calcOrRoot as (size: Root) => Value)
                         : undefined;
-                    const sizes =
-                        (isCalcFunction
-                            ? typeof root === 'number'
-                                ? -root
-                                : root
-                            : calcOrRoot) ??
-                        render('sz') ??
-                        -theme.root.size.text;
+                    const size = isCalcFunction
+                        ? typeof root === 'number'
+                            ? -root
+                            : root
+                        : typeof calcOrRoot === 'number'
+                        ? -calcOrRoot
+                        : calcOrRoot;
+                    const sizes = size ?? render('sz') ?? -theme.root.size.text;
 
                     if (typeof sizes === 'number') {
                         if (sizes < 0) {

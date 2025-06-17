@@ -7,8 +7,9 @@ export default function IconButton() {
             <CBox>
                 <CIconButton fa="faX" sz={-8} />
                 <CIconButton fa="faX" sz={-32} />
+                <CIconButton fa="faX" sz={-65} />
                 <CIconButton fa="faX" />
-                <CIconButton fa="faX" />
+                <CIconButton fa="faX" setClr="error" />
             </CBox>
         </>
     );

@@ -47,7 +47,10 @@ export function getUseChocoStyle({
         root: theme.root,
         fonts: theme.fonts,
         breakpoint: theme.breakpoint,
-        palette: Obj.mix<PalettesType<PaletteType>>(theme.modes.default, theme.modes[mode]),
+        palette: Obj.mix<PalettesType<PaletteType>>(
+            theme.modes.default,
+            theme.modes[mode],
+        ),
         method: {
             transitions: muiTheme.transitions,
             setMode: (mode) => {

@@ -276,6 +276,8 @@ export type ChocoStylePropsType<
     //* Flex wrap
     fWrap?: boolean;
 
+    center?: boolean;
+
     //* Align content
     //? flex-end flex-start center space-around space-between stretch
     acEnd?: boolean;

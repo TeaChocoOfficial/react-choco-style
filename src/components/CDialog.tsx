@@ -33,14 +33,15 @@ export type CDialogChildrenFunction = (
     props: CDialogChildrenProps,
 ) => React.ReactNode;
 
-export type CDialogProps = Omit<
-    ChocoStyledProps<typeof MuiDialog>,
-    'children'
-> & {
-    children?: CDialogChildrenFunction | React.ReactNode;
-    pcs?: CsType;
-    paperProp?: CPaperProps;
-};
+export type CDialogProps = ChocoStyledProps<
+    typeof MuiDialog,
+    {
+        pcs?: CsType;
+        paperProp?: CPaperProps;
+        children?: CDialogChildrenFunction | React.ReactNode;
+    },
+    ['children']
+>;
 
 export function CDialog({
     pcs,

@@ -52,6 +52,8 @@ export function CIconButton({
                         defaultColor: 'main',
                     });
 
+                    // console.log(size(), size(padding));
+
                     return {
                         cs: {
                             ...styles,

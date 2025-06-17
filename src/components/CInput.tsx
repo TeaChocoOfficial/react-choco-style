@@ -171,8 +171,8 @@ export function CMenuItem({
                             ...disableds,
                             ...fontStyle,
                             fontS: size(),
-                            px: size(-padding),
-                            py: size((size) => size / 2, -padding),
+                            px: size(padding),
+                            py: size((size) => size / 2, padding),
                             minH: size((size) => size * 3),
                             '&.Mui-selected': {
                                 ...styles,
@@ -321,7 +321,7 @@ export function CInput<
                                     borR: size(),
                                     fontS: size(),
                                     clr: styles.clr,
-                                    from: size(
+                                    form: size(
                                         (size) =>
                                             `translate(${
                                                 size * 0.5
@@ -334,7 +334,7 @@ export function CInput<
                                     '&[data-shrink="true"]': {
                                         clr: shadesColor.text[5],
                                         bgClr: shadesColor.main[5],
-                                        from: size(
+                                        form: size(
                                             (size) =>
                                                 `translate(${size * 0.75}px, ${
                                                     variant === 'filled'

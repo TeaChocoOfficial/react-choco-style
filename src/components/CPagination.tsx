@@ -9,7 +9,11 @@ const Pagination = createStyled(MuiPagination, 'CPagination')();
 export type CPaginationProps = ChocoStyledProps<typeof MuiPagination>;
 
 export function CPagination(prop: CPaginationProps) {
-    return <Pagination   {...useChocoProps(prop, () => {
+    return (
+        <Pagination
+            {...useChocoProps(prop, () => {
                 return {};
-            })}/>;
+            })}
+        />
+    );
 }

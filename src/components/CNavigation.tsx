@@ -88,7 +88,7 @@ export function CNavigationAction({
                         cs: {
                             ...disableds,
                             fontS: size(),
-                            px: size(-padding),
+                            px: size(padding),
                             minW: size((size) => size * 5),
                             maxW: size((size) => size * 10),
                             '&.Mui-selected': {
@@ -140,7 +140,7 @@ export function CNavigation<Value>({
                     cs: {
                         j: 'e',
                         bgClr: null,
-                        h: size(-box),
+                        h: size(box),
                     },
                 };
             })}

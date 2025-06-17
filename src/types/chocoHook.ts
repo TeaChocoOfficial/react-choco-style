@@ -33,9 +33,8 @@ export type ChocoStyledProps<
     TagType extends ReactTagType,
     Props extends { [key in string]?: unknown } = {},
     Omits extends string[] = [],
-> = Omit<React.ComponentProps<TagType>, 'sx' | Omits[number]> &
-    ChocoStyledType &
-    Props;
+> = Props &
+    Omit<React.ComponentProps<TagType> & ChocoStyledType, 'sx' | Omits[number]>;
 
 export type UseResponseCs = (cs?: CsType) => StyleTypes;
 

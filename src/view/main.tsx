@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/src/main.tsx"
+//-Path: "react-choco-style/src/view/main.tsx"
 import Setup from './Setup';
 import { createRoot } from 'react-dom/client';
 

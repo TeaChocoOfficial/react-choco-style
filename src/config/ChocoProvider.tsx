@@ -28,14 +28,8 @@ export function ChocoProvider({
     createTheme,
 }: ChocoProviderProps) {
     return (
-        <>
-            <InitChoco
-                debug={debug}
-                cssBase={cssBase}
-                createTheme={createTheme}
-            >
-                {children}
-            </InitChoco>
-        </>
+        <InitChoco debug={debug} cssBase={cssBase} createTheme={createTheme}>
+            {children}
+        </InitChoco>
     );
 }
