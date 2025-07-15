@@ -1,0 +1,84 @@
+{
+    "name": "@teachoco-official/react-choco-style",
+    "version": "0.4.0",
+    "private": false,
+    "description": "TeaChoco themed React styles and components library",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "module": "dist/index.esm.js",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "scripts": {
+        "test": "jest",
+        "dev": "vite --host 127.0.0.1 --port 5001",
+        "sb": "pnpm run storybook",
+        "build": "vite build",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
+    },
+    "author": "teachoco-official",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TeaChocoOfficial/react-choco-style.git"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@fortawesome/fontawesome-svg-core": "^6.7.2",
+        "@fortawesome/free-brands-svg-icons": "^6.7.2",
+        "@fortawesome/free-regular-svg-icons": "^6.7.2",
+        "@fortawesome/free-solid-svg-icons": "^6.7.2",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@mui/material": "^6.4.12",
+        "@mui/system": "^6.4.12",
+        "@teachoco-dev/cli": "^0.0.5",
+        "@teachoco-official/react-atom": "^0.1.0",
+        "@types/three": "^0.175.0",
+        "chroma.ts": "^1.0.10",
+        "framer-motion": "^12.20.2",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-router-dom": "^7.6.3",
+        "three": "^0.175.0"
+    },
+    "devDependencies": {
+        "@chromatic-com/storybook": "^3.2.7",
+        "@eslint/js": "^9.30.0",
+        "@storybook/addon-essentials": "8.6.9",
+        "@storybook/addon-interactions": "8.6.9",
+        "@storybook/addon-onboarding": "8.6.9",
+        "@storybook/blocks": "8.6.9",
+        "@storybook/react": "8.6.11",
+        "@storybook/react-vite": "8.6.9",
+        "@storybook/test": "8.6.9",
+        "@types/node": "^22.15.34",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "@vitejs/plugin-react-swc": "^3.10.2",
+        "eslint": "^9.30.0",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-react-refresh": "^0.4.20",
+        "eslint-plugin-storybook": "^0.11.6",
+        "globals": "^15.15.0",
+        "storybook": "8.6.9",
+        "typescript": "~5.8.3",
+        "typescript-eslint": "^8.35.1",
+        "vite": "^6.3.5"
+    },
+    "bugs": {
+        "url": "https://github.com/TeaChocoOfficial/react-choco-style/issues"
+    },
+    "homepage": "https://github.com/TeaChocoOfficial/react-choco-style#readme",
+    "eslintConfig": {
+        "extends": [
+            "plugin:storybook/recommended"
+        ]
+    }
+}

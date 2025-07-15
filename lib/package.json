@@ -1,0 +1,93 @@
+{
+    "name": "@teachoco-official/react-choco-style",
+    "version": "0.4.0",
+    "private": false,
+    "description": "TeaChoco themed React styles and components library",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "module": "dist/index.esm.js",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "scripts": {
+        "prepare": "npm run build",
+        "build": "rm -rf ./dist & rollup -c",
+        "dev": "rm -rf ./dist && rollup -c -w",
+        "public": "npm publish --scope=@teachoco-official --access=public",
+        "publicforce": "npm publish --scope=@teachoco-official --access=public --force"
+    },
+    "peerDependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
+        "@fortawesome/fontawesome-svg-core": "^6.7.2",
+        "@fortawesome/free-brands-svg-icons": "^6.7.2",
+        "@fortawesome/free-regular-svg-icons": "^6.7.2",
+        "@fortawesome/free-solid-svg-icons": "^6.7.2",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@mui/material": "^6.4.8",
+        "@mui/system": "^6.4.8",
+        "@teachoco-dev/cli": "^0.0.5",
+        "@teachoco-official/react-atom": "^0.1.0",
+        "chroma.ts": "^1.0.10",
+        "framer-motion": "^12.6.2",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-router-dom": "^7.4.1",
+        "three": "^0.175.0"
+    },
+    "author": "teachoco-official",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TeaChocoOfficial/react-choco-style.git"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@fortawesome/fontawesome-svg-core": "^6.7.2",
+        "@fortawesome/free-brands-svg-icons": "^6.7.2",
+        "@fortawesome/free-regular-svg-icons": "^6.7.2",
+        "@fortawesome/free-solid-svg-icons": "^6.7.2",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@mui/material": "^6.4.12",
+        "@mui/system": "^6.4.12",
+        "@rollup/plugin-commonjs": "^28.0.6",
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "@teachoco-dev/cli": "^0.0.5",
+        "@teachoco-official/react-atom": "^0.1.0",
+        "@types/three": "^0.175.0",
+        "chroma.ts": "^1.0.10",
+        "framer-motion": "^12.20.2",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-router-dom": "^7.6.3",
+        "rollup-plugin-peer-deps-external": "^2.2.4",
+        "three": "^0.175.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.30.0",
+        "@rollup/plugin-typescript": "^12.1.4",
+        "@types/node": "^22.15.34",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "@vitejs/plugin-react-swc": "^3.10.2",
+        "eslint": "^9.30.0",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-react-refresh": "^0.4.20",
+        "globals": "^15.15.0",
+        "rollup": "^4.44.1",
+        "tslib": "^2.8.1",
+        "typescript": "~5.8.3",
+        "typescript-eslint": "^8.35.1",
+        "vite": "^6.3.5"
+    },
+    "bugs": {
+        "url": "https://github.com/TeaChocoOfficial/react-choco-style/issues"
+    },
+    "homepage": "https://github.com/TeaChocoOfficial/react-choco-style#readme"
+}
