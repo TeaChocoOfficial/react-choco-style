@@ -1,180 +1,69 @@
 //-Path: "react-choco-style/lib/src/types/chocoColor.ts"
+import { ColorType } from './color';
 import { CColor } from '../class/CColor';
+import { ChocoShade } from '../class/ChocoShade';
+import { ChocoStyleTypes, CsType, StyleTypes } from './choco';
+import { ChocoStyle } from '../class/ChocoStyle';
 
-export type w3cx11ColorType = keyof typeof w3cx11;
-export type newChocoColorType = (color?: ChocoColorType) => CColor;
+export type SetColorType = {
+    clr: CColor | null; //สีข้อความ
+    bor: CColor | null; //สีขอบ
+    hover: CColor | null; //สีข้อความตอนชี้
+    bgClr: CColor | null; //สีพื้นหลัง
+    focus: CColor | null; //สีข้อความตอนโฟกัส
+    active: CColor | null; //สีข้อความตอนใช้งาน
+    action: CColor | null; //สีข้อความตอนทำงาน
+    bgHover: CColor | null; //สีพื้นหลังตอนชี้
+    disabled: CColor | null; //สีข้อความตอนปิด
+    bgActive: CColor | null; //สีพื้นหลังตอนใช้งาน
+    borHover: CColor | null; //สีขอบตอนชี้
+    borActive: CColor | null; //สีขอบตอนใช้งาน
+    bgDisabled: CColor | null; //สีพื้นหลังตอนปิด
+    borDisabled: CColor | null; //สีขอบตอนปิด
+    disabledHover: CColor | null; //สีข้อความตอนปิดตอนชี้
+    bgDisabledHover: CColor | null; //สีพื้นหลังตอนปิดตอนชี้
+    borDisabledHover: CColor | null; //สีขอบตอนปิดตอนชี้
+};
 
-export type ChocoColorType =
-    | null
-    | number
-    | string
-    | number[]
-    | ColorRgba
-    | CColor;
+export type SetColorsType = {
+    text: ColorType;
+    main: ColorType;
+};
+export type SetShadesColorType = {
+    text: ChocoShade;
+    main: ChocoShade;
+};
 
-export class ColorRgba {
-    constructor(
-        public r: number = 0,
-        public g: number = 0,
-        public b: number = 0,
-        public a: number = 0,
-    ) {}
-}
+export type GetsetClrType = {
+    setColor: SetColorType;
+    shadesColor: SetShadesColorType;
+};
 
-export declare const w3cx11: {
-    aliceblue: number;
-    antiquewhite: number;
-    aqua: number;
-    aquamarine: number;
-    azure: number;
-    beige: number;
-    bisque: number;
-    black: number;
-    blanchedalmond: number;
-    blue: number;
-    blueviolet: number;
-    brown: number;
-    burlywood: number;
-    cadetblue: number;
-    chartreuse: number;
-    chocolate: number;
-    coral: number;
-    cornflower: number;
-    cornflowerblue: number;
-    cornsilk: number;
-    crimson: number;
-    cyan: number;
-    darkblue: number;
-    darkcyan: number;
-    darkgoldenrod: number;
-    darkgray: number;
-    darkgreen: number;
-    darkgrey: number;
-    darkkhaki: number;
-    darkmagenta: number;
-    darkolivegreen: number;
-    darkorange: number;
-    darkorchid: number;
-    darkred: number;
-    darksalmon: number;
-    darkseagreen: number;
-    darkslateblue: number;
-    darkslategray: number;
-    darkslategrey: number;
-    darkturquoise: number;
-    darkviolet: number;
-    deeppink: number;
-    deepskyblue: number;
-    dimgray: number;
-    dimgrey: number;
-    dodgerblue: number;
-    firebrick: number;
-    floralwhite: number;
-    forestgreen: number;
-    fuchsia: number;
-    gainsboro: number;
-    ghostwhite: number;
-    gold: number;
-    goldenrod: number;
-    gray: number;
-    green: number;
-    greenyellow: number;
-    grey: number;
-    honeydew: number;
-    hotpink: number;
-    indianred: number;
-    indigo: number;
-    ivory: number;
-    khaki: number;
-    laserlemon: number;
-    lavender: number;
-    lavenderblush: number;
-    lawngreen: number;
-    lemonchiffon: number;
-    lightblue: number;
-    lightcoral: number;
-    lightcyan: number;
-    lightgoldenrod: number;
-    lightgoldenrodyellow: number;
-    lightgray: number;
-    lightgreen: number;
-    lightgrey: number;
-    lightpink: number;
-    lightsalmon: number;
-    lightseagreen: number;
-    lightskyblue: number;
-    lightslategray: number;
-    lightslategrey: number;
-    lightsteelblue: number;
-    lightyellow: number;
-    lime: number;
-    limegreen: number;
-    linen: number;
-    magenta: number;
-    maroon: number;
-    maroon2: number;
-    maroon3: number;
-    mediumaquamarine: number;
-    mediumblue: number;
-    mediumorchid: number;
-    mediumpurple: number;
-    mediumseagreen: number;
-    mediumslateblue: number;
-    mediumspringgreen: number;
-    mediumturquoise: number;
-    mediumvioletred: number;
-    midnightblue: number;
-    mintcream: number;
-    mistyrose: number;
-    moccasin: number;
-    navajowhite: number;
-    navy: number;
-    oldlace: number;
-    olive: number;
-    olivedrab: number;
-    orange: number;
-    orangered: number;
-    orchid: number;
-    palegoldenrod: number;
-    palegreen: number;
-    paleturquoise: number;
-    palevioletred: number;
-    papayawhip: number;
-    peachpuff: number;
-    peru: number;
-    pink: number;
-    plum: number;
-    powderblue: number;
-    purple: number;
-    purple2: number;
-    purple3: number;
-    rebeccapurple: number;
-    red: number;
-    rosybrown: number;
-    royalblue: number;
-    saddlebrown: number;
-    salmon: number;
-    sandybrown: number;
-    seagreen: number;
-    seashell: number;
-    sienna: number;
-    silver: number;
-    skyblue: number;
-    slateblue: number;
-    slategray: number;
-    slategrey: number;
-    snow: number;
-    springgreen: number;
-    steelblue: number;
-    tan: number;
-    teal: number;
-    thistle: number;
-    tomato: number;
-    turquoise: number;
-    violet: number;
-    wheat: number;
-    white: number;
-    whitesmoke: number;
-    yellow: number;
-    yellowgreen: number;
+export type ChocoColorOption = { text?: boolean };
+
+export type UseGetsetClrPropType = {
+    text?: boolean;
+    isFocus?: boolean;
+    outline?: boolean;
+    setClr?: ColorType;
+    disabled?: boolean;
+    isBorder?: boolean;
+    defaultColor?: ColorType;
+};
+
+export type SetClrPropsType = {
+    styles: ChocoStyle;
+    hover: ChocoStyleTypes;
+    focus: ChocoStyleTypes;
+    active: ChocoStyleTypes;
+    setClrs: SetColorType;
+    disableds: ChocoStyleTypes;
+    shadesColor: SetShadesColorType;
+};
+
+export type ClrPropsType = {
+    text?: boolean;
+    outline?: boolean;
+    setClr?: ColorType;
+    disabled?: boolean;
 };

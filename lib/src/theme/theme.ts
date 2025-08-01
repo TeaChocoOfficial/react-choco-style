@@ -1,6 +1,6 @@
 //-Path: "react-choco-style/lib/src/theme/theme.ts"
-import { CColor } from '../class/CColor';
-import { CssType, StyleTypes } from '../types/choco';
+import { CssType } from '../types/choco';
+import { ChocoShade } from '../class/ChocoShade';
 import { OptionPropsType } from '../types/chocoHook';
 import { BaseChocoThemeType, ModesKeyType } from '../types/theme';
 
@@ -23,24 +23,20 @@ export const DefChocoTheme: BaseChocoThemeType = {
     mode: getThemeMode() ?? 'dark',
     root: {
         unit: {
+            box: 'px',
+            base: 'px',
             text: 'em',
+            borR: 'px',
+            border: 'px',
             padding: 'px',
         },
         size: {
             box: 64,
             base: 16,
             text: 1 / 16,
-            borR: 2,
+            borR: 1 / 2,
             border: 2,
             padding: 4,
-        },
-        response: {
-            box: 64,
-            base: 1,
-            text: 16,
-            borR: 4,
-            border: 2,
-            padding: 16,
         },
     },
     fonts: {
@@ -81,92 +77,91 @@ export const DefChocoTheme: BaseChocoThemeType = {
     modes: {
         default: {
             common: {
-                black: CColor.shades(0x000000),
-                white: CColor.shades(0xffffff),
-                purple: CColor.shades(0xbb66ff),
-                orange: CColor.shades(0xff7700),
+                black: new ChocoShade(0x000000),
+                white: new ChocoShade(0xffffff),
+                purple: new ChocoShade(0xbb66ff),
+                orange: new ChocoShade(0xff7700),
             },
             main: {
-                secondary: CColor.shades(0xcc7733),
-                info: CColor.shades(0x0099ff),
-                error: CColor.shades(0xff0000),
-                warning: CColor.shades(0xffaa00),
-                success: CColor.shades(0x33ee33),
+                secondary: new ChocoShade(0xcc7733),
+                info: new ChocoShade(0x0099ff),
+                error: new ChocoShade(0xff0000),
+                warning: new ChocoShade(0xffaa00),
+                success: new ChocoShade(0x33ee33),
             },
             text: {
-                secondary: CColor.shades(0xffffff),
-                error: CColor.shades(0xffffff),
+                secondary: new ChocoShade(0xffffff),
+                error: new ChocoShade(0xffffff),
             },
         },
         light: {
             common: {
-                body: CColor.shades(0xededed, true),
+                body: new ChocoShade(0xededed, true),
             },
             main: {
-                inherit: CColor.shades(0x000000),
-                primary: CColor.shades(0xd6d6d6),
-                disabled: CColor.shades(0xa3a3a3),
+                inherit: new ChocoShade(0x000000),
+                primary: new ChocoShade(0xd6d6d6),
+                disabled: new ChocoShade(0xa3a3a3),
             },
             text: {
-                inherit: CColor.shades(0xffffff),
-                primary: CColor.shades(0x000000),
-                disabled: CColor.shades(0xcccccc),
-                warning: CColor.shades(0xffffff, true),
-                info: CColor.shades(0xffffff, true),
-                success: CColor.shades(0xffffff, true),
+                inherit: new ChocoShade(0xffffff),
+                primary: new ChocoShade(0x000000),
+                disabled: new ChocoShade(0xcccccc),
+                warning: new ChocoShade(0xffffff, true),
+                info: new ChocoShade(0xffffff, true),
+                success: new ChocoShade(0xffffff, true),
             },
         },
         dark: {
             common: {
-                body: CColor.shades(0x121212),
+                body: new ChocoShade(0x121212),
             },
             main: {
-                inherit: CColor.shades(0xffffff, true),
-                primary: CColor.shades(0x393939, true),
-                disabled: CColor.shades(0x060606, true),
+                inherit: new ChocoShade(0xffffff, true),
+                primary: new ChocoShade(0x393939, true),
+                disabled: new ChocoShade(0x060606, true),
             },
             text: {
-                inherit: CColor.shades(0x000000, true),
-                primary: CColor.shades(0xffffff, true),
-                disabled: CColor.shades(0xcccccc, true),
-                warning: CColor.shades(0x000000),
-                info: CColor.shades(0x000000),
-                success: CColor.shades(0x000000),
+                inherit: new ChocoShade(0x000000, true),
+                primary: new ChocoShade(0xffffff, true),
+                disabled: new ChocoShade(0xcccccc, true),
+                warning: new ChocoShade(0x000000),
+                info: new ChocoShade(0x000000),
+                success: new ChocoShade(0x000000),
             },
         },
     },
     styleSheets: (option: OptionPropsType) => {
+        const { Size } = option;
         const palette = option.theme.palette;
-        const border =
-            option.theme.root.response.border * option.theme.root.size.border;
-        const padding =
-            option.theme.root.response.padding * option.theme.root.size.padding;
+        const { base, border } = option.theme.root.size;
+        console.log(new Size(base, { format: true }));
 
         const css: CssType = {
             '*': {
                 m: 0,
                 p: 0,
-                boxSizing: 'border-box',
+                bxSz: 'border',
             },
-            'body': {
+            body: {
                 t: 0,
                 l: 0,
                 pos: 'f',
                 w: '100dvw',
                 h: '100dvh',
-                clr: palette.text.primary[5],
-                bgClr: palette.common.body[5],
+                clr: palette.text.primary,
+                bgClr: palette.common.body,
             },
             '#root': {
                 ofy: 'a',
                 ofx: 'h',
                 wh: '100%',
             },
-            'a': {
-                textDecoration: 'none',
+            a: {
+                txtDr: null,
             },
             '*::-webkit-scrollbar': {
-                wh: -padding,
+                wh: -base,
             },
             '*::-webkit-scrollbar-track': {
                 bgClr: palette.main.primary[8].alpha(0.3),
@@ -176,7 +171,7 @@ export const DefChocoTheme: BaseChocoThemeType = {
                 },
             },
             '*::-webkit-scrollbar-thumb': {
-                bgClr: palette.main.secondary[5].alpha(0.6),
+                bgClr: palette.main.secondary.alpha(0.6),
             },
             '*::-webkit-scrollbar-track:hover': {
                 bgClr: palette.main.primary[8],
@@ -186,8 +181,8 @@ export const DefChocoTheme: BaseChocoThemeType = {
                 },
             },
             '*::-webkit-scrollbar-thumb:hover': {
-                borR: -padding,
-                bgClr: palette.main.secondary[5],
+                borR: -base,
+                bgClr: palette.main.secondary,
             },
         };
         return css;

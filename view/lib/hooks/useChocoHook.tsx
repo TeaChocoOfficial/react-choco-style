@@ -1,12 +1,27 @@
 //-Path: "react-choco-style/lib/src/hooks/useChocoHook.tsx"
 import {
+    Sizes,
+    SizeType,
+    SizeValue,
+    SizesValue,
+    SizeOptions,
+} from '../types/size';
+import {
+    CsType,
+    StyleTypes,
+    UseThemeOption,
+    ChocoStyleTypes,
+} from '../types/choco';
+import {
     ChocoHooks,
     FontOption,
     UseSizeType,
     OptionPropsType,
     ChocoStyledProps,
 } from '../types/chocoHook';
+import Debug from '../config/debug';
 import { Size } from '../class/Size';
+import { Obj } from '@teachoco-dev/cli';
 import { CColor } from '../class/CColor';
 import { useCallback, useMemo } from 'react';
 import { ReactTagType } from '../types/style';
@@ -14,10 +29,9 @@ import { ChocoProp } from '../class/ChocoProp';
 import { ThemeFontsType } from '../types/theme';
 import { ChocoColor } from '../class/ChocoColor';
 import { ChocoStyle } from '../class/ChocoStyle';
-import { CsType, StyleTypes } from '../types/choco';
+import { SizeOption } from '../class/SizeOption';
 import { useTheme as useMuiTheme } from '@mui/material';
 import { BaseThemeAtom, UseThemeAtom } from '../temp/temp';
-import { SizeOption, Sizes, SizesType } from '../types/size';
 
 // Custom Hook to manage theme and option props
 export function useChocoHook(
@@ -33,80 +47,125 @@ export function useChocoHook(
     );
 
     const theme = useMemo(() => useTheme || elseTheme, [useTheme, baseTheme]);
+    const chocoColor = new ChocoColor(theme);
 
     // getFont logic (replaces ChocoHook.getFont)
     const getFont: ChocoHooks.GetFont = useCallback(
-        <Style extends StyleTypes | CsType>(
+        <Style extends StyleTypes>(
             size?: keyof ThemeFontsType['weight'],
             option?: FontOption,
         ) => {
             const css: StyleTypes = {
-                fontFamily: theme.fonts.family,
-                fontWeight: theme.fonts.weight[size ?? 'regular'],
-                textTransform: option?.lowcase ? 'none' : undefined,
+                fontF: theme.fonts.family,
+                fontW: theme.fonts.weight[size ?? 'regular'],
+                txtTf: option?.lowcase ? null : undefined,
             };
             return css as Style;
         },
         [theme],
     );
 
-    const sz: UseSizeType = useCallback((option?: SizeOption<number>) => {
-        const { cs } = prop;
-        const chocoStyles = responseCs(cs);
-        const getSz = (): Sizes<number> | undefined => {
-            const sizes = (prop['sz'] ?? chocoStyles['sz']) as Sizes;
-
-            if (sizes !== undefined) {
-                if (Size.is(sizes)) {
-                    return sizes as Size<number>;
-                } else if (typeof sizes === 'number') {
-                    if (sizes < 0) return new Size(sizes);
-                    else return sizes;
-                }
-            }
-        };
-        const root = option?.root
-            ? typeof option.root === 'number'
-                ? option.root
-                : theme.root.size[option.root]
-            : theme.root.size.base;
-        const response = option?.root
-            ? typeof option.root === 'number'
-                ? option.root
-                : theme.root.response[option.root]
-            : theme.root.response.base;
-        const value = getSz() ?? root;
-
-        const newOption: SizeOption<number> = {
-            ...option,
-            root,
-            calc: (value, root) =>
-                option?.calc?.(value / response, root) ?? value / response,
-            check: option?.check === undefined ? true : option.check,
-        };
-        return new Size<number>(value, newOption) as SizesType<number>;
-    }, []);
-
     // responseCs logic (replaces ChocoHook.responseCs)
     const responseCs: ChocoHooks.ResponseCs = useCallback(
-        (cs?: CsType): StyleTypes => {
-            if (typeof cs === 'function') {
-                const styles = cs({
-                    sz,
-                    Size,
-                    theme,
-                    CColor,
-                    getFont,
-                    chocoProp: new ChocoProp(responseCs),
-                    responseCs, // Will be defined due to useMemo
-                    ChocoColor,
-                });
-                return styles || {};
-            }
-            const styles = cs || {};
+        (cs?: CsType): ChocoStyleTypes => {
+            const option: UseThemeOption = {
+                Size,
+                theme,
+                CColor,
+            };
+            if (typeof cs === 'function') return { ...cs(option) };
+            if (cs instanceof ChocoStyle) return responseCs(cs.cs);
+            const styles = { ...(cs ?? {}) };
             return styles;
         },
-        [theme, getFont],
+        [theme],
+    );
+
+    const sz: UseSizeType = useCallback(
+        (option?: SizeOptions<number>): SizeType<number> => {
+            const sizeOption = SizeOption.toSizeOption(option);
+            const { cs } = prop;
+            const debug = prop?.debug;
+            const root = Size.getRoot();
+            const chocoStyles = responseCs(cs);
+
+            const sizes = (prop.sz ?? chocoStyles.sz) as
+                | Sizes<number>
+                | undefined;
+
+            const getSz = (): SizesValue<number> => {
+                if (Size.is(sizes)) return sizes.value;
+                if (typeof sizes === 'number') return sizes;
+                return root;
+            };
+
+            const value = getSz();
+
+            const newOption = sizeOption.clone?.set({
+                debug,
+                check:
+                    sizeOption?.check === undefined ? true : sizeOption.check,
+            });
+            const { sz } = newOption;
+            if (sz !== undefined) {
+                newOption.set({
+                    root: sz,
+                    calc: (value, root) => {
+                        const newValue = value / root;
+                        return sizeOption.calc(newValue, root);
+                    },
+                });
+            }
+            const newSz = Size.check(value, newOption);
+            Debug.debug(debug, 'sz', {
+                propSz: prop['sz'],
+                root,
+                value,
+                newSz,
+                option: sizeOption.option,
+                newOption: newOption.option,
+            });
+            // Debug.debug(debug, 'props', {
+            //     root,
+            //     sizes,
+            //     value,
+            //     newSz,
+            //     newOption,
+            // });
+
+            return newSz;
+        },
+        [prop, responseCs],
+    );
+
+    // mergeNestedStyles function
+    function mergeNestedStyles(
+        style1: ChocoStyleTypes,
+        style2: ChocoStyleTypes,
+    ): ChocoStyleTypes {
+        const result: ChocoStyleTypes = { ...style1 };
+        Obj.map(style2, (value, key) => {
+            if (Obj.hasOwn(style2, key) && value !== undefined) {
+                (result as Record<string, SizeValue>)[key] = value as SizeValue;
+            }
+        });
+
+        return result;
+    }
+
+    // mixCs logic
+    const mixCs: ChocoHooks.MixCs = useCallback(
+        (...chocoStyles: (CsType | undefined)[]): ChocoStyleTypes => {
+            const validStyles = chocoStyles
+                .filter((style) => style !== undefined)
+                .map((style) => responseCs(style!)); // Non-null assertion since we filtered undefined
+            if (validStyles.length === 0) return {};
+            return validStyles.reduce<ChocoStyleTypes>(
+                (acc, current) => mergeNestedStyles(acc, current),
+                {},
+            );
+        },
+        [responseCs],
     );
 
     // Construct chocoProp after responseCs is defined
@@ -118,13 +177,15 @@ export function useChocoHook(
             sz,
             Size,
             theme,
+            mixCs,
             CColor,
             getFont,
             chocoProp,
             responseCs,
-            ChocoColor,
+            chocoColor,
+            ChocoStyle,
         }),
-        [theme, getFont, responseCs, chocoProp],
+        [sz, theme, mixCs, getFont, chocoProp, responseCs],
     );
 
     return optionProps;

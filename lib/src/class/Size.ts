@@ -1,14 +1,15 @@
-//-Path: "react-choco-style/lib/src/class/size.ts"
+//-Path: "react-choco-style/lib/src/class/Size.ts"
 import {
     Sizes,
     SizeKey,
     SizeType,
     SizeValue,
-    SizeOption,
+    SizeOptions,
     InSizesValue,
+    SizesValue as SizesValueType,
 } from '../types/size';
-import Debug from '../config/debug';
 import { Temp } from '../temp/temp';
+import { SizeOption } from './SizeOption';
 import { Ary, Obj } from '@teachoco-dev/cli';
 import { BreakpointType, KeyRootTheme, RootThemeType } from '../types/theme';
 
@@ -19,28 +20,28 @@ export class Size<
     value = {} as SizesValue;
     constructor(
         value?: Value | SizesValue | Sizes<Value>,
-        option?: SizeOption<Value>,
+        option?: SizeOptions<Value>,
     ) {
         if (value) this.value = Size.to(value, option) as SizesValue;
     }
-    map<Render>(
+    map<Render, MethodValue = Value>(
         method: (
-            value: Value,
+            value: MethodValue,
             key: SizeKey,
             index: number,
             sizeKey: SizeKey[],
         ) => Render,
     ) {
         return Obj.map(this.value, (value, key, index, array) =>
-            method(value as Value, key as SizeKey, index, array as SizeKey[]),
+            method(value as MethodValue, key as SizeKey, index, array as SizeKey[]),
         );
     }
     reduce<
-        NewValue = SizeValue,
+        NewValue = Value,
         Render extends InSizesValue<NewValue> = InSizesValue<NewValue>,
     >(
         method: (
-            value: Render,
+            value: Value,
             key: SizeKey,
             index: number,
             array: SizeKey[],
@@ -48,6 +49,7 @@ export class Size<
     ): Render {
         return Size.reduce<Value, NewValue, Render>(this.value, method);
     }
+
     static reduce<
         Value = SizeValue,
         NewValue = SizeValue,
@@ -55,7 +57,7 @@ export class Size<
     >(
         value: InSizesValue<Value>,
         method: (
-            value: Render,
+            value: Value,
             key: SizeKey,
             index: number,
             array: SizeKey[],
@@ -66,7 +68,7 @@ export class Size<
             (acc, key, value, index, array) => {
                 value;
                 const newValue = method(
-                    value as Render,
+                    value as Value,
                     key as SizeKey,
                     index,
                     array as SizeKey[],
@@ -77,10 +79,19 @@ export class Size<
             value as InSizesValue,
         ) as Render;
     }
-    static getRoot(): RootThemeType {
-        return { ...Temp.baseTheme.root };
+    static getRoot(root: null): RootThemeType;
+    static getRoot(root?: KeyRootTheme | number): number;
+    static getRoot(
+        root?: KeyRootTheme | number | null,
+    ): RootThemeType | number {
+        const roots = { ...Temp.baseTheme.root };
+        if (root === null) return roots;
+        const { size } = roots;
+        if (typeof root === 'number') return root;
+        else if (root) return size[root];
+        else return size.base;
     }
-    static getBreakpoin(): BreakpointType {
+    private static getBreakpoin(): BreakpointType {
         return { ...Temp.baseTheme.breakpoint };
     }
     static is<
@@ -100,78 +111,197 @@ export class Size<
             );
         return false;
     }
-    static format<Value = SizeValue>(
-        size: Value,
-        key?: SizeKey,
-        option?: SizeOption<Value>,
-    ): Value {
-        const roots = this.getRoot().size;
-        const formatKey = Obj.keys(this.getBreakpoin().format);
-        const formatSize =
-            this.getBreakpoin().format[key ?? formatKey[formatKey.length - 1]];
-        const checked: Value = option?.check
-            ? typeof size === 'number' && size < 0
-                ? (-size as Value)
-                : size
-            : size;
-        const formated =
-            typeof checked === 'number'
-                ? ((formatSize * (checked / 100)) as Value)
-                : checked;
-        let newValue =
-            typeof checked === 'number' && (option?.format || option?.check)
-                ? formated
-                : checked;
+    static check<Value = SizeValue, Checked = SizeType<Value>>(
+        value: Value | InSizesValue<Value> | Sizes<Value>,
+        option?: SizeOptions<Value>,
+    ): Checked {
+        const newOption = SizeOption.toSizeOption(option);
+        const mustCheck =
+            newOption.check && typeof value === 'number' && value < 0;
+        const checked = mustCheck ? -value : value;
+        if (mustCheck) {
+            const newValue = this.callback(checked, (value, key) =>
+                this.format(
+                    value as Value,
+                    key,
+                    newOption.set({ format: true }),
+                ),
+            );
+            return newValue as Checked;
+        }
+        return this.use(
+            checked as Value | InSizesValue<Value> | Sizes<Value>,
+            (value, key) => this.format(value, key, option),
+        ) as Checked;
+    }
 
+    /**
+     * Calculates a value based on a given root value and an optional calculation function.
+     *
+     * @param value - The value to be calculated.
+     * @param option - Optional settings for the calculation, including the root value and a custom calculation function.
+     * @returns The calculated value.
+     */
+    private static calc<Value = SizeValue>(
+        value: Value,
+        option?: SizeOption<Value>,
+    ): SizeValue | Value {
         const root: number =
             typeof option?.root === 'number'
                 ? option.root
                 : option?.root
-                ? roots[option.root as KeyRootTheme]
-                : roots.text;
-        // console.log(size, checked, formatSize, formated, newValue);
+                ? this.getRoot(option.root)
+                : this.getRoot();
+        const calced = option?.can('calc')
+            ? option?.calc?.(value, root) ?? value
+            : value;
+        option?.do('calc');
+        return calced;
+    }
 
-        if (option?.calc) newValue = option?.calc?.(newValue, root) as Value;
-        if (option?.response && typeof newValue === 'number')
-            (newValue as number) *=
-                typeof option.response === 'number'
-                    ? option.response
-                    : roots[option.response];
-        if (option?.unit && typeof newValue === 'number')
-            newValue = `${newValue}${option.unit}` as Value;
+    /**
+     * Adjusts the given value based on a responsive calculation.
+     *
+     * @param value - The value to be adjusted.
+     * @param option - Optional settings for the adjustment, including the root value and response flags.
+     * @returns The adjusted value.
+     */
+    private static response<Value = SizeValue>(
+        value: Value,
+        option?: SizeOption<Value>,
+    ): Value {
+        const root: number =
+            typeof option?.response === 'number'
+                ? option.response
+                : option?.response
+                ? this.getRoot(option.response)
+                : this.getRoot();
+        const responsed = (
+            option?.can('response') && typeof value === 'number'
+                ? value * root
+                : value
+        ) as Value;
+        option?.do('response');
+        return responsed;
+    }
+
+    /**
+     * Appends a unit to the given size value based on the provided options.
+     *
+     * @param size - The size value to which the unit will be appended.
+     * @param option - Optional settings for determining the unit to append.
+     * @returns The size value with the appended unit.
+     */
+    private static unit<Value = SizeValue, NewValue = Value>(
+        size: Value,
+        option?: SizeOption<Value>,
+    ): NewValue {
+        const root = this.getRoot(null).unit;
+        const keyRoot = option?.unit.slice(1) as KeyRootTheme;
+        const unit = option?.unit.startsWith('*')
+            ? keyRoot
+            : option?.unit.startsWith('$')
+            ? root[keyRoot]
+            : undefined;
+        const newSize = option?.can('unit') && unit ? `${size}${unit}` : size;
+        option?.do('unit');
+        // Debug.if(option?.debug,size, unit, newSize);
+        return newSize as NewValue;
+    }
+
+    /**
+     * Adjusts the given size value based on a responsive format.
+     *
+     * @param size - The size value to be adjusted.
+     * @param key - An optional key to determine the format size.
+     * @param option - Optional settings for the adjustment, including format and check flags.
+     * @returns The adjusted size value.
+     */
+    private static responsive<Value = SizeValue>(
+        size: Value,
+        key?: SizeKey,
+        option?: SizeOption<Value>,
+    ): Value {
+        const { format } = this.getBreakpoin();
+        const formatKeys = Obj.keys(format);
+        const formatKey = key ?? formatKeys[formatKeys.length - 1];
+        const formatSize = format[formatKey];
+
+        const formated =
+            typeof size === 'number' && !option?.done('responsive')
+                ? ((formatSize * (size / 100)) as Value)
+                : size;
+        const autoSize = option?.format || option?.check;
+        const newValue = autoSize ? formated : size;
+        if (autoSize) option?.do('responsive');
         return newValue;
     }
-    static to<
-        Value = SizeValue,
-        SizesValue extends InSizesValue<Value> = InSizesValue<Value>,
-    >(
-        size: Value | SizesValue | Sizes<Value>,
-        option?: SizeOption<Value>,
-    ): SizesValue {
-        const isDebug = option?.debug;
-        if (size !== undefined && size !== null) {
-            Debug.if(isDebug, 'size', size);
-            const sizes = this.callback(size) as SizesValue;
-            Debug.if(isDebug, 'sizes', sizes);
-            return Size.reduce(sizes as InSizesValue<Value>, (value, key) =>
-                this.format(value as Value, key, option),
-            ) as SizesValue;
-        } else {
-            return this.use(size, (value, key) =>
-                this.format(value, key, option),
-            );
+
+    static format<Value = SizeValue, NewValue = Value>(
+        size: Value,
+        key?: SizeKey,
+        option?: SizeOptions<Value>,
+    ): NewValue {
+        const newOption = SizeOption.toSizeOption(option);
+        if (!newOption.done('format')) {
+            const responsived = this.responsive(size, key, newOption);
+            const calced = this.calc(responsived, newOption);
+            const responsed = this.response(calced as Value, newOption);
+            const united = this.unit<Value, NewValue>(responsed, newOption);
+            return united as NewValue;
         }
+        return size as unknown as NewValue;
+    }
+
+    static to<Value = SizeValue>(
+        size: Value | InSizesValue<Value> | Sizes<Value>,
+        option?: SizeOptions<Value>,
+    ): SizeType<Value> {
+        const isDebug = option?.debug;
+        const newSize = this.use(size, (value, key) =>
+            this.format(value, key, option),
+        );
+
+        if (!Size.is(newSize) && !Size.in(newSize)) {
+            const sizes = this.callback(newSize);
+            const output = Size.reduce(sizes, (value, key) => {
+                // console.log(key);
+                return this.format(value as Value, key, option);
+            });
+            // Debug.if(isDebug, 'from Size.to', { size, sizes, output });
+            return output as SizeType<Value>;
+        }
+        if (Size.is(newSize)) return newSize.value as SizeType<Value>;
+        return newSize as SizeType<Value>;
     }
     static from<Value = SizeValue>(value: Value): SizeType<Value> {
-        const { size } = Temp.baseTheme.breakpoint;
-
+        const { size } = this.getBreakpoin();
         const output = Obj.reduce<Record<SizeKey, number>, SizeType<Value>>(
             size,
             (acc, key) => ({ ...acc, [key]: value }),
             {},
         );
-
         return output;
+    }
+    static toValue<Value, NewValue extends string = 'none'>(
+        sizeValue?: SizesValueType<Value>,
+        none?: NewValue | boolean,
+    ): NewValue | undefined {
+        const Null = none === true ? 'none' : none === false ? 'unset' : none;
+        // Debug.if(debug, 'from toSize in ChocoCalc', value, sizes);
+        const sizes = Size.is(sizeValue) ? sizeValue.value : sizeValue;
+        if (innerWidth !== undefined && Size.in(sizes)) {
+            const { size } = this.getBreakpoin();
+            const breakpoints = Obj.entries(size).sort(([, a], [, b]) => b - a);
+            for (const [key, value] of breakpoints)
+                if (innerWidth > value) return sizes[key] as NewValue;
+
+            const high = size[breakpoints[0][0]];
+            const low = sizes[Ary.last(breakpoints)[0]];
+            return (high === undefined ? low : high) as NewValue;
+        } else {
+            return (sizes ?? Null) as NewValue;
+        }
     }
     static use<
         Render,
@@ -186,14 +316,14 @@ export class Size<
             index: number,
         ) => Render,
     ): Renders {
-        if (this.in(size)) {
+        if (this.is(size)) {
+            return size.reduce((value, key, index) =>
+                method(value as Value, key, index),
+            ) as Renders;
+        } else if (this.in(size)) {
             return Size.reduce(
                 size as InSizesValue<Value>,
                 (value, key, index) => method(value as Value, key, index),
-            ) as Renders;
-        } else if (this.is(size)) {
-            return size.map((value, key, index) =>
-                method(value as Value, key, index),
             ) as Renders;
         }
         return method(size as Value, undefined, 0) as Renders;

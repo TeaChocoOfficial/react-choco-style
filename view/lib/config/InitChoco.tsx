@@ -3,28 +3,27 @@ import {
     PaletteColor,
     ThemeOptions,
     ThemeProvider,
-    useTheme as useMuiTheme,
-    createTheme as createMuiTheme,
+        createTheme as createMuiTheme,
 } from '@mui/material';
 import Debug from './debug';
 import { Obj } from '@teachoco-dev/cli';
+import { CColor } from '../class/CColor';
+import { ColorHex } from '../types/color';
 import { useEffect, useMemo } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { GlobalCss } from '../data/globalCss';
 import { DefChocoTheme } from '../theme/theme';
-import { ChocoStyle } from '../class/ChocoStyle';
-import { useChocoHook } from '../hooks/useChocoHook';
+import { ChocoShade } from '../class/ChocoShade';
 import { BaseThemeAtom, Temp } from '../temp/temp';
 import CssBaseline from '@mui/material/CssBaseline';
 import { BaseChocoThemeType } from '../types/theme';
+import { useChocoHook } from '../hooks/useChocoHook';
+import { OptionPropsType } from '../types/chocoHook';
 import { ChocoProviderProps } from './ChocoProvider';
 import { CssType, StyledType } from '../types/choco';
 import { ChocoResponse } from '../class/ChocoResponse';
-import { ColorHex, ShadeColors } from '../types/color';
-import { CColor, newChocoColor } from '../class/CColor';
 import { SetupUseInnerWidth } from './SetupUseInnerWidth';
 import { CGlobalStyles } from '../components/CGlobalStyles';
-import { OptionPropsType } from '../types/chocoHook';
 
 export function InitChoco({
     debug = false,
@@ -33,7 +32,6 @@ export function InitChoco({
     createTheme,
 }: ChocoProviderProps) {
     const theme = useTheme();
-    const muiTheme = useMuiTheme();
     const chocoHook = useChocoHook();
     const globalCss = GlobalCss.get();
     const chocoStyle = new ChocoResponse();
@@ -47,7 +45,7 @@ export function InitChoco({
         if (createTheme !== undefined) {
             const theme = createTheme({
                 CColor,
-                newChocoColor,
+                ChocoShade,
                 theme: DefChocoTheme,
                 ChocoColor: new CColor(),
             });
@@ -59,11 +57,6 @@ export function InitChoco({
             setBaseTheme(DefChocoTheme);
         }
     }, [createTheme, setBaseTheme]);
-
-    const chocoTheme = useMemo(
-        () => ChocoStyle.toUseTheme(baseTheme, muiTheme),
-        [baseTheme, muiTheme],
-    );
 
     const styleOverrides: CssType = useMemo(() => {
         const styleOverride = baseTheme.styleSheets(
@@ -77,11 +70,11 @@ export function InitChoco({
             }),
             {},
         );
-    }, [chocoHook]);
+    }, [baseTheme, chocoHook]);
 
     const MuiTheme = useMemo(() => {
         const pallette = theme.palette;
-        const paletteColor = (colors?: ShadeColors): PaletteColor => {
+        const paletteColor = (colors?: ChocoShade): PaletteColor => {
             if (colors) {
                 return {
                     dark: colors[7].toString(),
@@ -92,7 +85,7 @@ export function InitChoco({
             }
             throw new Error('No colors provided');
         };
-        const paletteColors = (colors: { [key: string]: ShadeColors }) =>
+        const paletteColors = (colors: { [key: string]: ChocoShade }) =>
             Obj.keys(colors).reduce(
                 (acc, key) => ({
                     ...acc,
@@ -122,11 +115,8 @@ export function InitChoco({
                     default: pallette.main.inherit[5].hex(),
                 },
             },
-            shape: {
-                borderRadius: theme.root.size.borR * theme.root.response.borR,
-            },
         } as ThemeOptions;
-    }, [Temp, styleOverrides]);
+    }, [theme, styleOverrides]);
 
     return (
         <ThemeProvider theme={createMuiTheme(MuiTheme)}>

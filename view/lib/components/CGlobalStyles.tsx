@@ -1,16 +1,21 @@
 //-Path: "react-choco-style/lib/src/components/CGlobalStyles.tsx"
 import { Obj } from '@teachoco-dev/cli';
-import { CssType, CsType } from '../types/choco';
 import { ChocoResponse } from '../class/ChocoResponse';
+import { ChocoStyleTypes, CssType } from '../types/choco';
 import { GlobalStyles, Interpolation, Theme } from '@mui/material';
 
-export function CGlobalStyles({ css }: { css: CssType }) {
+export type CGlobalStylesProps = {
+    css?: CssType;
+};
+
+export function CGlobalStyles({ css }: CGlobalStylesProps) {
     const chocoResponse = new ChocoResponse();
 
     const styles = Obj.reduce<CssType, Interpolation<Theme>>(
-        css,
+        css ?? {},
         (acc, key, value) => {
-            (acc as CssType)[key] = chocoResponse.chocoStyle(value) as CsType;
+            (acc as CssType)[key] =
+                chocoResponse.chocoStyle<ChocoStyleTypes>(value);
             return acc;
         },
         {},

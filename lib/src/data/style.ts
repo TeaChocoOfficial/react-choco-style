@@ -190,3 +190,14 @@ export const userSelectStyleData = {
 export type UserSelectStyleData = typeof userSelectStyleData;
 export type UserSelectStyleType = keyof UserSelectStyleData;
 export type UserSelectStyleValueType = UserSelectStyleData[UserSelectStyleType];
+
+//* Box sizing
+//? border-box content-box
+export const boxSizingStyleData = {
+    bxSzNone: null,
+    bxSzB: 'border',
+    bxSzC: 'content',
+} as const;
+export type BoxSizingStyleData = typeof boxSizingStyleData;
+export type BoxSizingStyleType = keyof BoxSizingStyleData;
+export type BoxSizingStyleValueType = UserSelectStyleData[UserSelectStyleType];

@@ -1,17 +1,18 @@
 //-Path: "react-choco-style/lib/src/types/theme.ts"
 import { SizeKey } from './size';
-import { CssType, StyleTypes } from './choco';
+import { CssType } from './choco';
+import { ColorMainType } from './color';
 import { Transitions } from '@mui/material';
 import { OptionPropsType } from './chocoHook';
-import { ColorMainType, ShadeColors } from './color';
+import { ChocoShade } from '../class/ChocoShade';
 
 export type ModesKeyType = 'dark' | 'light';
 
-export type PaletteType = { [key in ColorMainType]: ShadeColors };
-export type DeepPaletteType = { [key in ColorMainType]?: ShadeColors };
+export type PaletteType = { [key in ColorMainType]: ChocoShade };
+export type DeepPaletteType = { [key in ColorMainType]?: ChocoShade };
 
 export type PalettesType<Colors extends DeepPaletteType = DeepPaletteType> = {
-    common: Record<string, ShadeColors>;
+    common: Record<string, ChocoShade>;
     main: Colors;
     text: Colors;
 };
@@ -25,9 +26,9 @@ export type KeyRootTheme =
     | 'padding';
 
 export type RootThemeType = {
+    unit: Record<KeyRootTheme, string>;
     size: Record<KeyRootTheme, number>;
-    response: Record<KeyRootTheme, number>;
-    unit: { [key in KeyRootTheme]?: string };
+    // response: Record<KeyRootTheme, number>;
 };
 
 export type ThemeFontsType = {

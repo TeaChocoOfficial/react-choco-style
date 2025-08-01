@@ -1,7 +1,7 @@
 //-Path: "react-choco-style/view/src/Setup.tsx"
 import App from './App';
-import Test from './Test';
-import Archive from './Archive';
+import Test from './test/Test';
+import Archive from './test/Archive';
 import { ChocoProvider } from '@teachoco-official/react-choco-style';
 
 export default function Setup() {
@@ -9,11 +9,11 @@ export default function Setup() {
         <ChocoProvider
             debug
             cssBase
-            createTheme={({ ChocoColor }) => ({
+            createTheme={({ ChocoShade }) => ({
                 modes: {
                     default: {
                         main: {
-                            secondary: ChocoColor.shades(0xcc0033),
+                            secondary: new ChocoShade(0xcc0033),
                         },
                     },
                 },
@@ -22,9 +22,9 @@ export default function Setup() {
                 // },
             })}
         >
-            <Archive />
-            {/* <App /> */}
+            <App />
             {/* <Test /> */}
+            {/* <Archive /> */}
         </ChocoProvider>
     );
 }

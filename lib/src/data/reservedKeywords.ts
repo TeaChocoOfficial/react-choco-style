@@ -13,7 +13,7 @@ export type KeyChochoStyleNoSizeType = typeof KeyChochoStyleNoSize;
 export type KeyChochoStyleNoSizeValueType =
     KeyChochoStyleNoSizeType[keyof KeyChochoStyleNoSizeType];
 
-export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
+export const KeysChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'sz',
     'css',
     'bg',
@@ -58,6 +58,9 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'gx',
     'gy',
     'fontS',
+    'fontF',
+    'fontW',
+    'txtTf',
     'gridT',
     'gridTC',
     'gridTR',
@@ -84,25 +87,27 @@ export const KeywordsChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'form',
     'transformCenter',
     'event',
+    'coten',
 ];
 
-export const KeywordsChocoStyle: (keyof ChocoStyleType)[] = [
+export const KeysChocoStyle: (keyof ChocoStyleType)[] = [
     'dp',
     'fd',
     'fw',
     'a',
     'j',
     'ji',
-    'text',
+    'txtA',
     'pos',
     'of',
     'ofx',
     'ofy',
     'cur',
     'us',
+    'bxSz',
 ];
 
-export const KeywordsChocoStyleProps: (keyof ChocoCompoentPropsType)[] = [
+export const KeysChocoStyleProps: (keyof ChocoCompoentPropsType)[] = [
     'cs',
     'debug',
     'motion',
@@ -181,11 +186,11 @@ export const KeywordsChocoStyleProps: (keyof ChocoCompoentPropsType)[] = [
 ];
 
 export const keysChocoStyle = [
-    ...KeywordsChocoStyle,
-    ...KeywordsChocoStyleDef,
+    ...KeysChocoStyle,
+    ...KeysChocoStyleDef,
 ] as (keyof ChocoStylesType)[];
 
 export const keysChocoStyleProps = [
-    ...KeywordsChocoStyleDef,
-    ...KeywordsChocoStyleProps,
+    ...KeysChocoStyleDef,
+    ...KeysChocoStyleProps,
 ] as (keyof ChocoStylePropsType)[];

@@ -25,136 +25,275 @@ import {
     AlignContentStyleValueType,
     JustifyItemsStyleValueType,
     JustifyContentStyleValueType,
+    BoxSizingStyleType,
 } from '../data/style';
 import { ColorsType } from './color';
 import { MotionProps } from 'framer-motion';
 import { GridType, LinesStyleType } from './chocoValue';
 import { ChocoStyleValue, CssType, CsType } from './choco';
 
+/**
+ * Combined type for Choco style definitions and properties.
+ */
 export type ChocoStylesType = ChocoStyleDefType & ChocoStyleType;
 
+/**
+ * Props type for Choco components, combining component and style props.
+ * @template Component - The React component type.
+ */
 export type ChocoCompoentPropsType<
     Component extends React.ElementType = React.ElementType,
 > = ChocoComponentPropType<Component> & ChocoStylePropsType;
 
+/**
+ * Props type for Choco style-related properties.
+ */
 export type ChocoStylePropsType = ChocoStyleDefType & ChocoStylePropType;
 
-export type ChocoStyleDefType = {
-    //* Responsive size
+/**
+ * Core style definitions for Choco components.
+ */
+export abstract class ChocoStyleDefType {
+    /**
+     * Size for components
+     * @param value - Number size in pixels or other units.
+     */
     sz?: ChocoStyleValue<number>;
 
-    //* CSS more
+    /**
+     * Custom CSS styles for advanced styling.
+     * @remarks Allows applying custom CSS properties.
+     */
     css?: CssType;
 
-    //* Style
-    //? background | color | background-color | background-image
+    /** Background style (color, image, or null). */
     bg?: ChocoStyleValue<string | null>;
+
+    /** Text or foreground color. */
     clr?: ChocoStyleValue<ColorsType>;
+
+    /** Background color. */
     bgClr?: ChocoStyleValue<ColorsType>;
+
+    /** Background image URL or null. */
     bgImg?: ChocoStyleValue<string | null>;
+
+    /** Box shadow style. */
     bShadow?: ChocoStyleValue<string | null>;
+
+    /** Text shadow style. */
     tShadow?: ChocoStyleValue<string | null>;
 
-    //* Opacity
+    /** Opacity level (0 to 1). */
     op?: ChocoStyleValue<number>;
 
-    //* Z-index
+    /** Z-index for layering. */
     z?: ChocoStyleValue<number>;
 
-    //* Size
-    //? Width | Height | width&height | min-width | min-height | min-width&min-height | max-width | max-height | max-width&max-height
+    /** Width of the component. */
     w?: ChocoStyleValue;
+
+    /** Height of the component. */
     h?: ChocoStyleValue;
+
+    /** Width and height combined. */
     wh?: ChocoStyleValue;
+
+    /** Minimum width of the component. */
     minW?: ChocoStyleValue;
+
+    /** Minimum height of the component. */
     minH?: ChocoStyleValue;
+
+    /** Minimum width and height combined. */
     minWH?: ChocoStyleValue;
+
+    /** Maximum width of the component. */
     maxW?: ChocoStyleValue;
+
+    /** Maximum height of the component. */
     maxH?: ChocoStyleValue;
+
+    /** Maximum width and height combined. */
     maxWH?: ChocoStyleValue;
 
-    //* inset
-    //? all top bottom left right left&right top&bottom
+    /** Inset (all sides). */
     i?: ChocoStyleValue;
+
+    /** Top inset. */
     t?: ChocoStyleValue;
+
+    /** Bottom inset. */
     b?: ChocoStyleValue;
+
+    /** Left inset. */
     l?: ChocoStyleValue;
+
+    /** Right inset. */
     r?: ChocoStyleValue;
+
+    /** Left and right inset. */
     x?: ChocoStyleValue;
+
+    /** Top and bottom inset. */
     y?: ChocoStyleValue;
 
-    //* Padding
-    //? all top bottom left right left&right top&bottom
+    /** Padding (all sides). */
     p?: ChocoStyleValue;
+
+    /** Top padding. */
     pt?: ChocoStyleValue;
+
+    /** Bottom padding. */
     pb?: ChocoStyleValue;
+
+    /** Left padding. */
     pl?: ChocoStyleValue;
+
+    /** Right padding. */
     pr?: ChocoStyleValue;
+
+    /** Left and right padding. */
     px?: ChocoStyleValue;
+
+    /** Top and bottom padding. */
     py?: ChocoStyleValue;
 
-    //* Margin
-    //? all top bottom left right left&right top&bottom
+    /** Margin (all sides). */
     m?: ChocoStyleValue;
+
+    /** Top margin. */
     mt?: ChocoStyleValue;
+
+    /** Bottom margin. */
     mb?: ChocoStyleValue;
+
+    /** Left margin. */
     ml?: ChocoStyleValue;
+
+    /** Right margin. */
     mr?: ChocoStyleValue;
+
+    /** Left and right margin. */
     mx?: ChocoStyleValue;
+
+    /** Top and bottom margin. */
     my?: ChocoStyleValue;
 
-    //* Gap
-    //? all row column
+    /** Gap between elements (all directions). */
     g?: ChocoStyleValue;
+
+    /** Gap between rows. */
     gx?: ChocoStyleValue;
+
+    /** Gap between columns. */
     gy?: ChocoStyleValue;
 
-    //* FontSize
+    /**
+     * @remarks Font size for text.
+     * @param value - Number or string (e.g., "24px", "2rem", 16).
+     * @example "24px" | "2rem" | 16
+     */
     fontS?: ChocoStyleValue;
 
-    //* Grids
-    //? grid-template grid-area
+    /** Font family. */
+    fontF?: ChocoStyleValue;
+
+    /** Font weight. */
+    fontW?: ChocoStyleValue;
+
+    /** Text transform */
+    txtTf?: ChocoStyleValue;
+
+    /** Text decoration */
+    txtDr?: ChocoStyleValue;
+
+    /** Grid template definition. */
     gridT?: ChocoStyleValue<string | [GridType, GridType]>;
+
+    /** Grid template columns. */
     gridTC?: ChocoStyleValue<string | GridType>;
+
+    /** Grid template rows. */
     gridTR?: ChocoStyleValue<string | GridType>;
+
+    /** Grid area definition. */
     gridA?: ChocoStyleValue<string | GridType[]>;
+
+    /** Grid area column. */
     gridAC?: ChocoStyleValue<string | GridType>;
+
+    /** Grid area row. */
     gridAR?: ChocoStyleValue<string | GridType>;
 
-    //* Border
-    //? border-width border-radius border-style border-color border border-top border-bottom border-left border-right
+    /** Border width. */
     borW?: ChocoStyleValue;
+
+    /** Border radius (all corners). */
     borR?: ChocoStyleValue;
+
+    /** Border radius top-left. */
     borRTL?: ChocoStyleValue;
+
+    /** Border radius top-right. */
     borRTR?: ChocoStyleValue;
+
+    /** Border radius bottom-left. */
     borRBL?: ChocoStyleValue;
+
+    /** Border radius bottom-right. */
     borRBR?: ChocoStyleValue;
+
+    /** Border style. */
     borS?: ChocoStyleValue<string | null>;
+
+    /** Border color. */
     borClr?: ChocoStyleValue<ColorsType>;
+
+    /** Border (all sides). */
     borders?: LinesStyleType | string | null;
+
+    /** Top border. */
     borderT?: LinesStyleType | string | null;
+
+    /** Bottom border. */
     borderB?: LinesStyleType | string | null;
+
+    /** Left border. */
     borderL?: LinesStyleType | string | null;
+
+    /** Right border. */
     borderR?: LinesStyleType | string | null;
+
+    /** Left and right border. */
     borderX?: LinesStyleType | string | null;
+
+    /** Top and bottom border. */
     borderY?: LinesStyleType | string | null;
 
-    //* Outline
+    /** Outline style. */
     outlines?: LinesStyleType | string | null;
 
-    //* transition
+    /** Transition duration or style. */
     trans?: number | string;
 
-    //* Transform
+    /** Transform style (e.g., rotate, scale). */
     form?: ChocoStyleValue<string>;
+
+    /** Transform origin (center point for transforms). */
     transformCenter?: 'all' | 'x' | 'y';
 
-    //* Pointer events
-    //? none auto
+    /** Pointer events behavior. */
     event?: ChocoStyleValue<EventStyleValueType>;
-};
 
-export type ChocoStyleType = {
+    /** Content */
+    coten?: ChocoStyleValue<string>;
+}
+
+/**
+ * Additional style properties for layout and behavior.
+ */
+export abstract class ChocoStyleType {
     //* Display
     //? none flex block inline inline-flex inline-block grid inline-grid table inline-table
     dp?: ChocoStyleValue<DisplayStyleValueType>;
@@ -184,7 +323,7 @@ export type ChocoStyleType = {
 
     //* Text align
     //? unset end left start right center justify
-    text?: ChocoStyleValue<TextAlignStyleValueType>;
+    txtA?: ChocoStyleValue<TextAlignStyleValueType>;
 
     //* Position
     //? unset relative absolute fixed sticky
@@ -203,19 +342,24 @@ export type ChocoStyleType = {
     //* User select
     //? unset none auto text all
     us?: ChocoStyleValue<UserSelectStyleValueType>;
-};
+
+    //* Box sizing
+    //? border-box content-box
+    bxSz?: ChocoStyleValue;
+}
+
+export abstract class ChocoComponentPropType<
+    Component extends React.ElementType = React.ElementType,
+> {
+    component?: Component;
+    compo?: React.ElementType;
+    cs?: CsType;
+    debug?: string[] | boolean;
+    motion?: MotionProps;
+}
 
 export type SetChocoStyleProp<KeyType extends string> = {
     [key in KeyType]?: boolean;
-};
-
-export type ChocoComponentPropType<
-    Component extends React.ElementType = React.ElementType,
-> = {
-    component?: Component;
-    cs?: CsType;
-    debug?: boolean;
-    motion?: MotionProps;
 };
 
 export type ChocoStylePropType = {
@@ -272,4 +416,7 @@ export type ChocoStylePropTypes =
         SetChocoStyleProp<CursorStyleType> &
         //* User select
         //? unset none auto text all
-        SetChocoStyleProp<UserSelectStyleType>;
+        SetChocoStyleProp<UserSelectStyleType> &
+        //* Box sizing
+        //? border-box content-box
+        SetChocoStyleProp<BoxSizingStyleType>;

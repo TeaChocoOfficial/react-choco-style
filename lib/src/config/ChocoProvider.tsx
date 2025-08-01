@@ -3,14 +3,14 @@ import React from 'react';
 import { InitChoco } from './InitChoco';
 import { CColor } from '../class/CColor';
 import { DeepPartial } from '@teachoco-dev/cli';
+import { ChocoShade } from '../class/ChocoShade';
 import { BaseChocoThemeType } from '../types/theme';
-import { newChocoColorType } from '../types/chocoColor';
 
 export type CreateTheme = (options: {
     ChocoColor: CColor;
     CColor: typeof CColor;
     theme: BaseChocoThemeType;
-    newChocoColor: newChocoColorType;
+    ChocoShade: typeof ChocoShade;
 }) => DeepPartial<BaseChocoThemeType>;
 
 export type ChocoProviderProps = {

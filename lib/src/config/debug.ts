@@ -1,5 +1,6 @@
 //-Path: "react-choco-style/lib/src/config/debug.ts"
 import { Temp } from '../temp/temp';
+import { Ary, Obj } from '@teachoco-dev/cli';
 
 export default class Debug {
     private static get _canLog() {
@@ -40,14 +41,19 @@ export default class Debug {
         ...message: any[]
     ): void {
         if (!this._canLog) return;
-
+        // รวม message เป็น string และตรวจสอบ \n
+        const processedMessages = message.map((msg) => {
+            // ถ้ามี \n ในข้อความ ให้แยกและแทรก [title] หลัง \n
+            if (typeof msg === 'string' && msg === '\n') return `\n[${title}]`;
+            return msg;
+        });
         // Log ข้อความพร้อมตำแหน่งไฟล์
         console[key](
             `[${title}]`,
             index === null
                 ? `\n\n${this._getFileInfo.join(',\n')}\n\n`
                 : this._getFileInfo[index],
-            ...message,
+            ...processedMessages,
         );
     }
 
@@ -63,8 +69,24 @@ export default class Debug {
         this._console({ index: null }, ...message);
     }
 
-    static if(condition?: boolean, ...message: any[]): void {
+    static if(condition?: boolean | string[], ...message: any[]): void {
         if (condition) this._console({}, ...message);
+    }
+    static debug(
+        condition: string[] | boolean | undefined,
+        title: string,
+        data: { [key: string]: unknown },
+    ) {
+        if (
+            condition === true ||
+            (Ary.is(condition) && condition.find((key) => key === title))
+        ) {
+            const messages = Obj.map(data, (value, key) => [key, value]);
+            const newMessages = messages.flatMap((item, index) =>
+                index < messages.length - 1 ? [item, '\n'] : [item],
+            );
+            this._console({}, '\n', '\n', title, '\n', '\n', ...newMessages);
+        }
     }
     static err(...message: any[]) {
         this._console(

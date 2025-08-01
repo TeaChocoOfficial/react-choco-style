@@ -8,5 +8,5 @@ const Box = ChocoStyle.styled(MuiBox, 'CBox')();
 export type CBoxProps = ChocoStyledProps<typeof MuiBox>;
 
 export function CBox(prop: CBoxProps) {
-    return <Box {...prop} />;
+    return <Box {...ChocoStyle.props(prop)} />;
 }

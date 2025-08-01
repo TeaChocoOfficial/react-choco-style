@@ -10,14 +10,17 @@ import {
     OverflowStyleType,
     textAlignStyleData,
     TextAlignStyleType,
+    boxSizingStyleData,
+    BoxSizingStyleType,
     alignItemsStyleData,
-    AlignItemsStyleType,
     userSelectStyleData,
+    AlignItemsStyleType,
     UserSelectStyleType,
     alignContentStyleData,
     AlignContentStyleType,
     justifyItemsStyleData,
     JustifyItemsStyleType,
+    FlexDirStyleValueType,
     justifyContentStyleData,
     JustifyContentStyleType,
 } from '../data/style';
@@ -31,7 +34,7 @@ import { Obj } from '@teachoco-dev/cli';
 import { ChocoHooks } from '../types/chocoHook';
 import { CsType, StyleTypes } from '../types/choco';
 import { useChocoHook } from '../hooks/useChocoHook';
-import { KeywordsChocoStyleDef } from '../data/reservedKeywords';
+import { KeysChocoStyleDef } from '../data/reservedKeywords';
 
 export class ChocoProp {
     private _responseCs: ChocoHooks.ResponseCs;
@@ -50,7 +53,7 @@ export class ChocoProp {
             const typedKey = key as keyof ChocoStyleDefType;
 
             // Size props
-            if (KeywordsChocoStyleDef.includes(typedKey)) {
+            if (KeysChocoStyleDef.includes(typedKey)) {
                 // Type assertion ที่ชัดเจนสำหรับ Size props
                 (styleMap as Record<keyof ChocoStyleDefType, Sizes>)[typedKey] =
                     value as Sizes;
@@ -81,7 +84,8 @@ export class ChocoProp {
             } else if (key in flexDirStyleData) {
                 const flexDir =
                     flexDirStyleData[key as keyof typeof flexDirStyleData];
-                styleMap.fd = this._toSizes(flexDir);
+                const szFlexDir = this._toSizes(flexDir);
+                styleMap.fd = szFlexDir as FlexDirStyleValueType;
             } else if (key === 'fWrap') {
                 styleMap.fw = value as ChocoStyleType['fw'];
             } else if (key === 'center') {
@@ -112,11 +116,11 @@ export class ChocoProp {
                     ];
                 styleMap.j = justifyContent;
             } else if (key.startsWith('t')) {
-                const text =
+                const txtA =
                     textAlignStyleData[
                         key.slice(1).toLowerCase() as TextAlignStyleType
                     ];
-                styleMap.text = text;
+                styleMap.txtA = txtA;
             } else if (key in posStyleData) {
                 const pos = posStyleData[key as PosStyleType];
                 styleMap.pos = pos;
@@ -130,6 +134,8 @@ export class ChocoProp {
                 styleMap.event = eventStyleData[key as EventStyleType];
             } else if (key in userSelectStyleData) {
                 styleMap.us = userSelectStyleData[key as UserSelectStyleType];
+            } else if (key in boxSizingStyleData) {
+                styleMap.bxSz = boxSizingStyleData[key as BoxSizingStyleType];
             }
         });
 

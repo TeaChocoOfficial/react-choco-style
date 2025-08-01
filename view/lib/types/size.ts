@@ -1,5 +1,6 @@
 //-Path: "react-choco-style/lib/src/types/size.ts"
 import { Size } from '../class/Size';
+import { SizeOption } from '../class/SizeOption';
 import { KeyRootTheme } from './theme';
 
 export type SizeKey =
@@ -23,12 +24,26 @@ export type SizesValueType<
 export type InSizesValue<Value = SizeValue> = Value extends SizeType
     ? Value
     : SizeType<Value>;
-export type SizeOption<ValueSize = SizeValue> = {
-    unit?: string;
-    debug?: boolean;
-    check?: boolean;
-    format?: boolean;
+export type UnitType = `$${KeyRootTheme}` | `*${string}`;
+export type SizeOptionType<ValueSize = SizeValue> = {
+    sz?: KeyRootTheme | number;
+    unit?: UnitType;
     root?: KeyRootTheme | number;
+    debug?: boolean | string[]; //? เช็คว่ามีการใช้งาน option หรือไม่
+    check?: boolean; //? ถ้าเป็นเลขลบให้ format เลย
+    format?: boolean; //? ทำการ format ให้ค่าที่เป็นเลขหารกับเลข format ใน breakpoin ตรงกับ key
     response?: KeyRootTheme | number;
+    responsive?: boolean;
     calc?: (value: ValueSize, root: number) => SizeValue;
 };
+
+export type SizeOptions<Value = SizeValue> =
+    | SizeOption<Value>
+    | SizeOptionType<Value>;
+export type SizeOptionDoneKey =
+    | 'calc'
+    | 'unit'
+    | 'check'
+    | 'format'
+    | 'response'
+    | 'responsive';

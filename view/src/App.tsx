@@ -1,8 +1,8 @@
 //-Path: "react-choco-style/view/src/App.tsx"
-import Nav from './test/Nav';
-import Mui from './test/mui/Mui';
-import Layout from './test/Layout';
-import ChocoAll from './test/ChocoAll';
+import Nav from './content/Nav';
+import Mui from './content/mui/Mui';
+import Layout from './content/Layout';
+import ChocoAll from './content/ChocoAll';
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -32,7 +32,7 @@ export const chocoRoutes = [
 const chocoComponents = Object.fromEntries(
     chocoRoutes.map((name) => [
         name,
-        lazy(() => import(`./test/choco/${name}`)),
+        lazy(() => import(`./content/choco/${name}`)),
     ]),
 );
 

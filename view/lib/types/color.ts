@@ -1,5 +1,6 @@
 //-Path: "react-choco-style/lib/src/types/color.ts"
 import { CColor } from '../class/CColor';
+import { ChocoShade } from '../class/ChocoShade';
 
 export type ShadeKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type ShadeMapCallbackFn<MapCallback> = (
@@ -13,7 +14,33 @@ export type ShadeMethod = {
     ) => MapCallback[];
 };
 export type ShadeColor = { [key in ShadeKey]: CColor };
-export type ShadeColors = ShadeColor & ShadeMethod;
+export const clrHexChars = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'a',
+    'A',
+    'b',
+    'B',
+    'c',
+    'C',
+    'd',
+    'D',
+    'e',
+    'E',
+    'f',
+    'F',
+] as const;
+
+export type ClrHexChars = (typeof clrHexChars)[number];
+
 export type ColorHex = `#${string}`;
 
 export const ColorMain = [
@@ -51,41 +78,8 @@ export type ColorType = ColorMainType | ColorTextType | ColorInheritType;
 export type ColorsType =
     | React.CSSProperties['color']
     | `common.${string}`
-    | CColor
+    | ChocoShade
     | ColorType
     | ColorHex
+    | CColor
     | null;
-
-export type SetColorType = {
-    clr: CColor | null; //สีข้อความ
-    bor: CColor | null; //สีขอบ
-    hover: CColor | null; //สีข้อความตอนชี้
-    bgClr: CColor | null; //สีพื้นหลัง
-    focus: CColor | null; //สีข้อความตอนโฟกัส
-    active: CColor | null; //สีข้อความตอนใช้งาน
-    action: CColor | null; //สีข้อความตอนทำงาน
-    bgHover: CColor | null; //สีพื้นหลังตอนชี้
-    disabled: CColor | null; //สีข้อความตอนปิด
-    bgActive: CColor | null; //สีพื้นหลังตอนใช้งาน
-    borHover: CColor | null; //สีขอบตอนชี้
-    borActive: CColor | null; //สีขอบตอนใช้งาน
-    bgDisabled: CColor | null; //สีพื้นหลังตอนปิด
-    borDisabled: CColor | null; //สีขอบตอนปิด
-    disabledHover: CColor | null; //สีข้อความตอนปิดตอนชี้
-    bgDisabledHover: CColor | null; //สีพื้นหลังตอนปิดตอนชี้
-    borDisabledHover: CColor | null; //สีขอบตอนปิดตอนชี้
-};
-
-export type SetColorsType = {
-    text: ColorType;
-    main: ColorType;
-};
-export type SetShadesColorType = {
-    text: ShadeColors;
-    main: ShadeColors;
-};
-
-export type GetsetClrType = {
-    setColor: SetColorType;
-    shadesColor: SetShadesColorType;
-};
