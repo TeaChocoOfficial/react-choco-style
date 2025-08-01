@@ -1,8 +1,14 @@
-//-Path: "react-choco-style/src/view/test/choco/Theme.tsx"
+//-Path: "react-choco-style/view/src/content/choco/Theme.tsx"
 import { CInput, useTheme } from '@teachoco-official/react-choco-style';
+import { useEffect } from 'react';
 
 export default function Theme() {
     const theme = useTheme();
+
+    useEffect(() => {
+        console.log(theme);
+    }, [theme]);
+
     return (
         <>
             <CInput

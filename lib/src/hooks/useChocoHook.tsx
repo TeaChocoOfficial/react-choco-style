@@ -23,6 +23,7 @@ import Debug from '../config/debug';
 import { Size } from '../class/Size';
 import { Obj } from '@teachoco-dev/cli';
 import { CColor } from '../class/CColor';
+import { BaseThemeAtom } from '../temp/temp';
 import { useCallback, useMemo } from 'react';
 import { ReactTagType } from '../types/style';
 import { ChocoProp } from '../class/ChocoProp';
@@ -31,7 +32,6 @@ import { ChocoColor } from '../class/ChocoColor';
 import { ChocoStyle } from '../class/ChocoStyle';
 import { SizeOption } from '../class/SizeOption';
 import { useTheme as useMuiTheme } from '@mui/material';
-import { BaseThemeAtom, UseThemeAtom } from '../temp/temp';
 
 // Custom Hook to manage theme and option props
 export function useChocoHook(
@@ -39,14 +39,14 @@ export function useChocoHook(
 ): OptionPropsType {
     // Theme logic (replaces ChocoHook.useTheme)
     const muiTheme = useMuiTheme();
-    const useTheme = UseThemeAtom.get();
     const baseTheme = BaseThemeAtom.get();
-    const elseTheme = useMemo(
-        () => ChocoStyle.toUseTheme(baseTheme, muiTheme),
-        [baseTheme],
+    const { setMode } = BaseThemeAtom.actions();
+
+    const theme = useMemo(
+        () => ChocoStyle.toUseTheme(baseTheme, muiTheme, setMode),
+        [baseTheme, muiTheme, setMode],
     );
 
-    const theme = useMemo(() => useTheme || elseTheme, [useTheme, baseTheme]);
     const chocoColor = new ChocoColor(theme);
 
     // getFont logic (replaces ChocoHook.getFont)

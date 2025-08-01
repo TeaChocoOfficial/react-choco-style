@@ -4,6 +4,7 @@ import {
     PalettesType,
     UseChocoThemeType,
     BaseChocoThemeType,
+    ChocoThemeMethodType,
 } from '../types/theme';
 import {
     OptionPropsType,
@@ -43,6 +44,7 @@ export class ChocoStyle {
     static toUseTheme(
         { mode, root, fonts, modes, breakpoint }: BaseChocoThemeType,
         muiTheme: MuiTheme,
+        setMode: ChocoThemeMethodType['setMode'],
     ): UseChocoThemeType {
         const palette = Obj.mix<PalettesType<PaletteType>>(
             modes.default,
@@ -57,10 +59,7 @@ export class ChocoStyle {
             palette,
             method: {
                 transitions: muiTheme?.transitions,
-                setMode: (mode) => {
-                    // setMode?.(mode);
-                    // getThemeMode(mode);
-                },
+                setMode,
                 spacing: (...factor) =>
                     factor
                         .map(

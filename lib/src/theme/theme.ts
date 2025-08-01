@@ -135,7 +135,6 @@ export const DefChocoTheme: BaseChocoThemeType = {
         const { Size } = option;
         const palette = option.theme.palette;
         const { base, border } = option.theme.root.size;
-        console.log(new Size(base, { format: true }));
 
         const css: CssType = {
             '*': {

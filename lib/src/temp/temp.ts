@@ -4,7 +4,7 @@ import {
     UseChocoThemeType,
     BaseChocoThemeType,
 } from '../types/theme';
-import { DefChocoTheme } from '../theme/theme';
+import { DefChocoTheme, getThemeMode } from '../theme/theme';
 import { createAtom } from '@teachoco-official/react-atom';
 
 type TempType = {
@@ -28,11 +28,13 @@ export const BaseThemeAtom = createAtom<BaseChocoThemeType, BaseThemePayload>(
         actions: {
             setMode(state, payload) {
                 state.mode = payload;
-                return state;
+                getThemeMode(payload);
+                return { ...state };
             },
         },
     },
 );
+
 export const UseThemeAtom = createAtom<UseChocoThemeType | undefined>(
     undefined,
 );

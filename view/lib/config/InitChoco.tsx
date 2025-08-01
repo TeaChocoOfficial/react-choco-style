@@ -3,7 +3,7 @@ import {
     PaletteColor,
     ThemeOptions,
     ThemeProvider,
-        createTheme as createMuiTheme,
+    createTheme as createMuiTheme,
 } from '@mui/material';
 import Debug from './debug';
 import { Obj } from '@teachoco-dev/cli';
