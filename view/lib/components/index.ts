@@ -2,7 +2,6 @@
 import { CBox } from './CBox';
 import { CChip } from './CChip';
 import { CIcon } from './CIcon';
-import { CMenu } from './CMenu';
 import { CTabs } from './CTabs';
 import { CText } from './CText';
 import { CAlert } from './CAlert';
@@ -27,13 +26,15 @@ import { CProgress } from './CProgress';
 import { CSkeleton } from './CSkeleton';
 import { CSnackbar } from './CSnackbar';
 import { CContainer } from './CContainer';
+import { CMenu, CMenuItem } from './CMenu';
 import { CIconButton } from './CIconButton';
 import { CNavigation } from './CNavigation';
 import { CPagination } from './CPagination';
 import { CBreadcrumbs } from './CBreadcrumbs';
 import { CGlobalStyles } from './CGlobalStyles';
 
-const ChocoCompoents = {
+/** ChocoCompoents */
+const C = {
     Alert: CAlert,
     Avatar: CAvatar,
     Badge: CBadge,
@@ -51,6 +52,7 @@ const ChocoCompoents = {
     Image: CImage,
     Input: CInput,
     Menu: CMenu,
+    MenuItem: CMenuItem,
     Navbar: CNavbar,
     Navigation: CNavigation,
     Pagination: CPagination,
@@ -69,4 +71,4 @@ const ChocoCompoents = {
     Tooltip: CTooltip,
 };
 
-export default ChocoCompoents;
+export default C;

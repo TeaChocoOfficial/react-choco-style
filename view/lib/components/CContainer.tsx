@@ -4,8 +4,8 @@ import { SizeKey } from '../types/size';
 import { CIconButton } from './CIconButton';
 import { Ary, Obj } from '@teachoco-dev/cli';
 import { CPaper, CPaperProps } from './CPaper';
-import { ChocoStyle } from '../class/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Container as ContainerMui } from '@mui/material';
 
 const Container = ChocoStyle.styled(ContainerMui, 'CContainer')({ px: 0 });
@@ -45,8 +45,8 @@ export function CContainerMain({
     maxSize,
     ...prop
 }: CContainerMainProps) {
-    const props = ChocoStyle.props(prop, ({ sz, theme, ChocoStyle }) => {
-        const cs = new ChocoStyle({
+    const props = ChocoStyle.props(prop, ({ sz, theme, CsStyle }) => {
+        const cs = new CsStyle({
             px: 0,
             a: 'c',
             j: 'c',
@@ -82,7 +82,7 @@ export function CContainerHeader({
 }: CContainerHeaderProps) {
     const boxProps = (key: 'l' | 'r') =>
         ChocoStyle.props({}, ({ sz }) => ({
-            [key]: sz({ root: 'box', calc: (size) => size / 4 }),
+            [key]: sz({ root: 'box', calcs: [(after) => after.num / 4] }),
         }));
 
     return (
@@ -91,29 +91,26 @@ export function CContainerHeader({
                 posR
                 shade={3}
                 jCenter={jCenter}
-                {...ChocoStyle.props(
-                    paperProp,
-                    ({ sz, getFont, ChocoStyle }) => {
-                        const styleFontHeader = getFont('medium');
-                        const cs = new ChocoStyle(styleFontHeader);
-                        cs.add({
-                            a: 'c',
-                            dp: 'f',
-                            txtA: 'c',
-                            borR: sz(),
-                            bgImg: null,
-                            txtTf: 'capitalize',
-                            p: sz({ sz: 'padding' }),
-                            bgClr: hiddle ? null : undefined,
-                            bShadow: hiddle ? null : undefined,
-                            fontS: sz({
-                                root: 'text',
-                                calc: (size) => size * 2,
-                            }),
-                        });
-                        return { cs };
-                    },
-                )}
+                {...ChocoStyle.props(paperProp, ({ sz, getFont, CsStyle }) => {
+                    const styleFontHeader = getFont('medium');
+                    const cs = new CsStyle(styleFontHeader);
+                    cs.add({
+                        a: 'c',
+                        dp: 'f',
+                        txtA: 'c',
+                        borR: sz(),
+                        bgImg: null,
+                        txtTf: 'capitalize',
+                        p: sz({ sz: 'padding' }),
+                        bgClr: hiddle ? null : undefined,
+                        bShadow: hiddle ? null : undefined,
+                        fontS: sz({
+                            root: 'text',
+                            calcs: [(after) => after.num * 2],
+                        }),
+                    });
+                    return { cs };
+                })}
             >
                 {(leftContent || back) && (
                     <CBox {...boxProps('l')}>
@@ -145,25 +142,25 @@ export function CContainerContent({
     return (
         <Container {...prop}>
             <CPaper
-                {...ChocoStyle.props(
-                    paperProp,
-                    ({ sz, getFont, ChocoStyle }) => {
-                        const styleFontContent = getFont();
-                        const cs = new ChocoStyle(styleFontContent);
-                        cs.add({
-                            dp: 'f',
-                            fd: 'c',
-                            borR: sz(),
-                            fontS: sz(),
-                            bgImg: null,
-                            p: sz({ sz: 'padding' }),
-                            g: sz({ sz: 'padding' }),
-                            bgClr: hiddle ? null : undefined,
-                            bShadow: hiddle ? null : undefined,
-                        });
-                        return { cs };
-                    },
-                )}
+                {...ChocoStyle.props(paperProp, ({ sz, getFont, CsStyle }) => {
+                    const styleFontContent = getFont();
+                    const cs = new CsStyle(styleFontContent);
+                    cs.add({
+                        dp: 'f',
+                        fd: 'c',
+                        borR: sz(),
+                        fontS: sz({
+                            root: 'text',
+                            calcs: [(after) => after.num * 2],
+                        }),
+                        bgImg: null,
+                        p: sz({ sz: 'padding' }),
+                        g: sz({ sz: 'padding' }),
+                        bgClr: hiddle ? null : undefined,
+                        bShadow: hiddle ? null : undefined,
+                    });
+                    return { cs };
+                })}
             >
                 {children}
             </CPaper>

@@ -1,0 +1,4 @@
+class ChocoStyle use styled method to make component 
+with choco style object transfrom to Mui style object
+to create Component and receive prop to transfrom prop 
+to get choco style object and transfrom to Mui style object

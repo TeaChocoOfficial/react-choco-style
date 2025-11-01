@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/lib/src/components/CBadge.tsx"
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Badge as MuiBadge } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
 

@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/lib/src/components/CAlert.tsx"
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Alert as MuiAlert } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
 

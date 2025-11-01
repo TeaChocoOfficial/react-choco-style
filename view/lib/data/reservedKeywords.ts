@@ -82,7 +82,7 @@ export const KeysChocoStyleDef: (keyof ChocoStyleDefType)[] = [
     'borderR',
     'borderX',
     'borderY',
-    'outlines',
+    'outlin',
     'trans',
     'form',
     'transformCenter',

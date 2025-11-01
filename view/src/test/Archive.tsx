@@ -1,17 +1,17 @@
-//-Path: "react-choco-style/view/src/test/Archive.tsx"
+//-Path: "view/src/test/Archive.tsx"
 import { Button } from '@mui/material';
-import {
-    C,
-    Size,
+import C, {
+    CsValue,
+    CsStyle,
     useTheme,
-    SizeOption,
+    CsOption,
     ChocoStyle,
     getInnerSize,
     ChocoResponse,
     getInnerWidth,
 } from '@teachoco-official/react-choco-style';
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChocoHook } from '../../lib/hooks/useChocoHook';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 const CCBox = ChocoStyle.styled('div')();
 
@@ -24,7 +24,7 @@ export default function Archive() {
     const boxRef = useRef<HTMLDivElement>(null);
 
     const size = useMemo(() => {
-        const fontS = Size.to(16, { check: true });
+        const fontS = new CsValue(16, { check: true });
         // console.log(fontS);
         const css = {
             fontS,
@@ -32,7 +32,7 @@ export default function Archive() {
             w: -16,
             fontW: 700,
         };
-        const cs = new ChocoStyle(css);
+        const cs = new CsStyle(css);
         const style = chocoResponse.chocoStyle(cs);
         console.log(style);
 
@@ -85,7 +85,7 @@ export default function Archive() {
             <C.Box
                 cs={{
                     px: -4,
-                    p: new Size(4),
+                    p: new CsValue(4),
                 }}
                 motion={{
                     transition: { duration: 0.5 },

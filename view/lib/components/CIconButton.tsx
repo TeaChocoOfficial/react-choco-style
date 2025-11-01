@@ -1,7 +1,7 @@
 //-Path: "react-choco-style/lib/src/components/CIconButton.tsx"
 import { ToType } from '../types/choco';
 import { Icon, IconProp } from '../custom/Icon';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { useNavigate } from '../hooks/ReactRoute';
 import { ClrPropsType } from '../types/chocoColor';
 import { ChocoStyledProps } from '../types/chocoHook';
@@ -46,8 +46,8 @@ export function CIconButton({
                 const cs = styles.clone;
                 cs.add(fontStyle);
                 cs.add({
-                    p: sz({ sz: 'padding' }),
-                    fontS: sz({ root: 'text' }),
+                    p: sz({ kit: 'padding' }),
+                    fontS: sz({ kit: 'text' }),
                 });
 
                 return { cs };

@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/lib/src/config/InitChoco.tsx"
+//-Path: "lib/src/config/InitChoco.tsx"
 import {
     PaletteColor,
     ThemeOptions,
@@ -7,21 +7,20 @@ import {
 } from '@mui/material';
 import Debug from './debug';
 import { Obj } from '@teachoco-dev/cli';
-import { CColor } from '../class/CColor';
+import { CColor } from '../class/theme/CColor';
+import { CssType } from '../types/choco';
 import { ColorHex } from '../types/color';
 import { useEffect, useMemo } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { GlobalCss } from '../data/globalCss';
 import { DefChocoTheme } from '../theme/theme';
-import { ChocoShade } from '../class/ChocoShade';
+import { ChocoShade } from '../class/theme/ChocoShade';
 import { BaseThemeAtom, Temp } from '../temp/temp';
 import CssBaseline from '@mui/material/CssBaseline';
 import { BaseChocoThemeType } from '../types/theme';
 import { useChocoHook } from '../hooks/useChocoHook';
-import { OptionPropsType } from '../types/chocoHook';
 import { ChocoProviderProps } from './ChocoProvider';
-import { CssType, StyledType } from '../types/choco';
-import { ChocoResponse } from '../class/ChocoResponse';
+import { ChocoResponse } from '../class/hook/ChocoResponse';
 import { SetupUseInnerWidth } from './SetupUseInnerWidth';
 import { CGlobalStyles } from '../components/CGlobalStyles';
 
@@ -59,14 +58,12 @@ export function InitChoco({
     }, [createTheme, setBaseTheme]);
 
     const styleOverrides: CssType = useMemo(() => {
-        const styleOverride = baseTheme.styleSheets(
-            chocoHook as OptionPropsType,
-        );
+        const styleOverride = baseTheme.styleSheets(chocoHook);
         return Obj.reduce<CssType>(
             styleOverride,
             (acc, componentName, styles) => ({
                 ...acc,
-                [componentName]: chocoStyle.chocoStyle<StyledType>(styles),
+                [componentName]: chocoStyle.chocoStyle(styles),
             }),
             {},
         );

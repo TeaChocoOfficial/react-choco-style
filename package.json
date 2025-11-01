@@ -1,11 +1,11 @@
 {
     "name": "@teachoco-dev/react-setup",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "",
     "main": "index.js",
     "scripts": {
         "build": "tsx ./node/main.ts",
-        "dev": "concurrently -n \"Build,Libart,View\" -c \"green,blue,yellow\"  \"pnpm build\" \"cd lib && pnpm dev\" \"cd view && pnpm dev\"",
+        "dev": "concurrently -n \"Build,Libart,View,Next\" -c \"green,blue,yellow,magenta\" \"pnpm build\" \"cd lib && pnpm dev\" \"cd view && pnpm dev\" \"cd next && pnpm dev\"",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -15,6 +15,7 @@
     "dependencies": {
         "@types/chokidar": "^2.1.7",
         "@types/fs-extra": "^11.0.4",
+        "@types/node": "^24.3.1",
         "chokidar": "^4.0.3",
         "concurrently": "^9.2.0",
         "fs-extra": "^11.3.0",

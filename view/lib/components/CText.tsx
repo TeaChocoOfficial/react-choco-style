@@ -1,6 +1,6 @@
-//-Path: "react-choco-style/lib/src/components/CText.tsx"
+//-Path: "lib/src/components/CText.tsx"
 import { Typography } from '@mui/material';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 import { CSkeleton, CSkeletonProps } from './CSkeleton';
 
@@ -8,7 +8,7 @@ const Text = ChocoStyle.styled(Typography, 'CText')();
 
 export type CTextProps = ChocoStyledProps<
     typeof Typography,
-    {        skeleton?: boolean | CSkeletonProps;    }
+    { skeleton?: boolean | CSkeletonProps }
 >;
 
 export function CText({ skeleton, variant = 'inherit', ...prop }: CTextProps) {
@@ -19,11 +19,10 @@ export function CText({ skeleton, variant = 'inherit', ...prop }: CTextProps) {
             text
             {...ChocoStyle.props(skeletonProps, ({ sz }) => ({
                 w: '100%',
-                h: sz({ calc: (size) => size * 2, sz: 'text' }),
+                h: sz({ calcs: [(after) => after.num * 2], kit: 'text' }),
             }))}
         />
     ) : (
         <Text variant={variant} {...ChocoStyle.props(prop)} />
     );
-    
 }

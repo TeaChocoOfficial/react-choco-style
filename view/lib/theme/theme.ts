@@ -1,26 +1,28 @@
 //-Path: "react-choco-style/lib/src/theme/theme.ts"
 import { CssType } from '../types/choco';
-import { ChocoShade } from '../class/ChocoShade';
+import { ChocoShade } from '../class/theme/ChocoShade';
 import { OptionPropsType } from '../types/chocoHook';
 import { BaseChocoThemeType, ModesKeyType } from '../types/theme';
 
-export function getThemeMode(mode?: ModesKeyType): ModesKeyType | undefined {
-    if (localStorage && window) {
-        if (mode) localStorage.setItem('theme mode', mode);
-        let themeMode = localStorage.getItem('theme mode');
+const defThemeMode: ModesKeyType = 'dark';
+
+export function getThemeMode(mode?: ModesKeyType): ModesKeyType {
+    if (typeof window !== 'undefined' && localStorage) {
+        if (mode) localStorage.setItem?.('theme mode', mode);
+        let themeMode = localStorage.getItem?.('theme mode');
         if (themeMode === null) {
-            const { matches } = window.matchMedia(
-                '(prefers-color-scheme: dark)',
-            );
+            const { matches } =
+                window.matchMedia?.('(prefers-color-scheme: dark)') ?? {};
             themeMode = matches ? 'dark' : 'light';
             localStorage.setItem('theme mode', themeMode);
         }
         return themeMode as ModesKeyType;
     }
+    return defThemeMode;
 }
 
 export const DefChocoTheme: BaseChocoThemeType = {
-    mode: getThemeMode() ?? 'dark',
+    mode: getThemeMode(),
     root: {
         unit: {
             box: 'px',
@@ -30,9 +32,9 @@ export const DefChocoTheme: BaseChocoThemeType = {
             border: 'px',
             padding: 'px',
         },
-        size: {
+        multiply: {
             box: 64,
-            base: 16,
+            base: 16, 
             text: 1 / 16,
             borR: 1 / 2,
             border: 2,
@@ -132,9 +134,8 @@ export const DefChocoTheme: BaseChocoThemeType = {
         },
     },
     styleSheets: (option: OptionPropsType) => {
-        const { Size } = option;
         const palette = option.theme.palette;
-        const { base, border } = option.theme.root.size;
+        const { base, border } = option.theme.root.multiply;
 
         const css: CssType = {
             '*': {

@@ -1,6 +1,6 @@
 //-Path: "react-choco-style/lib/src/types/color.ts"
-import { CColor } from '../class/CColor';
-import { ChocoShade } from '../class/ChocoShade';
+import { CColor } from '../class/theme/CColor';
+import { ChocoShade } from '../class/theme/ChocoShade';
 
 export type ShadeKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type ShadeMapCallbackFn<MapCallback> = (

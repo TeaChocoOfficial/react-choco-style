@@ -8,8 +8,8 @@ import {
     TableSortLabel as MuiTableSortLabel,
 } from '@mui/material';
 import { ColorType } from '../types/color';
-import { ChocoStyle } from '../class/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 
 const Table = ChocoStyle.styled(MuiTable, 'CTable')();
 const TableRow = ChocoStyle.styled(MuiTableRow, 'CTableRow')();

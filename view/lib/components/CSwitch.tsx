@@ -1,11 +1,12 @@
-//-Path: "react-choco-style/lib/src/components/CSwitch.tsx"
+//-Path: "lib/src/components/CSwitch.tsx"
 import {
     Switch as MuiSwitch,
     FormControlLabel as MuiFormControl,
 } from '@mui/material';
 import { ColorType } from '../types/color';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { CsStyle } from '../class/style/CsStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 
 const Switch = ChocoStyle.styled(MuiSwitch, 'CSwitch')();
 const FormControl = ChocoStyle.styled(MuiFormControl, 'CFormControl')();
@@ -31,18 +32,18 @@ export function CSwitch({
 }: CSwitchProps) {
     const Contol = (
         <Switch
-            {...ChocoStyle.props(prop, ({ sz, chocoColor,  }) => {
+            {...ChocoStyle.props(prop, ({ sz, chocoColor }) => {
                 const { setClrs } = chocoColor.style({ setClr, disabled });
 
-                const cs = new ChocoStyle({
+                const cs = new CsStyle({
                     a: 'c',
                     of: 'v',
                     h: sz({
-                                                calc: (size) => size * 2.5,
+                        calcs: [(after) => after.num * 2.5],
                     }),
                     // p: sz({ sz: 'padding' }),
                     w: sz({
-                                                calc: (size) => size * 4,
+                        calcs: [(after) => after.num * 4],
                     }),
                     css: {
                         // ' .MuiSwitch-switchBase': {
@@ -69,7 +70,7 @@ export function CSwitch({
                         // },
                         ' .MuiSwitch-thumb': {
                             bgClr: setClrs.clr,
-                            wh: sz({ calc: (size) => size*1.3, }),
+                            wh: sz({ calcs: [(after) => after.num * 1.3] }),
                         },
                         ' .Mui-checked .MuiSwitch-thumb': {
                             bgClr: setClrs.bgClr,
@@ -77,7 +78,7 @@ export function CSwitch({
                         ' .MuiSwitch-track': {
                             wh: '100%',
                             bgClr: setClrs.clr,
-                            borR: sz({ calc:(size)=>size*2.5 }),    
+                            borR: sz({ calcs: [(after) => after.num * 2.5] }),
                         },
                     },
                 });

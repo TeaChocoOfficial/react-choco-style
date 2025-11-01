@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/lib/src/components/CImage.tsx"
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 
 const Image = ChocoStyle.styled('img', 'CImage')();

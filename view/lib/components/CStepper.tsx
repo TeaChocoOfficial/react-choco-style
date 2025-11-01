@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/lib/src/components/CStepper.tsx"
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 import { Stepper as MuiStepper } from '@mui/material';
 

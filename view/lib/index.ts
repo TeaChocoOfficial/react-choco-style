@@ -1,13 +1,19 @@
-//-Path: "react-choco-style/lib/src/index.ts"
-export * from './class/CColor';
-export * from './class/ChocoCalc';
-export * from './class/ChocoColor';
-export * from './class/ChocoProp';
-export * from './class/ChocoResponse';
-export * from './class/ChocoShade';
-export * from './class/ChocoStyle';
-export * from './class/Size';
-export * from './class/SizeOption';
+//-Path: "lib/src/index.ts"
+export * from './class/hook/ChocoColor';
+export * from './class/hook/ChocoProp';
+export * from './class/hook/ChocoResponse';
+
+export * from './class/option/CsOption';
+export * from './class/option/CsValue';
+export * from './class/option/OptionCalc';
+
+export * from './class/style/ChocoStyle';
+export * from './class/style/CssProperties';
+export * from './class/style/CssStyle';
+export * from './class/style/CsStyle';
+
+export * from './class/theme/CColor';
+export * from './class/theme/ChocoShade';
 
 export * from './components/CBox';
 export * from './components/CChip';
@@ -43,7 +49,8 @@ export * from './components/CPagination';
 export * from './components/CBreadcrumbs';
 export * from './components/CGlobalStyles';
 
-export { default as C } from './components/index';
+import C from './components/index';
+export default C;
 
 export * from './config/ChocoProvider';
 

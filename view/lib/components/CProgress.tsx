@@ -3,7 +3,7 @@ import {
     LinearProgress as MuiLinearProgress,
     CircularProgress as MuiCircularProgress,
 } from '@mui/material';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 
 const LinearProgress = ChocoStyle.styled(MuiLinearProgress, 'CProgress')();

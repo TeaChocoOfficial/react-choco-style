@@ -1,10 +1,18 @@
-//-Path: "react-choco-style/view/lib/components/CIcon.tsx"
-import React from 'react';
+//-Path: "lib/src/components/CIcon.tsx"
+import { ColorType } from '../types/color';
 import { CText, CTextProps } from './CText';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Icon, IconProp, TypeIcon, typeIcons } from '../custom/Icon';
 
-export type CIconProps = CTextProps & IconProp;
+export type CIconProps = ChocoStyledProps<
+    typeof Icon,
+    IconProp &
+        CTextProps & {
+            setClr?: ColorType;
+            disabled?: boolean;
+        }
+>;
 
 export function renderIcon<Render = React.ReactNode>(
     icon?: TypeIcon | React.ReactNode,
@@ -21,7 +29,9 @@ export function CIcon({
     solid,
     brand,
     fontS,
+    setClr,
     regular,
+    disabled,
     ...textProps
 }: CIconProps) {
     const iconProps: IconProp = { fa, solid, brand, regular };
@@ -31,11 +41,16 @@ export function CIcon({
             dFlex
             aCenter
             jCenter
-            {...ChocoStyle.props(textProps, ({ sz }) => {
+            {...ChocoStyle.props(textProps, ({ sz, chocoColor }) => {
+                const { styles } = chocoColor.style({
+                    setClr,
+                    disabled,
+                });
+                styles.set('bgClr');
                 return {
                     cs: {
-                        clr: 'error',
-                        fontS: sz({ root: 'text' }),
+                        fontS: sz({ kit: 'text' }),
+                        ...styles.cs,
                     },
                 };
             })}

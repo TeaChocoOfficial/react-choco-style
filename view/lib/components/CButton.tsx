@@ -1,13 +1,13 @@
-//-Path: "react-choco-style/lib/src/components/CButton.tsx"
+//-Path: "lib/src/components/CButton.tsx"
 import Debug from '../config/debug';
 import { renderIcon } from './CIcon';
 import { ToType } from '../types/choco';
 import { TypeIcon } from '../custom/Icon';
 import { ColorType } from '../types/color';
-import { ChocoStyle } from '../class/ChocoStyle';
 import { useNavigate } from '../hooks/ReactRoute';
 import { Button as MuiButton } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 
 const Button = ChocoStyle.styled(MuiButton, 'CButton')();
 
@@ -49,7 +49,7 @@ export function CButton({
             variant={text ? 'text' : outline ? 'outlined' : 'contained'}
             {...ChocoStyle.props(
                 prop,
-                ({ sz, getFont, ChocoStyle, chocoColor, responseCs }) => {
+                ({ sz, getFont, CsStyle, chocoColor, responseCs }) => {
                     const fontStyle = getFont('medium', {
                         lowcase: lowcase || container,
                     });
@@ -60,21 +60,29 @@ export function CButton({
                         disabled,
                     });
 
-                    const cs = new ChocoStyle(fontStyle);
+                    const cs = new CsStyle(fontStyle);
                     cs.add(responseCs(styles));
-                    cs.add({ minW: 0, fontS: sz() });
+                    cs.add({
+                        minW: 0,
+                        fontS: sz({ kit: 'text' }),
+                    });
 
                     const p = sz({
-                        sz: 'padding',
-                        calc: (value) => value / 2,
+                        kit: 'padding',
+                        calcs: [(after) => after.num / 2],
                     });
                     const px = sz({
-                        sz: 'padding',
-                        calc: (value) => value * 2,
+                        kit: 'padding',
+                        calcs: [(after) => after.num * 2],
                     });
 
                     if (container) cs.add({ p });
-                    else cs.add({ px, py: p, borR: sz() });
+                    else
+                        cs.add({
+                            px,
+                            py: p,
+                            borR: sz({ kit: 'borR' }),
+                        });
 
                     Debug.debug(prop?.debug, 'custom', { cs });
 

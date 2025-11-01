@@ -1,7 +1,7 @@
-//-Path: "react-choco-style/lib/src/components/CMenu.tsx"
+//-Path: "lib/src/components/CMenu.tsx"
 import { useState } from 'react';
 import { ColorType } from '../types/color';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 import { Menu as MuiMenu, MenuItem as MuiMenuItem } from '@mui/material';
 
@@ -43,9 +43,9 @@ export function CMenuItem({
                         px: sz({ sz: 'padding' }),
                         py: sz({
                             sz: 'padding',
-                            calc: (size) => size / 2,
+                            calcs: [(after) => after.num / 2],
                         }),
-                        minH: sz({ calc: (size) => size * 3 }),
+                        minH: sz({ calcs: [(after) => after.num * 3] }),
                         '&.Mui-selected': { ...styles },
                         '&.Mui-focusVisible': { ...focus },
                         '&.Mui-selected&.Mui-focusVisible': {

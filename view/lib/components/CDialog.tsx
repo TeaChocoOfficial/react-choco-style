@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { CsType } from '../types/choco';
 import { CPaper, CPaperProps } from './CPaper';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 
 const Dialog = ChocoStyle.styled(MuiDialog, 'CDialog')();

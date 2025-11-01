@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/lib/src/components/CTabs.tsx"
+//-Path: "lib/src/components/CTabs.tsx"
 import {
     useNavigate,
     useActiveLink,
@@ -9,10 +9,11 @@ import { TypeIcon } from '../custom/Icon';
 import { ColorType } from '../types/color';
 import { CIcon, renderIcon } from './CIcon';
 import { CsType, ToType } from '../types/choco';
-import { ChocoStyle } from '../class/ChocoStyle';
 import { ClrPropsType } from '../types/chocoColor';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Tab as MuiTab, Tabs as MuiTabs } from '@mui/material';
+import { CsStyle } from '../class/style/CsStyle';
 
 const Tab = ChocoStyle.styled(MuiTab, 'CTab')();
 const Tabs = ChocoStyle.styled(MuiTabs, 'CTabs')();
@@ -89,17 +90,17 @@ export function CTab({
                     defaultColor: 'secondary',
                 });
 
-                const cs = new ChocoStyle(disableds);
+                const cs = new CsStyle(disableds);
                 cs.add({
                     minH: 0,
                     maxW: 0,
                     fontS: sz({ root: 'text' }),
                     txtTf: lowcase ? 'none' : undefined,
-                    p: sz({ calc: (size) => size / 4 }),
-                    minW: sz({ calc: (size) => size * 6 }),
+                    p: sz({ calcs: [(after) => after.num / 4] }),
+                    minW: sz({ calcs: [(after) => after.num * 6] }),
                     css: {
                         ':focus': { z: 1, ...focus },
-                        '.Mui-selected': responseCs(styles),
+                        '.Mui-selected': responseCs(styles).cs,
                     },
                 });
 
@@ -179,7 +180,7 @@ export function CTabs<Value extends CTabValue>({
                         defaultColor: 'secondary',
                     });
 
-                    const cs = new ChocoStyle();
+                    const cs = new CsStyle();
                     cs.add({
                         a: 'c',
                         dp: 'f',
@@ -190,7 +191,9 @@ export function CTabs<Value extends CTabValue>({
                                 clr: setClrs.action,
                                 css: {
                                     ' svg': {
-                                        fontS: sz({ calc: (size) => size * 2 }),
+                                        fontS: sz({
+                                            calcs: [(after) => after.num * 2],
+                                        }),
                                     },
                                 },
                             },
@@ -202,11 +205,11 @@ export function CTabs<Value extends CTabValue>({
                             },
                             ' .MuiTabs-list': {
                                 h: '100%',
-                                ...responseCs(listCs),
+                                ...responseCs(listCs).cs,
                             },
                             ' .MuiTabs-indicator': {
-                                h: sz({ calc: (size) => size / 3 }),
-                                ...responseCs(indicatorCs),
+                                h: sz({ calcs: [(after) => after.num / 3] }),
+                                ...responseCs(indicatorCs).cs,
                             },
                             ' .MuiTabs-indicator:before': {
                                 l: 0,
@@ -215,8 +218,8 @@ export function CTabs<Value extends CTabValue>({
                                 w: '100%',
                                 coten: '""',
                                 bgClr: setClrs.action,
-                                h: sz({ calc: (size) => size / 3 }),
-                                ...responseCs(indicatorCsBefore),
+                                h: sz({ calcs: [(after) => after.num / 3] }),
+                                ...responseCs(indicatorCsBefore).cs,
                             },
                         },
                     });
@@ -239,9 +242,7 @@ export function CTabs<Value extends CTabValue>({
                             newValue,
                         );
                     }) as CTabsOtion<Value>;
-                    if (selectedOption?.to) {
-                        navigate(selectedOption.to);
-                    }
+                    if (selectedOption?.to) navigate(selectedOption.to);
                 }
             }}
         >

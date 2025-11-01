@@ -1,6 +1,6 @@
-//-Path: "react-choco-style/lib/src/components/CSlider.tsx"
+//-Path: "lib/src/components/CSlider.tsx"
 import { ColorType } from '../types/color';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Slider as MuiSlider } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
 
@@ -49,7 +49,7 @@ export function CSlider<Value extends CSliderValue>({
                     setClr,
                     disabled,
                 });
-                const cs = new ChocoStyle(responseCs(styles));
+                const cs = styles.clone;
                 return { cs };
             })}
         />

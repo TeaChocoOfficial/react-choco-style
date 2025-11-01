@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/lib/src/components/CTextarea.tsx"
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { ChocoStyledProps } from '../types/chocoHook';
 import { TextareaAutosize as MuiTextarea } from '@mui/material';
 

@@ -1,27 +1,18 @@
-//-Path: "react-choco-style/lib/src/types/choco.ts"
-import { Size } from '../class/Size';
+//-Path: "lib/src/types/choco.ts"
+import { SizeType } from './size';
 import { To } from 'react-router-dom';
-import { CColor } from '../class/CColor';
+import { CColor } from '../class/theme/CColor';
+import { StyleValue } from './chocoValue';
+import { CsStyle } from '../class/style/CsStyle';
+import { CsValue } from '../class/option/CsValue';
 import { UseChocoThemeType } from './theme';
-import { SizesType, SizeValue } from './size';
+import { CsOption } from '../class/option/CsOption';
 import { ChocoStylesType } from './chocoStyle';
-import { ChocoStyle } from '../class/ChocoStyle';
-import { KeyChochoStyleNoSizeValueType } from '../data/reservedKeywords';
 
 /**
  * Type for navigation targets used in react-router-dom.
  */
 export type ToType = To;
-
-/**
- * Partial CSS properties for styling components.
- */
-export type StyledType = Partial<React.CSSProperties>;
-
-/**
- * Partial ChocoStyleTypes for flexible style definitions.
- */
-export type StyleTypes = Partial<ChocoStylesType>;
 
 /**
  * Union type for CSS keys, including HTML elements and custom selectors.
@@ -52,32 +43,28 @@ export type CssKeyType =
 /**
  * Type for CSS style definitions, mapping CSS keys to style properties.
  */
-export type CssType = { [key in CssKeysType]?: ChocoStyleTypes };
+export type CssType = { [key in CssKeysType]?: ChocoStylesType };
 
 export type UseThemeOption = {
-    Size: typeof Size;
     CColor: typeof CColor;
+    CsStyle: typeof CsStyle;
+    CsValue: typeof CsValue;
     theme: UseChocoThemeType;
+    CsOption: typeof CsOption;
 };
 
-export type CustomStylesType = (option: UseThemeOption) => ChocoStyleTypes;
+export type CustomStylesType = (option: UseThemeOption) => ChocoStylesType;
 
 /**
  * Union type for custom styles or Choco style types.
  */
-export type CsType = CustomStylesType | ChocoStyleTypes | ChocoStyle;
-
-/**
- * Type for Choco styles, mapping keys to either raw values or sized values.
- */
-export type ChocoStyleTypes = {
-    [Key in keyof ChocoStylesType]?: Key extends KeyChochoStyleNoSizeValueType
-        ? ChocoStylesType[Key]
-        : SizesType<ChocoStylesType[Key]>;
-};
+export type CsType = CustomStylesType | ChocoStylesType | CsStyle<any>;
 
 /**
  * Generic type for Choco style values, supporting size or custom values.
  * @template Value - The type of the style value.
  */
-export type ChocoStyleValue<Value = void> = SizeValue | Value;
+export type ChocoStyleValue<Value extends StyleValue = StyleValue> =
+    | SizeType<Value>
+    | CsValue
+    | Value;

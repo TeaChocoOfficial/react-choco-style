@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import {
     CBox,
     CText,
-    CPaper,
     CTabs,
-    CButton,
+    CPaper,
     CInput,
+    CButton,
     CDialog,
     CDrawer,
     CNavbar,
@@ -15,10 +15,10 @@ import {
     CContainer,
     CNavigation,
     CIconButton,
-    CGlobalStyles,
-    CDialogChildrenProps,
     useChocoHook,
+    CGlobalStyles,
     useGlobalStyles,
+    CDialogChildrenProps,
 } from '@teachoco-official/react-choco-style';
 
 const Text = ChocoStyle.styled('span')({ clr: 'info' });

@@ -1,9 +1,9 @@
 //-Path: "react-choco-style/lib/src/types/chocoColor.ts"
 import { ColorType } from './color';
-import { CColor } from '../class/CColor';
-import { ChocoShade } from '../class/ChocoShade';
-import { ChocoStyleTypes, CsType, StyleTypes } from './choco';
-import { ChocoStyle } from '../class/ChocoStyle';
+import { CColor } from '../class/theme/CColor';
+import { CsStyle } from '../class/style/CsStyle';
+import { ChocoStylesType } from './chocoStyle';
+import { ChocoShade } from '../class/theme/ChocoShade';
 
 export type SetColorType = {
     clr: CColor | null; //สีข้อความ
@@ -52,12 +52,12 @@ export type UseGetsetClrPropType = {
 };
 
 export type SetClrPropsType = {
-    styles: ChocoStyle;
-    hover: ChocoStyleTypes;
-    focus: ChocoStyleTypes;
-    active: ChocoStyleTypes;
+    styles: CsStyle;
+    hover: ChocoStylesType;
+    focus: ChocoStylesType;
+    active: ChocoStylesType;
     setClrs: SetColorType;
-    disableds: ChocoStyleTypes;
+    disableds: ChocoStylesType;
     shadesColor: SetShadesColorType;
 };
 

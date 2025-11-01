@@ -4,7 +4,7 @@ import { CssType } from './choco';
 import { ColorMainType } from './color';
 import { Transitions } from '@mui/material';
 import { OptionPropsType } from './chocoHook';
-import { ChocoShade } from '../class/ChocoShade';
+import { ChocoShade } from '../class/theme/ChocoShade';
 
 export type ModesKeyType = 'dark' | 'light';
 
@@ -27,8 +27,7 @@ export type KeyRootTheme =
 
 export type RootThemeType = {
     unit: Record<KeyRootTheme, string>;
-    size: Record<KeyRootTheme, number>;
-    // response: Record<KeyRootTheme, number>;
+    multiply: Record<KeyRootTheme, number>;
 };
 
 export type ThemeFontsType = {

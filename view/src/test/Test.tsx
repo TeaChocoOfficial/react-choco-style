@@ -1,17 +1,16 @@
-//-Path: "react-choco-style/view/src/test/Test.tsx"
-import React, { useEffect, useState } from 'react';
+//-Path: "view/src/test/Test.tsx"
 import { Obj } from '@teachoco-dev/cli';
-import {
-    Size,
+import C, {
     CTabs,
     CText,
+    CsValue,
     CButton,
     useTheme,
     SizeType,
     ChocoStyle,
     ChocoStyledProps,
-    C,
 } from '@teachoco-official/react-choco-style';
+import React, { useEffect, useState } from 'react';
 
 const SButton = ChocoStyle.styled('button', 'CButton')();
 
@@ -23,13 +22,10 @@ function CCButton({ ...prop }: CCButtonProps) {
             {...ChocoStyle.props(prop, ({ sz }) => {
                 return {
                     cs: {
-                        p: sz({
-                            root: 'padding',
-                            calc: (value) => value,
-                        }),
+                        p: sz({ kit: 'padding' }),
                         px: sz({
-                            root: 'padding',
-                            calc: (value) => value * 3,
+                            kit: 'padding',
+                            calcs: [(after) => after.num * 3],
                         }),
                     },
                 };

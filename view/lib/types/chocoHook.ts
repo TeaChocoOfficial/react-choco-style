@@ -1,15 +1,16 @@
-//-Path: "react-choco-style/lib/src/types/chocoHook.ts"
-import { Size } from '../class/Size';
+//-Path: "lib/src/types/chocoHook.ts"
+import { CsType } from './choco';
+import { SizeType } from './size';
 import { ReactTagType } from './style';
-import { CColor } from '../class/CColor';
-import { ChocoProp } from '../class/ChocoProp';
-import { ChocoColor } from '../class/ChocoColor';
-import { ChocoStyle } from '../class/ChocoStyle';
-import { ChocoStyleTypes, CsType, StyleTypes } from './choco';
-import { ChocoCompoentPropsType } from './chocoStyle';
-import { SizeOptions, SizesType, SizeType } from './size';
+import { CColor } from '../class/theme/CColor';
+import { CsStyle } from '../class/style/CsStyle';
+import { CsValue } from '../class/option/CsValue';
+import { CsOption } from '../class/option/CsOption';
+import { ChocoProp } from '../class/hook/ChocoProp';
+import { StyleValue, ValueOptionType } from './chocoValue';
+import { ChocoColor } from '../class/hook/ChocoColor';
 import { ThemeFontsType, UseChocoThemeType } from './theme';
-import { KeyChochoStyleNoSizeValueType } from '../data/reservedKeywords';
+import { ChocoCompoentPropsType, ChocoStylesType } from './chocoStyle';
 
 export type ChocoStyledProps<
     TagType extends ReactTagType,
@@ -17,32 +18,29 @@ export type ChocoStyledProps<
     Omits extends string[] = [],
 > = Props &
     Omit<
-        React.ComponentProps<TagType> & ChocoStylesPropsType<TagType>,
+        React.ComponentProps<TagType> & ChocoCompoentPropsType<TagType>,
         'sx' | Omits[number]
     >;
 
-export type UseSizeType = (option?: SizeOptions<number>) => SizeType<number>;
+export type CsOptions = Partial<ValueOptionType> | CsOption;
+
+export type UseSizeType = <Value = StyleValue>(
+    option?: CsOptions,
+) => SizeType<Value>;
 
 export type OptionPropsType = {
     sz: UseSizeType;
-    Size: typeof Size;
-    style?: StyleTypes;
     chocoProp: ChocoProp;
     CColor: typeof CColor;
     chocoColor: ChocoColor;
+    CsStyle: typeof CsStyle;
+    CsValue: typeof CsValue;
+    style?: ChocoStylesType;
     mixCs: ChocoHooks.MixCs;
     theme: UseChocoThemeType;
+    CsOption: typeof CsOption;
     getFont: ChocoHooks.GetFont;
-    ChocoStyle: typeof ChocoStyle;
     responseCs: ChocoHooks.ResponseCs;
-};
-
-export type ChocoStylesPropsType<
-    Component extends React.ElementType = React.ElementType,
-> = {
-    [Key in keyof ChocoCompoentPropsType<Component>]?: Key extends KeyChochoStyleNoSizeValueType
-        ? ChocoCompoentPropsType<Component>[Key]
-        : SizesType<ChocoCompoentPropsType<Component>[Key]>;
 };
 
 export type FontOption = {
@@ -50,10 +48,10 @@ export type FontOption = {
 };
 
 export namespace ChocoHooks {
-    export type MixCs = (...allCs: (CsType | undefined)[]) => ChocoStyleTypes;
-    export type GetFont = <Style extends StyleTypes>(
+    export type MixCs = (...allCs: (CsType | undefined)[]) => ChocoStylesType;
+    export type GetFont = <Style extends Partial<ChocoStylesType>>(
         size?: keyof ThemeFontsType['weight'],
         option?: FontOption,
     ) => Style;
-    export type ResponseCs = (cs?: CsType) => ChocoStyleTypes;
+    export type ResponseCs = (cs?: CsType) => CsStyle;
 }

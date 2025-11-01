@@ -1,12 +1,12 @@
-//-Path: "react-choco-style/lib/src/components/CNavigation.tsx"
+//-Path: "lib/src/components/CNavigation.tsx"
 import { CIcon } from './CIcon';
 import { TypeIcon } from '../custom/Icon';
 import { ColorType } from '../types/color';
 import { CsType, ToType } from '../types/choco';
-import { ChocoStyle } from '../class/ChocoStyle';
 import { useNavigate } from '../hooks/ReactRoute';
 import { useChocoHook } from '../hooks/useChocoHook';
 import { ChocoStyledProps } from '../types/chocoHook';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 
 const Navigation = ChocoStyle.styled(BottomNavigation, 'CNavigation')();
@@ -85,11 +85,11 @@ export function CNavigationAction({
                         ...disableds,
                         fontS: sz(),
                         px: sz({ sz: 'padding' }),
-                        minW: sz({ calc: (size) => size * 5 }),
-                        maxW: sz({ calc: (size) => size * 10 }),
+                        minW: sz({ calcs: [(after) => after.num * 5] }),
+                        maxW: sz({ calcs: [(after) => after.num * 10] }),
                         '&.Mui-selected': {
                             ...styles,
-                            fontS: sz({ calc: (size) => size * 1.2 }),
+                            fontS: sz({ calcs: [(after) => after.num * 1.2] }),
                         },
                         '& .MuiBottomNavigationAction-label': {
                             ...responseCs(

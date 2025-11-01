@@ -1,5 +1,5 @@
 //-Path: "react-choco-style/lib/src/components/CRating.tsx"
-import { ChocoStyle } from '../class/ChocoStyle';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 import { Rating as MuiRating } from '@mui/material';
 import { ChocoStyledProps } from '../types/chocoHook';
 

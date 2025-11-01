@@ -1,7 +1,7 @@
-//-Path: "react-choco-style/lib/src/components/CSize.tsx"
-import { Size } from '../class/Size';
-import React, { useMemo } from 'react';
+//-Path: "lib/src/components/CSize.tsx"
+import { useMemo } from 'react';
 import { Obj } from '@teachoco-dev/cli';
+import { CsValue } from '../class/option/CsValue';
 
 export type CSizeProps = {
     size: number;
@@ -9,7 +9,7 @@ export type CSizeProps = {
 };
 
 export function CSize({ size, children }: CSizeProps) {
-    const sizes = Size.from<number>(size);
+    const sizes = CsValue.size(size);
     const key = useMemo(() => {
         const keys = Obj.keys(sizes);
         let callback = keys[0];

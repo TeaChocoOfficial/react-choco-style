@@ -1,5 +1,7 @@
 <!---Path: "react-choco-style/README.md" -->
 
+# <span style="color: red; alient-items: center">⚠️No longer supported</span>
+
 # @teachoco-official/react-choco-style
 
 A React component library for building modern UI, inspired by Material-UI (MUI).

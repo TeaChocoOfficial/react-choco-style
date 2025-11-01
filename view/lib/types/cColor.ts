@@ -1,6 +1,6 @@
 //-Path: "react-choco-style/lib/src/types/chocoColor.ts"
-import { CColor } from '../class/CColor';
-import { ChocoShade } from '../class/ChocoShade';
+import { CColor } from '../class/theme/CColor';
+import { ChocoShade } from '../class/theme/ChocoShade';
 
 export type w3cx11ColorType = keyof typeof w3cx11;
 

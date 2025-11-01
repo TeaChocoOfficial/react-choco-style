@@ -4,8 +4,8 @@ import {
     UseChocoThemeType,
     BaseChocoThemeType,
 } from '../types/theme';
-import { DefChocoTheme, getThemeMode } from '../theme/theme';
 import { createAtom } from '@teachoco-official/react-atom';
+import { DefChocoTheme, getThemeMode } from '../theme/theme';
 
 type TempType = {
     debug: boolean;

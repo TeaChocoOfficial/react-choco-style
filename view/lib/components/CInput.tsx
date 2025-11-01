@@ -1,4 +1,4 @@
-//-Path: "react-choco-style/lib/src/components/CInput.tsx"
+//-Path: "lib/src/components/CInput.tsx"
 import {
     FormHelperText,
     SelectChangeEvent,
@@ -16,11 +16,12 @@ import { renderIcon } from './CIcon';
 import { CsType } from '../types/choco';
 import { TypeIcon } from '../custom/Icon';
 import { Ary, Obj } from '@teachoco-dev/cli';
-import { ChocoStyle } from '../class/ChocoStyle';
-import { ChocoColor } from '../class/ChocoColor';
+import { CsStyle } from '../class/style/CsStyle';
 import { LinesStyleType } from '../types/chocoValue';
+import { ChocoColor } from '../class/hook/ChocoColor';
 import { ChocoStyledProps } from '../types/chocoHook';
 import { ColorsType, ColorType } from '../types/color';
+import { ChocoStyle } from '../class/style/ChocoStyle';
 
 const Select = ChocoStyle.styled(MuiSelect, 'CSelect')();
 const InputLabel = ChocoStyle.styled(MuiInputLabel, 'CInputLabel')();
@@ -121,8 +122,10 @@ export function CInputAdornment({
                 const getMargin = (time: number = 1) =>
                     sz({
                         root: 'padding',
-                        calc: (size, root) =>
-                            `${size * root * time}px !important`,
+                        calcs: [
+                            (after, _, multiply) =>
+                                `${after.num * multiply}px !important`,
+                        ],
                     });
 
                 return {
@@ -188,7 +191,7 @@ export function CInput<
             {...ChocoStyle.props(
                 props?.control ?? {},
                 ({ sz, theme }) => {
-                    const { border } = theme.root.size;
+                    const { border } = theme.root.multiply;
 
                     const borders = (
                         time: number = 1,
@@ -200,7 +203,7 @@ export function CInput<
                                   width: -(border * time),
                                   color: error
                                       ? forcus
-                                          ? theme.palette.main.error[5]
+                                          ? theme.palette.main.error
                                           : theme.palette.main.error[7]
                                       : forcus &&
                                         typeof styles.cs.borders !== 'string'
@@ -209,7 +212,7 @@ export function CInput<
                                       : (styles.cs.clr as ColorsType),
                               };
 
-                    const cs = new ChocoStyle({
+                    const cs = new CsStyle({
                         css: {
                             ' .MuiInputBase-root': {
                                 mt: variant === 'standard' ? 0 : undefined,
@@ -217,16 +220,25 @@ export function CInput<
                                     ' fieldset': {
                                         borders: borders(0.5),
                                         px: sz({
-                                            root: 'padding',
-                                            calc: (size) => size * 0.75,
+                                            kit: 'padding',
+                                            calcs: [
+                                                (after) => after.num * 0.75,
+                                            ],
                                         }),
                                         css: {
                                             ' legend': {
                                                 h: sz({
-                                                    calc: (size) => size * 0.75,
+                                                    calcs: [
+                                                        (after) =>
+                                                            after.num * 0.75,
+                                                    ],
                                                 }),
                                                 css: {
-                                                    ' span': { fontS: sz() },
+                                                    ' span': {
+                                                        fontS: sz({
+                                                            kit: 'text',
+                                                        }),
+                                                    },
                                                 },
                                             },
                                         },
@@ -265,20 +277,22 @@ export function CInput<
                         ({ sz, getFont }) => {
                             const fontStyle = getFont('medium');
 
-                            const cs = new ChocoStyle(fontStyle);
+                            const cs = new CsStyle(fontStyle);
                             cs.add({
-                                borR: sz(),
-                                fontS: sz(),
+                                borR: sz({ kit: 'text' }),
+                                fontS: sz({ kit: 'text' }),
                                 clr: styles.cs.clr,
                                 px: sz({
-                                    sz: 'padding',
-                                    calc: (size) => size / 2,
+                                    kit: 'padding',
+                                    calcs: [(after) => after.num / 2],
                                 }),
-                                form: sz({
-                                    calc: (size) =>
-                                        `translate(${
-                                            size * 0.5
-                                        }px, ${size}px) scale(1)`,
+                                form: sz<string>({
+                                    calcs: [
+                                        (after) =>
+                                            `translate(${after.num * 0.5}px, ${
+                                                after.num
+                                            }px) scale(1)`,
+                                    ],
                                 }),
                                 css: {
                                     '.Mui-focused': { clr: styles.cs?.bgClr },
@@ -286,12 +300,16 @@ export function CInput<
                                         clr: shadesColor.text[5],
                                         bgClr: shadesColor.main[5],
                                         form: sz({
-                                            calc: (size) =>
-                                                `translate(${size * 0.75}px, ${
-                                                    variant === 'filled'
-                                                        ? size * 0.25
-                                                        : -(size * 0.5)
-                                                }px) scale(0.75)`,
+                                            calcs: [
+                                                (after) =>
+                                                    `translate(${
+                                                        after.num * 0.75
+                                                    }px, ${
+                                                        variant === 'filled'
+                                                            ? after.num * 0.25
+                                                            : -(after.num * 0.5)
+                                                    }px) scale(0.75)`,
+                                            ],
                                         }),
                                     },
                                 },
@@ -355,46 +373,58 @@ export function CInput<
                             {},
                         );
 
-                        const cs = new ChocoStyle(newStyle);
+                        const cs = new CsStyle(newStyle);
                         cs.add({
-                            fontS: sz(),
+                            fontS: sz({ kit: 'text' }),
                             borR:
                                 variant === 'standard'
                                     ? undefined
                                     : sz({
-                                          sz: 'borR',
-                                          calc: (size) =>
-                                              variant === 'filled'
-                                                  ? theme.method.spacing(
-                                                        size,
-                                                        size,
-                                                        0,
-                                                        0,
-                                                    )
-                                                  : size,
+                                          kit: 'borR',
+                                          calcs: [
+                                              (after) =>
+                                                  variant === 'filled'
+                                                      ? theme.method.spacing(
+                                                            after.num,
+                                                            after.num,
+                                                            0,
+                                                            0,
+                                                        )
+                                                      : after.num,
+                                          ],
                                       }),
                             css: {
                                 ' .MuiInputBase-input': {
                                     p: sz({
-                                        sz: 'padding',
-                                        calc: (size) =>
-                                            variant === 'filled'
-                                                ? theme.method.spacing(
-                                                      size * 1.5,
-                                                      size,
-                                                      size * 0.5,
-                                                      size,
-                                                  )
-                                                : size,
+                                        kit: 'padding',
+                                        calcs: [
+                                            (after) =>
+                                                variant === 'filled'
+                                                    ? theme.method.spacing(
+                                                          after.num * 1.5,
+                                                          after.num,
+                                                          after.num * 0.5,
+                                                          after.num,
+                                                      )
+                                                    : after,
+                                        ],
                                     }),
                                 },
                                 ' .MuiSelect-icon': {
                                     t: sz({
-                                        calc: (size) => `calc(50% - ${size}px)`,
+                                        calcs: [
+                                            (after) =>
+                                                `calc(50% - ${after.num}px)`,
+                                        ],
                                     }),
                                     clr: styles.cs.clr,
-                                    wh: sz({ calc: (size) => size * 2 }),
-                                    fontS: sz({ calc: (size) => size * 2 }),
+                                    wh: sz({
+                                        calcs: [(after) => after.num * 2],
+                                    }),
+                                    fontS: sz({
+                                        kit: 'text',
+                                        calcs: [(after) => after.num * 2],
+                                    }),
                                 },
                             },
                         });
@@ -442,10 +472,12 @@ export function CInput<
                         props?.helper ?? {},
                         ({ sz, theme }) => ({
                             cs: {
-                                fontS: sz({ calc: (size) => size * 0.75 }),
+                                fontS: sz({
+                                    calcs: [(after) => after.num * 0.75],
+                                }),
                                 ml: sz({
-                                    root: 'padding',
-                                    calc: (size) => size * 0.5,
+                                    kit: 'padding',
+                                    calcs: [(after) => after.num * 0.5],
                                 }),
                                 clr: error
                                     ? theme.palette.main.error[5]
